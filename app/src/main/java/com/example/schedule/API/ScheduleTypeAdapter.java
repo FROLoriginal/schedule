@@ -16,45 +16,55 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
 
     @Override
     public void write(JsonWriter out, Schedule value) {
-         throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Schedule read(JsonReader in) throws IOException {
-        in.beginArray();
-        in.beginObject();
+        List<String> from = new ArrayList<>();
+        List<String> to = new ArrayList<>();
+        List<String> type = new ArrayList<>();
+        List<Object_> oList = new ArrayList<>();
 
-        Object_ o = new Object_();
-        in.nextName();
-        final String from = in.nextString();
-        in.nextName();
-        final String to = in.nextString();
-        in.nextName();
-        final String type = in.nextString();
-        in.nextName();
-        if (in.peek() == JsonToken.BEGIN_ARRAY) {
-            in.beginArray();
+        in.beginArray();
+        while (in.peek() == JsonToken.BEGIN_OBJECT) {
+            in.beginObject();
+            Object_ o = new Object_();
             in.nextName();
-            while (in.hasNext()) {
+            from.add(in.nextString());
+            in.nextName();
+            to.add(in.nextString());
+            in.nextName();
+            type.add(in.nextString());
+            in.nextName();
+
+            if (in.peek() == JsonToken.BEGIN_ARRAY) {
+                in.beginArray();
+                while (in.hasNext()) {
+                    in.beginObject();
+                    in.nextName();
+                    o.setSubtype(in.nextString());
+                    parser(in, o);
+                    in.endObject();
+                }
+                if (in.peek() == JsonToken.END_OBJECT) {
+                    in.endObject();
+                } else if (in.peek() == JsonToken.END_ARRAY){
+                    in.endArray();
+                }
+            } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
                 in.beginObject();
+
                 in.nextName();
                 o.setSubtype(in.nextString());
                 parser(in, o);
                 in.endObject();
-                in.nextName();
             }
-
-            in.endArray();
-        } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
-            in.beginObject();
-
-            in.nextName();
-            o.setSubtype(in.nextString());
-            parser(in, o);
+            oList.add(o);
             in.endObject();
         }
         in.endArray();
-        return new Schedule(from, to, type, o);
+        return new Schedule(from, to, type, oList);
     }
 
     private static void parser(JsonReader in, Object_ o) throws IOException {
@@ -64,7 +74,6 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
                 in.beginArray();
 
                 List<Subobject> list = new ArrayList<>();
-                in.nextName();
                 while (in.hasNext()) {
 
                     in.beginObject();
@@ -72,6 +81,9 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
 
                     while (in.hasNext())
                         switch (in.nextName()) {
+                            case "label":
+                                in.nextString();
+                                break;
                             case "subject":
                                 s.setSubject(in.nextString());
                                 break;
@@ -84,7 +96,6 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
                         }
                     in.endObject();
                     list.add(s);
-                    in.nextName();
                 }
                 o.setSubobject(list);
                 in.endArray();

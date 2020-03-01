@@ -1,58 +1,60 @@
 package com.example.schedule.POJO;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Schedule {
+import java.util.List;
 
+public class Schedule {
     @SerializedName("from")
     @Expose
-    private String from;
+    private List<String> from;
     @SerializedName("to")
     @Expose
-    private String to;
+    private List<String> to;
     @SerializedName("type")
     @Expose
-    private String type;
+    private List<String> type;
     @SerializedName("object")
     @Expose
-    private Object object;
+    private List<Object_> object;
 
-    public Schedule(String from, String to, String type, Object_ object) {
+    public Schedule(List<String> from, List<String> to, List<String> type, List<Object_> object) {
         this.from = from;
         this.to = to;
         this.type = type;
         this.object = object;
     }
 
-    public String getFrom() {
+    public List<String> getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(List<String> from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public List<String> getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(List<String> to) {
         this.to = to;
     }
 
-    public String getType() {
+    public List<String> getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(List<String> type) {
         this.type = type;
     }
 
-    public Object getObject() {
+    public List<Object_> getObject() {
         return object;
     }
 
-    public void setObject(Object object) {
+    public void setObject(List<Object_> object) {
         this.object = object;
     }
 }

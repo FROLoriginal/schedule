@@ -3,9 +3,9 @@ package com.example.schedule.ui;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.schedule.R;
-import com.example.schedule.POJO.JsonResponse;
 import com.example.schedule.API.NetworkService;
+import com.example.schedule.POJO.JsonResponse;
+import com.example.schedule.R;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +23,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClick(View v) {
 
-
         new Thread(() -> {
             NetworkService.getInstance()
                     .getJSONApi()
@@ -31,8 +30,9 @@ public class LoginActivity extends AppCompatActivity {
                     .enqueue(new Callback<JsonResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
-                            // String post = response.body();
-                            //System.out.println(post + "''''''''''''''''''''''''''''''''''''");
+
+                            JsonResponse r = response.body();
+
                         }
 
                         @Override

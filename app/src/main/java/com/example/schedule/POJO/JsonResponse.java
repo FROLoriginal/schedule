@@ -10,10 +10,11 @@ public class JsonResponse {
     @SerializedName("schedule")
     @Expose
     private List<Schedule> dayOfWeek;
-    @SerializedName("labels")
+
+   /* @SerializedName("labels")
     @Expose
     private List<Labels> labels;
-
+*/
     public List<Schedule> getSchedule() {
         return dayOfWeek;
     }
@@ -21,7 +22,7 @@ public class JsonResponse {
     public void setSchedule(List<Schedule> dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
-
+/*
     public List<Labels> getLabels() {
         return labels;
     }
@@ -29,5 +30,5 @@ public class JsonResponse {
     public void setLabels(List<Labels> labels) {
         this.labels = labels;
     }
-
+*/
 }

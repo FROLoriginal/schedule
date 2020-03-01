@@ -8,8 +8,7 @@ public class Labels {
   @SerializedName("label")
   @Expose
   private String label;
-  @SerializedName("name")
-  @Expose
+
   private String name;
 
   public String getLabel() {
