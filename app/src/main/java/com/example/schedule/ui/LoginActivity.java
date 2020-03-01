@@ -1,10 +1,11 @@
-package com.example.schedule;
+package com.example.schedule.ui;
 
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.schedule.json.NetworkService;
-import com.example.schedule.json.Schedule;
+import com.example.schedule.R;
+import com.example.schedule.POJO.JsonResponse;
+import com.example.schedule.API.NetworkService;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,15 +28,15 @@ public class LoginActivity extends AppCompatActivity {
             NetworkService.getInstance()
                     .getJSONApi()
                     .getPostWithID()
-                    .enqueue(new Callback<Schedule>() {
+                    .enqueue(new Callback<JsonResponse>() {
                         @Override
-                        public void onResponse(@NonNull Call<Schedule> call, @NonNull Response<Schedule> response) {
+                        public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                             // String post = response.body();
                             //System.out.println(post + "''''''''''''''''''''''''''''''''''''");
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<Schedule> call, @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
                             System.out.println(call.request().toString());
                             t.printStackTrace();
                         }
