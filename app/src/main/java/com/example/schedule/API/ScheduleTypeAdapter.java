@@ -1,8 +1,8 @@
 package com.example.schedule.API;
 
-import com.example.schedule.POJO.Object_;
-import com.example.schedule.POJO.Schedule;
-import com.example.schedule.POJO.Subobject;
+import com.example.schedule.POJO.OK_POJO.Object_;
+import com.example.schedule.POJO.OK_POJO.Schedule;
+import com.example.schedule.POJO.OK_POJO.Subobject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -21,6 +21,7 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
 
     @Override
     public Schedule read(JsonReader in) throws IOException {
+
         List<String> from = new ArrayList<>();
         List<String> to = new ArrayList<>();
         List<String> type = new ArrayList<>();
@@ -49,7 +50,7 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
                 }
                 if (in.peek() == JsonToken.END_OBJECT) {
                     in.endObject();
-                } else if (in.peek() == JsonToken.END_ARRAY){
+                } else if (in.peek() == JsonToken.END_ARRAY) {
                     in.endArray();
                 }
             } else if (in.peek() == JsonToken.BEGIN_OBJECT) {

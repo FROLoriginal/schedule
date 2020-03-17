@@ -1,12 +1,27 @@
 package com.example.schedule.API;
 
-import com.example.schedule.POJO.JsonResponse;
+import com.example.schedule.POJO.OK_POJO.Response;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface ApiHolder {
 
-    @GET("/rudn/lib/schedule-example.json")
-    public Call<JsonResponse> getPostWithID();
+    String API_GET_SCHEDULE_METHOD = "/rudn/schedule/api/teams.get";
+    String VERSION = "v";
+    String ACCESS_TOKEN = "accessToken";
+    String TEAM = "team";
+
+    int REQUIRED_FIELDS_ARE_MISSING = 2;
+    int INCORRECT_ACCESS_TOKEN = 4;
+    int UNKNOWN_GROUP = 100;
+
+     //example is /rudn/schedule/api/teams.get?v={}&accessToken={}&team={}
+    @GET(API_GET_SCHEDULE_METHOD)
+    public Call<Response> getSchedule(@Query(VERSION) int v,
+                                      @Query(ACCESS_TOKEN) String accessToken,
+                                      @Query(TEAM) String team);
+   // @GET("/rudn/lib/schedule-example.json")
+    //public Call<JsonResponse> getSchedule();
 }
