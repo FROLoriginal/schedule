@@ -32,15 +32,14 @@ public class LoginActivity extends AppCompatActivity {
 
         new Thread(() -> {
             NetworkService.getInstance()
-                    .getJSONApi().
-                    getSchedule(VERSION, ACCESS_TOKEN, text.getText().toString())
+                    .getJSONApi()
+                    .getSchedule(VERSION, ACCESS_TOKEN, text.getText().toString())
                     .enqueue(new Callback<com.example.schedule.POJO.OK_POJO.Response>() {
                         @Override
                         public void onResponse(@NonNull Call<com.example.schedule.POJO.OK_POJO.Response> call,
                                                @NonNull Response<com.example.schedule.POJO.OK_POJO.Response> response) {
-
                             com.example.schedule.POJO.OK_POJO.Response r = response.body();
-                            System.out.println(r.getObj().getJsonResponse().getSchedule().get(4).getObject().get(3).getSubobject().get(0).getSubject());
+                            System.out.println(r.getJsonResponse().getSchedule().get(4).getObject().get(3).getSubobject().get(0).getSubject());
                         }
 
                         @Override
