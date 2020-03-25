@@ -4,4 +4,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="unknownGroup">Данной группы не существует.</string>
+    <string name="internalErrorOccurred">Произошла внутренняя ошибка.</string>
+    <string name="connectionError">Произошла ошибка сети.</string>
 </resources>
