@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.schedule.API.ApiHolder;
 import com.example.schedule.API.NetworkService;
+import com.example.schedule.POJO.OK_POJO.JsonResponse;
 import com.example.schedule.R;
 
 import androidx.annotation.NonNull;
@@ -61,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                                                @NonNull Response<com.example.schedule.POJO.OK_POJO.Response> response) {
 
                             com.example.schedule.POJO.OK_POJO.Response r = response.body();
+                            JsonResponse jr = r.getJsonResponse();
                             if (r.getError() != null) {
                                 switch (r.getError().getErrorCode()) {
 
@@ -72,8 +74,8 @@ public class LoginActivity extends AppCompatActivity {
                                     default:
                                         Toast.makeText(getApplicationContext(), R.string.internalErrorOccurred, Toast.LENGTH_LONG).show();
                                 }
-                            }else if (r.getJsonResponse() != null){
-                                //заполнение базы данных
+                            }else if (jr != null){
+                                //Создание и заполнение базы даннх
                             }
                             fragment.dismiss();
                         }
