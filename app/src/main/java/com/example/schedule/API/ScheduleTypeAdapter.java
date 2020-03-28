@@ -1,5 +1,6 @@
 package com.example.schedule.API;
 
+import com.example.schedule.POJO.OK_POJO.Lesson;
 import com.example.schedule.POJO.OK_POJO.Object_;
 import com.example.schedule.POJO.OK_POJO.Schedule;
 import com.example.schedule.POJO.OK_POJO.Subobject;
@@ -22,21 +23,22 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
     @Override
     public Schedule read(JsonReader in) throws IOException {
 
-        List<String> from = new ArrayList<>();
-        List<String> to = new ArrayList<>();
-        List<String> type = new ArrayList<>();
-        List<Object_> oList = new ArrayList<>();
+        List<Lesson> lessons = new ArrayList<>();
+        List<Object_> oList;
+        String from;
+        String to;
+        String type;
 
         in.beginArray();
         while (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
             Object_ o = new Object_();
             in.nextName();
-            from.add(in.nextString());
+            from = in.nextString();
             in.nextName();
-            to.add(in.nextString());
+            to = in.nextString();
             in.nextName();
-            type.add(in.nextString());
+            type = in.nextString();
             in.nextName();
 
             if (in.peek() == JsonToken.BEGIN_ARRAY) {
@@ -61,11 +63,13 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
                 parser(in, o);
                 in.endObject();
             }
+            oList = new ArrayList<>();
             oList.add(o);
             in.endObject();
+            lessons.add(new Lesson(from, to, type, oList));
         }
         in.endArray();
-        return new Schedule(from, to, type, oList);
+        return new Schedule(lessons);
     }
 
     private static void parser(JsonReader in, Object_ o) throws IOException {
