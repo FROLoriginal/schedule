@@ -13,7 +13,7 @@
         android:layout_height="55dp"
         android:ems="10"
         android:gravity="bottom|center"
-        android:hint="НПИ-01-19"
+        android:hint="@string/hintGetSchedule"
         android:selectAllOnFocus="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
         android:layout_marginTop="12dp"
         android:background="#0277BD"
         android:onClick="onClick"
-        android:text="Поулчить расписание"
+        android:text="@string/getSchedule"
         app:layout_constraintEnd_toEndOf="@+id/group"
         app:layout_constraintStart_toStartOf="@+id/group"
         app:layout_constraintTop_toBottomOf="@+id/group" />

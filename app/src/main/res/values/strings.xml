@@ -7,4 +7,6 @@
     <string name="unknownGroup">Данной группы не существует.</string>
     <string name="internalErrorOccurred">Произошла внутренняя ошибка.</string>
     <string name="connectionError">Произошла ошибка сети.</string>
+    <string name="getSchedule">Получить расписание.</string>
+    <string name="hintGetSchedule">НПИбд–01–19</string>
 </resources>
