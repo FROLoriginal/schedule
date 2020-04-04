@@ -2,36 +2,36 @@ package com.example.schedule.SQL;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-import static android.content.Context.MODE_PRIVATE;
+import androidx.annotation.Nullable;
 
-public class SQLManager {
+public class SQLManager extends SQLiteOpenHelper {
 
-    private SQLiteDatabase db;
     private String name;
 
-    private static final String ID = "_id";
-    private static final String DAY_OF_WEEK = "day_of_week";
-    private static final String COUNTER = "counter";
-    private static final String SUBJECT = "subject";
-    private static final String FROM = "from_";
-    private static final String TO = "to_";
-    private static final String AUDITORY = "auditory";
-    private static final String TEACHER = "teacher";
+    public static final String ID = "_id";
+    public static final String DAY_OF_WEEK = "day_of_week";
+    public static final String COUNTER = "counter";
+    public static final String SUBJECT = "subject";
+    public static final String FROM = "from_";
+    public static final String TO = "to_";
+    public static final String AUDITORY = "auditory";
+    public static final String TEACHER = "teacher";
 
-    public SQLManager(String name, Context baseContext) {
-
-        db = baseContext.openOrCreateDatabase(name + ".db", MODE_PRIVATE, null);
+    public SQLManager(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
         this.name = name;
     }
 
-    public void createTable() {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + name + " (" +
                 ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                 DAY_OF_WEEK + " INTEGER NOT NULL," +
                 COUNTER + " INTEGER NOT NULL," +
-                SUBJECT + " TEXT NOT NULL," +
+                SUBJECT + " TEXT," +
                 FROM + " TEXT NOT NULL," +
                 TO + " TEXT NOT NULL," +
                 AUDITORY + " TEXT," +
@@ -39,25 +39,8 @@ public class SQLManager {
                 ")");
     }
 
-   public void insert(int dayOfWeek, int counter, String subject, String from, String to, String auditory, String teacher) {
-
-        db.execSQL("INSERT INTO " + name +
-                " (" + DAY_OF_WEEK + ","
-                + COUNTER + ","
-                + SUBJECT + ","
-                + FROM + ","
-                + TO + ","
-                + AUDITORY + ","
-                + TEACHER + ") VALUES (" + dayOfWeek + ","
-                + counter + ","
-                + subject + ","
-                + from + ","
-                + to + ","
-                + auditory + ","
-                + teacher + ")");
-
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
-
 }

@@ -9,7 +9,7 @@ public class Object_ {
 
     @SerializedName("subtype")
     @Expose
-    private String subtype;
+    private String subtype = "null";
 
     @SerializedName("subobject")
     @Expose
@@ -17,7 +17,7 @@ public class Object_ {
 
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "null";
 
     public String getSubtype() {
         return subtype;
