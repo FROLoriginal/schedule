@@ -17,11 +17,8 @@ public interface ApiHolder {
     int INCORRECT_ACCESS_TOKEN = 4;
     int UNKNOWN_GROUP = 100;
 
-     //example is /rudn/schedule/api/teams.get?v={}&accessToken={}&team={}
     @GET(API_GET_SCHEDULE_METHOD)
-    public Call<Response> getSchedule(@Query(VERSION) int v,
+    Call<Response> getSchedule(@Query(VERSION) int v,
                                       @Query(ACCESS_TOKEN) String accessToken,
                                       @Query(TEAM) String team);
-   // @GET("/rudn/lib/schedule-example.json")
-    //public Call<JsonResponse> getSchedule();
 }
