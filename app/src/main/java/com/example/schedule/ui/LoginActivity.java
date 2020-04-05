@@ -2,6 +2,7 @@ package com.example.schedule.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -66,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<com.example.schedule.POJO.OK_POJO.Response> call,
                                                @NonNull Response<com.example.schedule.POJO.OK_POJO.Response> response) {
-
                             com.example.schedule.POJO.OK_POJO.Response r = response.body();
                             JsonResponse jr = r.getJsonResponse();
                             if (r.getError() != null) {
@@ -92,6 +92,10 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                             fragment.dismiss();
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
 
                         @Override
@@ -102,9 +106,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
         }).start();
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
-        // finish();
     }
 
     private List<ContentValues> fillDataBase(JsonResponse jr) {
