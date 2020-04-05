@@ -31,7 +31,6 @@ public class SQLManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        SharedPreferences sh = context.getSharedPreferences(SHARED_PREFERENCES_TABLES,Context.MODE_PRIVATE);
         if (name != null) {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + name + " (" +
                     ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -43,6 +42,7 @@ public class SQLManager extends SQLiteOpenHelper {
                     AUDITORY + " TEXT," +
                     TEACHER + " TEXT" +
                     ")");
+            SharedPreferences sh = context.getSharedPreferences(SHARED_PREFERENCES_TABLES,Context.MODE_PRIVATE);
             sh.edit().putString(name,name).apply();
         }
     }
