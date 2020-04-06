@@ -22,6 +22,7 @@ import com.example.schedule.POJO.OK_POJO.Schedule;
 import com.example.schedule.POJO.OK_POJO.Subobject;
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
+import com.example.schedule.ScheduleConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         text = findViewById(R.id.group);
         button = findViewById(R.id.getScheduleButton);
-        button.setClickable(false);
-        button.setBackgroundColor(getResources().getColor(R.color.unClickableButton));
+        button.setEnabled(false);
         text.addTextChangedListener(textChangedListener);
     }
 
@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         LoginDialogFragment fragment = new LoginDialogFragment();
         fragment.show(getSupportFragmentManager(), "dialog_login");
         String editText = text.getText().toString();
+
         new Thread(() -> {
             NetworkService.getInstance()
                     .getJSONApi()
@@ -90,12 +91,12 @@ public class LoginActivity extends AppCompatActivity {
                                 for (ContentValues cv : cvList) {
                                     sqLiteDatabase.insert(tableName, null, cv);
                                 }
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                fragment.dismiss();
+                                finish();
                             }
                             fragment.dismiss();
-
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
                         }
 
                         @Override
@@ -140,13 +141,16 @@ public class LoginActivity extends AppCompatActivity {
                             cv.put(SQLManager.TEACHER, so.getTeacher());
                             cvList.add(new ContentValues(cv));
                         }
-                    } else cvList.add(new ContentValues(cv));
+                    } else {
+                        if (object_.getSubtype().equals(ScheduleConstants.LessonType.ACTIVITY)) {
+                            cv.put(SQLManager.SUBJECT, object_.getName());
+                        } else cv.put(SQLManager.SUBJECT, "null");//TODO
+                        cvList.add(new ContentValues(cv));
+                    }
                 }
-
             }
         }
         return cvList;
-
     }
 
     private TextWatcher textChangedListener = new TextWatcher() {
@@ -163,11 +167,10 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.toString().equals("")) {
-                button.setBackgroundColor(getResources().getColor(R.color.unClickableButton));
-                button.setClickable(false);
+                button.setEnabled(false);
             } else {
-                button.setBackgroundColor(getResources().getColor(R.color.clickableButton));
-                button.setClickable(true);
+
+                button.setEnabled(true);
             }
         }
     };
