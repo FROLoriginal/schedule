@@ -4,6 +4,7 @@ import com.example.schedule.POJO.OK_POJO.Lesson;
 import com.example.schedule.POJO.OK_POJO.Object_;
 import com.example.schedule.POJO.OK_POJO.Schedule;
 import com.example.schedule.POJO.OK_POJO.Subobject;
+import com.example.schedule.ScheduleConstants;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -86,16 +87,16 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
 
                     while (in.hasNext())
                         switch (in.nextName()) {
-                            case "label":
+                            case ScheduleConstants.LABEL:
                                 in.nextString();
                                 break;
-                            case "subject":
+                            case ScheduleConstants.SUBJECT:
                                 s.setSubject(in.nextString());
                                 break;
-                            case "teacher":
+                            case ScheduleConstants.TEACHER:
                                 s.setTeacher(in.nextString());
                                 break;
-                            case "class":
+                            case ScheduleConstants.AUDITORY:
                                 s.setAuditory(in.nextString());
                                 break;
                         }
@@ -107,17 +108,17 @@ public class ScheduleTypeAdapter extends TypeAdapter<Schedule> {
             } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
 
                 in.beginObject();
-
                 Subobject s = new Subobject();
+
                 while (in.hasNext())
                     switch (in.nextName()) {
-                        case "subject":
+                        case ScheduleConstants.SUBJECT:
                             s.setSubject(in.nextString());
                             break;
-                        case "teacher":
+                        case ScheduleConstants.TEACHER:
                             s.setTeacher(in.nextString());
                             break;
-                        case "class":
+                        case ScheduleConstants.AUDITORY:
                             s.setAuditory(in.nextString());
                             break;
                     }
