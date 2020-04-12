@@ -4,33 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    style="@style/Theme.AppCompat.NoActionBar"
     tools:context=".ui.LoginActivity">
 
-    <EditText
-        android:id="@+id/group"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:ems="10"
-        android:gravity="bottom|center"
-        android:hint="@string/hintGetSchedule"
-        android:inputType="text"
-        android:selectAllOnFocus="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/group"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.139"
-        />
+        app:layout_constraintVertical_bias="0.217"
+        app:srcCompat="@drawable/schedule_icon" />
 
     <Button
         android:id="@+id/getScheduleButton"
         style="@style/ShapeOfButtonTheme"
         android:layout_width="150dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="32dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="onClick"
         android:text="@string/getSchedule"
@@ -38,5 +33,56 @@
         app:layout_constraintEnd_toEndOf="@+id/group"
         app:layout_constraintStart_toStartOf="@+id/group"
         app:layout_constraintTop_toBottomOf="@+id/group" />
+
+    <EditText
+        android:id="@+id/group"
+        style="@style/Widget.AppCompat.EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="bottom|center"
+        android:hint="@string/hintGetSchedule"
+        android:inputType="text"
+        android:selectAllOnFocus="false"
+        android:singleLine="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#ffffffff"
+        android:textColorHint="#eeeeeeee"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.519" />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:text="Добро пожаловать в  Raspisanie"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите название группы"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/welcome"
+        app:layout_constraintTop_toBottomOf="@+id/welcome"
+        app:layout_constraintVertical_bias="0.881" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

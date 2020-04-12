@@ -10,14 +10,14 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="android:colorPrimaryDark">@android:color/holo_green_dark</item>
-        <!-- для Android 5+ вы можете поменять цвет colorPrimaryDark, чтобы соответствовать цвету windowBackground -->
-        <!-- <item name="colorPrimaryDark">@android:color/white</item> -->
+        <item name="android:colorPrimaryDark">@color/backgroundColor</item>
     </style>
 
     <style name="ShapeOfButtonTheme">
-
         <item name="android:background">@drawable/button_login</item>
+    </style>
 
+    <style name="Theme.AppCompat.NoActionBar.Custom">
+        <item name="colorPrimaryDark">@color/backgroundColor</item>
     </style>
 </resources>
