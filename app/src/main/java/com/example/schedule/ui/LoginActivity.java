@@ -88,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), R.string.internalErrorOccurred, Toast.LENGTH_LONG).show();
                                 }
                             } else if (jr != null) {
-
                                 String tableName = editText.replace("-", "");
                                 SQLManager sqlManager = new SQLManager(getApplicationContext(), tableName, null, 1);
                                 SQLiteDatabase sqLiteDatabase = sqlManager.getWritableDatabase();
@@ -144,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 for (int object = 0; object < objects; object++) {
                     Object_ object_ = les.getObject().get(object);
+                    String subtype = object_.getSubtype();
+                    cv.put(SQLManager.TYPE_OF_SUBJECT, subtype);
                     if (object_.getSubobject() != null) {
                         int subObjects = object_.getSubobject().size();
 
@@ -155,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                             cvList.add(new ContentValues(cv));
                         }
                     } else {
-                        if (object_.getSubtype().equals(ScheduleConstants.LessonType.ACTIVITY)) {
+                        if (ScheduleConstants.LessonType.ACTIVITY.equals(subtype)) {
                             cv.put(SQLManager.SUBJECT, object_.getName());
                         } else cv.put(SQLManager.SUBJECT, "null");//TODO
                         cvList.add(new ContentValues(cv));
