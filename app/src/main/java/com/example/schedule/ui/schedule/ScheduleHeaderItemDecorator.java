@@ -1,10 +1,13 @@
 package com.example.schedule.ui.schedule;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.schedule.R;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +17,7 @@ public class ScheduleHeaderItemDecorator extends RecyclerView.ItemDecoration {
     private StickyHeaderInterface mListener;
     private int mStickyHeaderHeight;
 
-    public ScheduleHeaderItemDecorator(RecyclerView recyclerView, @NonNull StickyHeaderInterface listener) {
+    ScheduleHeaderItemDecorator(RecyclerView recyclerView, @NonNull StickyHeaderInterface listener) {
         mListener = listener;
 
         // On Sticky Header Click
@@ -49,27 +52,23 @@ public class ScheduleHeaderItemDecorator extends RecyclerView.ItemDecoration {
 
                 View currentHeader = getHeaderViewForItem(topChildPosition, parent);
                 fixLayoutSize(parent, currentHeader);
-                int contactPoint = currentHeader.getBottom();
-                View childInContact = getChildInContact(parent, contactPoint);
-                if (childInContact != null) {
+                float contactPoint = currentHeader.getBottom();
+                View childInContact = getChildInContact(parent, (int) contactPoint);
 
+                Resources resources = parent.getResources();
+                int px = (int) resources.getDimension(R.dimen.card_view_schedule_margin);
+
+                if (childInContact != null) {
                     if (mListener.isHeader(parent.getChildAdapterPosition(childInContact))) {
                         moveHeader(c, currentHeader, childInContact);
                     } else drawHeader(c, currentHeader);
+                } else if (getChildInContact(parent, (int) (contactPoint + px)) != null
+                        || getChildInContact(parent, (int) (contactPoint - px)) != null) {
+                    drawHeader(c, currentHeader);
                 }
             }
         }
     }
-
- /*  private View getHeaderViewForItem(int itemPosition, RecyclerView parent) {
-        int headerPosition = mListener.getHeaderPositionForItem(itemPosition);
-
-        if (headerPosition != mCurrentHeaderIndex) {
-            mCurrentHeader = mListener.createHeaderView(headerPosition, parent);
-            mCurrentHeaderIndex = headerPosition;
-        }
-        return mCurrentHeader;
-    }*/
 
     private View getHeaderViewForItem(int itemPosition, RecyclerView parent) {
         int headerPosition = mListener.getHeaderPositionForItem(itemPosition);
@@ -126,8 +125,7 @@ public class ScheduleHeaderItemDecorator extends RecyclerView.ItemDecoration {
 
         view.measure(childWidthSpec, childHeightSpec);
 
-        //  view.layout(0, 0, view.getMeasuredWidth(), mStickyHeaderHeight = view.getMeasuredHeight());
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.layout(0, 0, view.getMeasuredWidth(), mStickyHeaderHeight = view.getMeasuredHeight());
     }
 
     public interface StickyHeaderInterface {
