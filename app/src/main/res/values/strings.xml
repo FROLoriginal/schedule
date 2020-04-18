@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Расписание</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_schedule">Расписание</string>
+    <string name="title_tasks">Задания</string>
+    <string name="title_settings">Насройки</string>
     <string name="unknownGroup">Данной группы не существует.</string>
     <string name="internalErrorOccurred">Произошла внутренняя ошибка.</string>
     <string name="connectionError">Произошла ошибка сети.</string>
