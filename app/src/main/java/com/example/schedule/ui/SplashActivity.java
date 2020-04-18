@@ -14,10 +14,10 @@ public class SplashActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, Context.MODE_PRIVATE).getAll().size() > 0) {
-            startActivity(new Intent(this, MainActivity.class));
-        } else {
+        if (getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, Context.MODE_PRIVATE).getAll().isEmpty()) {
             startActivity(new Intent(this, LoginActivity.class));
+        } else {
+            startActivity(new Intent(this, MainActivity.class));
         }
         finish();
 
