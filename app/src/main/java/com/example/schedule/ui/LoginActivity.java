@@ -143,8 +143,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 for (int object = 0; object < objects; object++) {
                     Object_ object_ = les.getObject().get(object);
-                    String subtype = object_.getSubtype();
-                    cv.put(SQLManager.TYPE_OF_SUBJECT, subtype);
+                    String type = les.getType();
+                    cv.put(SQLManager.TYPE_OF_SUBJECT, type);
                     if (object_.getSubobject() != null) {
                         int subObjects = object_.getSubobject().size();
 
@@ -156,8 +156,11 @@ public class LoginActivity extends AppCompatActivity {
                             cvList.add(new ContentValues(cv));
                         }
                     } else {
-                        if (ScheduleConstants.LessonType.ACTIVITY.equals(subtype)) {
-                            cv.put(SQLManager.SUBJECT, object_.getName());
+                        if (ScheduleConstants.LessonType.ACTIVITY.equals(type)) {
+                            //I don't know why subtype is name of activity subject...
+                            cv.put(SQLManager.SUBJECT, object_.getSubtype());
+                            cv.put(SQLManager.AUDITORY, "null");
+                            cv.put(SQLManager.TEACHER, "null");
                         } else cv.put(SQLManager.SUBJECT, "null");//TODO
                         cvList.add(new ContentValues(cv));
                     }

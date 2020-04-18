@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.schedule.POJO.OK_POJO.Lesson;
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
 
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ScheduleFragment extends Fragment {
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -34,57 +34,53 @@ public class ScheduleFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Lesson> lessons = new ArrayList<>();
-
-        lessons.add(new Lesson("10", "20", null, null));
-
-        ScheduleHeaderItemDecorator scheduleHeaderItemDecorator = new ScheduleHeaderItemDecorator(recyclerView, new ScheduleHeaderItemDecorator.StickyHeaderInterface() {
-            @Override
-            public int getHeaderPositionForItem(int itemPosition) {
-
-
-                for (int headerPosition; itemPosition >= 0; itemPosition--) {
-                    if (isHeader(itemPosition)) {
-                        headerPosition = itemPosition;
-                        return headerPosition;
-                    }
-                }
-                return 0;
-            }
-
-            @Override
-            public int getHeaderLayout(int headerPosition) {
-                //  return R.layout.card_view;
-                return R.layout.schedule_header_card_view;
-            }
-
-            @Override
-            public void bindHeaderData(View header, int headerPosition) {
-                if (true) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DAY_OF_WEEK, headerPosition);
-                    ((TextView) header.findViewById(R.id.day_of_week_header)).setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
-                }
-            }
-
-            @Override
-            public boolean isHeader(int itemPosition) {
-                // System.out.println((itemPosition % 5 == 0) + " : " + itemPosition);
-                return itemPosition % 3 == 0;
-            }
-        });
-
         SharedPreferences pref = getActivity().getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, Context.MODE_PRIVATE);
         String table = pref.getString(SQLManager.SHARED_PREFERENCES_TABLE, null);
 
         SQLManager sqlManager = new SQLManager(getActivity().getBaseContext(), table, null, 1);
         SQLiteDatabase db = sqlManager.getReadableDatabase();
 
-        recyclerView.addItemDecoration(scheduleHeaderItemDecorator);
-        recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(fillSchedule(db, table)));
-
+        List<SimplifiedScheduleModel> data = fillSchedule(db, table);
+        recyclerView.addItemDecoration(getDecorator(recyclerView, data));
+        recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(data));
 
         return root;
+    }
+
+    private ScheduleHeaderItemDecorator getDecorator(RecyclerView recyclerView, final List<SimplifiedScheduleModel> data) {
+        return new ScheduleHeaderItemDecorator
+                (recyclerView, new ScheduleHeaderItemDecorator.StickyHeaderInterface() {
+
+                    @Override
+                    public int getHeaderPositionForItem(int itemPosition) {
+
+                        for (int headerPosition; itemPosition >= 0; itemPosition--) {
+                            if (isHeader(itemPosition)) {
+                                headerPosition = itemPosition;
+                                return headerPosition;
+                            }
+                        }
+                        return 0;
+                    }
+
+                    @Override
+                    public int getHeaderLayout(int headerPosition) {
+                        return R.layout.schedule_header_card_view;
+                    }
+
+                    @Override
+                    public void bindHeaderData(View header, int headerPosition) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Calendar.DAY_OF_WEEK, data.get(headerPosition).getDayOfWeek() + 3);
+                        ((TextView) header.findViewById(R.id.day_of_week_header))
+                                .setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+                    }
+
+                    @Override
+                    public boolean isHeader(int itemPosition) {
+                        return data.get(itemPosition).isHeader();
+                    }
+                });
     }
 
     private List<SimplifiedScheduleModel> fillSchedule(SQLiteDatabase db, String tableName) {
@@ -113,6 +109,7 @@ public class ScheduleFragment extends Fragment {
 
                 SimplifiedScheduleModel lesson = new SimplifiedScheduleModel();
 
+
                 lesson.setFrom(c.getString(3));
                 lesson.setTo(c.getString(4));
                 lesson.setAuditory(c.getString(5));
@@ -120,10 +117,15 @@ public class ScheduleFragment extends Fragment {
                 lesson.setTeacher(c.getString(2));
                 lesson.setCounter(c.getInt(6));
                 lesson.setTypeOfSubject(c.getString(7));
+                lesson.setDayOfWeek(dayOfWeek);
 
                 week.add(new SimplifiedScheduleModel(lesson));
 
             }
+            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
+            s.setDayOfWeek(dayOfWeek);
+            s.setHeader(true);
+            week.add(s);
             c.close();
         }
         return week;

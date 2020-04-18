@@ -1,6 +1,6 @@
 package com.example.schedule.ui.schedule;
 
-public class SimplifiedScheduleModel {
+class SimplifiedScheduleModel {
 
     private String from;
     private String to;
@@ -8,13 +8,15 @@ public class SimplifiedScheduleModel {
     private String auditory;
     private String typeOfSubject;
     private String subject;
+    private int dayOfWeek;
     private int counter;
+    private boolean isHeader = false;
 
 
-    public SimplifiedScheduleModel() {
+    SimplifiedScheduleModel() {
     }
 
-    public SimplifiedScheduleModel(SimplifiedScheduleModel model) {
+    SimplifiedScheduleModel(SimplifiedScheduleModel model) {
 
         from = model.getFrom();
         to = model.getTo();
@@ -26,59 +28,84 @@ public class SimplifiedScheduleModel {
 
     }
 
-    public String getFrom() {
+    String getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    void setFrom(String from) {
         this.from = from;
     }
 
-    public String getTo() {
+    String getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    void setTo(String to) {
         this.to = to;
     }
 
-    public String getTeacher() {
+    int getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+     boolean isHeader() {
+        return isHeader;
+    }
+
+     void setHeader(boolean header) {
+        isHeader = header;
+    }
+
+    String getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(String teacher) {
+    void setTeacher(String teacher) {
         this.teacher = teacher;
     }
 
-    public String getAuditory() {
+    String getAuditory() {
         return auditory;
     }
 
-    public void setAuditory(String auditory) {
+    void setAuditory(String auditory) {
         this.auditory = auditory;
     }
 
-    public String getTypeOfSubject() {
+    String getTypeOfSubject() {
         return typeOfSubject;
     }
 
-    public void setTypeOfSubject(String typeOfSubject) {
+    void setTypeOfSubject(String typeOfSubject) {
         this.typeOfSubject = typeOfSubject;
     }
 
-    public String getSubject() {
+    String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    void setSubject(String subject) {
         this.subject = subject;
     }
 
-    public int getCounter() {
+    int getCounter() {
         return counter;
     }
 
-    public void setCounter(int counter) {
+    void setCounter(int counter) {
         this.counter = counter;
+    }
+
+    String getFormattedTime(){
+
+        return from + " - " + to;
+    }
+    String getFormattedAuditory(){
+
+        return "Аудитория: " + auditory;
     }
 }
