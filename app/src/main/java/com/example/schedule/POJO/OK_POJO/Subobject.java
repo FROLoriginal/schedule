@@ -17,6 +17,15 @@ public class Subobject {
   @Expose
   private String auditory = "null";
 
+  private int counter;
+
+  public int getCounter() {
+    return counter;
+  }
+
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
 
   public String getSubject() {
     return subject;

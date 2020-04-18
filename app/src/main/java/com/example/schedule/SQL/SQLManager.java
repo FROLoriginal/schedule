@@ -20,7 +20,9 @@ public class SQLManager extends SQLiteOpenHelper {
     public static final String TO = "to_";
     public static final String AUDITORY = "auditory";
     public static final String TEACHER = "teacher";
+    public static final String TYPE_OF_SUBJECT = "type_of_subject";
     public static final String SHARED_PREFERENCES_TABLES = "tables";
+    public static final String SHARED_PREFERENCES_TABLE = "table";
 
     public SQLManager(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -40,10 +42,11 @@ public class SQLManager extends SQLiteOpenHelper {
                     FROM + " TEXT NOT NULL," +
                     TO + " TEXT NOT NULL," +
                     AUDITORY + " TEXT," +
-                    TEACHER + " TEXT" +
+                    TEACHER + " TEXT," +
+                    TYPE_OF_SUBJECT + " TEXT" +
                     ")");
             SharedPreferences sh = context.getSharedPreferences(SHARED_PREFERENCES_TABLES,Context.MODE_PRIVATE);
-            sh.edit().putString(name,name).apply();
+            sh.edit().putString(SHARED_PREFERENCES_TABLE,name).apply();
         }
     }
 
