@@ -25,6 +25,7 @@ import com.example.schedule.POJO.OK_POJO.Subobject;
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
 import com.example.schedule.ScheduleConstants;
+import com.example.schedule.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         for (int subObject = 0; subObject < subObjects; subObject++) {
                             Subobject so = object_.getSubobject().get(subObject);
+                            cv.put(SQLManager.STYLE_OF_SUBJECT, Utils.typeOfSubject(so.getSubject()));
                             cv.put(SQLManager.SUBJECT, so.getSubject());
                             cv.put(SQLManager.AUDITORY, so.getAuditory());
                             cv.put(SQLManager.TEACHER, so.getTeacher());
@@ -158,10 +160,11 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         if (ScheduleConstants.LessonType.ACTIVITY.equals(type)) {
                             //I don't know why subtype is name of activity subject...
+                            cv.put(SQLManager.STYLE_OF_SUBJECT,Utils.OTHER);
                             cv.put(SQLManager.SUBJECT, object_.getSubtype());
-                            cv.put(SQLManager.AUDITORY, "null");
-                            cv.put(SQLManager.TEACHER, "null");
-                        } else cv.put(SQLManager.SUBJECT, "null");//TODO
+                            cv.put(SQLManager.AUDITORY,ScheduleConstants.UNKNOWN_OBJECT);
+                            cv.put(SQLManager.TEACHER, ScheduleConstants.UNKNOWN_OBJECT);
+                        } else cv.put(SQLManager.SUBJECT, ScheduleConstants.UNKNOWN_OBJECT);
                         cvList.add(new ContentValues(cv));
                     }
                 }
@@ -196,6 +199,7 @@ public class LoginActivity extends AppCompatActivity {
         if (actionId == EditorInfo.IME_ACTION_DONE && button.isEnabled()) {
 
             onClick(null);
+            button.setEnabled(false);
 
             return true;
         }

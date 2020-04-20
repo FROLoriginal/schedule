@@ -42,7 +42,7 @@ public class ScheduleFragment extends Fragment {
 
         List<SimplifiedScheduleModel> data = fillSchedule(db, table);
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
-        recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(data));
+        recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(new ArrayList<>(data)));
 
         return root;
     }
@@ -71,11 +71,10 @@ public class ScheduleFragment extends Fragment {
                     @Override
                     public void bindHeaderData(View header, int headerPosition) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.set(Calendar.DAY_OF_WEEK, data.get(headerPosition).getDayOfWeek() + 3);
-                        ((TextView) header.findViewById(R.id.day_of_week_header))
-                                .setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+                        calendar.set(Calendar.DAY_OF_WEEK, data.get(headerPosition).getDayOfWeek() + 2);
+                        String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                        ((TextView) header.findViewById(R.id.day_of_week_header)).setText(displayName);
                     }
-
                     @Override
                     public boolean isHeader(int itemPosition) {
                         return data.get(itemPosition).isHeader();
@@ -105,10 +104,14 @@ public class ScheduleFragment extends Fragment {
                     new String[]{String.valueOf(dayOfWeek)},
                     null, null, null);
 
+            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
+            s.setDayOfWeek(dayOfWeek);
+            s.setHeader(true);
+            week.add(s);
+
             while (c.moveToNext()) {
 
                 SimplifiedScheduleModel lesson = new SimplifiedScheduleModel();
-
 
                 lesson.setFrom(c.getString(3));
                 lesson.setTo(c.getString(4));
@@ -119,13 +122,9 @@ public class ScheduleFragment extends Fragment {
                 lesson.setTypeOfSubject(c.getString(7));
                 lesson.setDayOfWeek(dayOfWeek);
 
-                week.add(new SimplifiedScheduleModel(lesson));
+                week.add(lesson);
 
             }
-            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
-            s.setDayOfWeek(dayOfWeek);
-            s.setHeader(true);
-            week.add(s);
             c.close();
         }
         return week;

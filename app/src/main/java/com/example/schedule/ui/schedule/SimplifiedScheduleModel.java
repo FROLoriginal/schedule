@@ -1,5 +1,7 @@
 package com.example.schedule.ui.schedule;
 
+import com.example.schedule.Utils;
+
 class SimplifiedScheduleModel {
 
     private String from;
@@ -8,24 +10,17 @@ class SimplifiedScheduleModel {
     private String auditory;
     private String typeOfSubject;
     private String subject;
+    private String styleOfSubject;
     private int dayOfWeek;
     private int counter;
     private boolean isHeader = false;
 
-
-    SimplifiedScheduleModel() {
+    public String getStyleOfSubject() {
+        return styleOfSubject;
     }
 
-    SimplifiedScheduleModel(SimplifiedScheduleModel model) {
-
-        from = model.getFrom();
-        to = model.getTo();
-        teacher = model.getTeacher();
-        auditory = model.getAuditory();
-        typeOfSubject = model.getTypeOfSubject();
-        subject = model.getSubject();
-        counter = model.getCounter();
-
+    public void setStleOfSubject(String styleOfSubject) {
+        this.styleOfSubject = styleOfSubject;
     }
 
     String getFrom() {
@@ -104,8 +99,16 @@ class SimplifiedScheduleModel {
 
         return from + " - " + to;
     }
-    String getFormattedAuditory(){
+    String getAuditoryWithStyleOfSubject(){
 
-        return "Аудитория: " + auditory;
+        switch (Utils.typeOfSubject(subject)){
+
+            case Utils.SEMINAR: return "Семинар, " + auditory;
+            case Utils.LABORATORY_WORK: return "Лаб. " + auditory;
+            case Utils.LECTURE: return "Лекция, " + auditory;
+            case Utils.OTHER: return auditory;
+
+        }
+        return "";
     }
 }

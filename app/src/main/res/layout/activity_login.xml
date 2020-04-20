@@ -20,9 +20,8 @@
         app:layout_constraintVertical_bias="0.217"
         app:srcCompat="@drawable/schedule_icon" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/getScheduleButton"
-        style="@style/ShapeOfButtonTheme"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
@@ -30,9 +29,12 @@
         android:onClick="onClick"
         android:text="@string/getSchedule"
         android:textColor="@android:color/white"
+        app:backgroundTint="@android:color/holo_orange_dark"
+        app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="@+id/group"
         app:layout_constraintStart_toStartOf="@+id/group"
-        app:layout_constraintTop_toBottomOf="@+id/group" />
+        app:layout_constraintTop_toBottomOf="@+id/group"
+        app:rippleColor="@color/backgroundColor" />
 
     <EditText
         android:id="@+id/group"

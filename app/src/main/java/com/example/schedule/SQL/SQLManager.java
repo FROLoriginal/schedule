@@ -21,6 +21,7 @@ public class SQLManager extends SQLiteOpenHelper {
     public static final String AUDITORY = "auditory";
     public static final String TEACHER = "teacher";
     public static final String TYPE_OF_SUBJECT = "type_of_subject";
+    public static final String STYLE_OF_SUBJECT = "style_of_subject";
     public static final String SHARED_PREFERENCES_TABLES = "tables";
     public static final String SHARED_PREFERENCES_TABLE = "table";
 
@@ -43,8 +44,9 @@ public class SQLManager extends SQLiteOpenHelper {
                     TO + " TEXT NOT NULL," +
                     AUDITORY + " TEXT," +
                     TEACHER + " TEXT," +
-                    TYPE_OF_SUBJECT + " TEXT" +
-                    ")");
+                    TYPE_OF_SUBJECT + " TEXT," +
+                    STYLE_OF_SUBJECT + " INTEGER" +
+                     ")");
             SharedPreferences sh = context.getSharedPreferences(SHARED_PREFERENCES_TABLES,Context.MODE_PRIVATE);
             sh.edit().putString(SHARED_PREFERENCES_TABLE,name).apply();
         }

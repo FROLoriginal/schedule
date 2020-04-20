@@ -7,15 +7,15 @@ public class Subobject {
 
   @SerializedName("subject")
   @Expose
-  private String subject = "null";
+  private String subject = "неизвестно";
 
   @SerializedName("teacher")
   @Expose
-  private String teacher = "null";
+  private String teacher = "неизвестно";
 
   @SerializedName("class")
   @Expose
-  private String auditory = "null";
+  private String auditory = "неизвестно";
 
   private int counter;
 

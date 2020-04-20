@@ -6,6 +6,8 @@ public class ScheduleConstants {
     public static final String AUDITORY = "class";
     public static final String SUBJECT = "subject";
     public static final String LABEL = "label";
+    public static final String UNKNOWN_OBJECT = "неизвестно";
+
 
     public class LessonType {
 

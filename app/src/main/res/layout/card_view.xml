@@ -1,97 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?><!--Don't set margin value in the parent view-->
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="10dp"
-    android:layout_marginTop="@dimen/card_view_schedule_margin"
-    android:layout_marginBottom="@dimen/card_view_schedule_margin"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+
     >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/container_subject"
-            style="@style/Base.Widget.MaterialComponents.TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="Название длинного предмета"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        <View
+            android:id="@+id/firstTimelineDivider"
+            android:layout_width="@dimen/timeline_divider_width"
+            android:layout_height="40dp"
+            android:background="@color/end_of_lesson_timeline" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:cardCornerRadius="12dp"
+            app:strokeColor="@color/card_view_background"
+            app:strokeWidth="1dp">
 
             <ImageView
-                android:id="@+id/container_teacher_ic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:srcCompat="@drawable/teacher" />
-
-            <TextView
-                android:id="@+id/container_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:paddingBottom="5dp"
-                android:text="Teacher long name" />
-        </LinearLayout>
+                android:id="@+id/lessonStatusTimelineCircle"
+                style="@style/ShapeOfButtonTheme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/lesson_is_not_started"
+                app:srcCompat="@drawable/check_ic" />
+        </com.google.android.material.card.MaterialCardView>
 
         <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="?android:attr/listDivider"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
+            android:id="@+id/secondTimelineDivider"
+            android:layout_width="@dimen/timeline_divider_width"
+            android:layout_height="match_parent"
+            android:background="@color/end_of_lesson_timeline" />
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="15dp"
+        app:cardBackgroundColor="@color/card_view_background"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/container_clock_ic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:srcCompat="@drawable/schedule" />
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/container_clock_from_to"
+                android:id="@+id/container_subject"
+                style="@style/Base.Widget.MaterialComponents.TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+
+                android:layout_marginBottom="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Название длинного предмета"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="20sp" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:paddingBottom="5dp"
-                android:text="12:12 - 12:12" />
+                android:orientation="horizontal">
 
-            <Space
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                <ImageView
+                    android:id="@+id/container_teacher_ic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/teacher" />
 
-            <TextView
-                android:id="@+id/container_auditory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                <TextView
+                    android:id="@+id/container_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingBottom="5dp"
+                    android:text="Teacher short name" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:paddingRight="20dp"
-                android:paddingBottom="5dp"
-                android:text="Auditory: 777" />
-        </LinearLayout>
-    </LinearLayout>
+                android:background="?android:attr/listDivider"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
-</androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/container_clock_ic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/schedule" />
+
+                <TextView
+                    android:id="@+id/container_clock_from_to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingBottom="5dp"
+                    android:text="12:12 - 12:12" />
+
+                <Space
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/container_auditory_with_style_of_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:ellipsize="end"
+                    android:gravity="center|end"
+                    android:maxLines="1"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="Type,  777" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

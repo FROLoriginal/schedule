@@ -3,9 +3,11 @@ package com.example.schedule.ui.schedule;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.schedule.R;
+import com.example.schedule.Utils;
 
 import java.util.Calendar;
 import java.util.List;
@@ -29,16 +31,19 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         TextView teacher;
         TextView subject;
         TextView time;
-        TextView auditory;
-        View itemView;
+        TextView auditoryWithStyleOfSubject;
+        View firstDivider, secondDivider;
+        ImageView statusCircle;
 
         ScheduleViewHolder(@NonNull View itemView) {
             super(itemView);
             teacher = itemView.findViewById(R.id.container_name);
             subject = itemView.findViewById(R.id.container_subject);
             time = itemView.findViewById(R.id.container_clock_from_to);
-            auditory = itemView.findViewById(R.id.container_auditory);
-            this.itemView = itemView;
+            auditoryWithStyleOfSubject = itemView.findViewById(R.id.container_auditory_with_style_of_subject);
+            firstDivider = itemView.findViewById(R.id.firstTimelineDivider);
+            secondDivider = itemView.findViewById(R.id.secondTimelineDivider);
+            statusCircle = itemView.findViewById(R.id.lessonStatusTimelineCircle);
         }
     }
 
@@ -69,23 +74,45 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        SimplifiedScheduleModel lesson = data.get(position);
         if (holder.getItemViewType() == TYPE_TWO) {
             Calendar calendar = Calendar.getInstance();
-            //First day of week is sunday => sunday + 3 = monday
-            calendar.setFirstDayOfWeek(Calendar.MONDAY);
-            calendar.set(Calendar.DAY_OF_WEEK, data.get(position).getDayOfWeek() + 3);
+            //First day of week is sunday => sunday + 2 = monday
+            calendar.set(Calendar.DAY_OF_WEEK, lesson.getDayOfWeek() + 2);
             ((ScheduleHeaderViewHolder) holder).dayOfWeek.setText(
                     calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
 
         } else {
-            SimplifiedScheduleModel model = data.get(position);
-            if (model.getAuditory().equals("null")) model.setAuditory("неизвестно");
-            if (model.getTeacher().equals("null")) model.setTeacher("неизвестно");
+            ScheduleViewHolder casted = (ScheduleViewHolder) holder;
+            casted.teacher.setText(lesson.getTeacher());
+            casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
+            casted.time.setText(lesson.getFormattedTime());
+            casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
+            if (position + 1 < getItemCount()) {
+                casted.secondDivider.setVisibility(View.VISIBLE);
+                casted.firstDivider.setVisibility(View.VISIBLE);
+                if (data.get(position + 1).isHeader())
+                    casted.secondDivider.setVisibility(View.INVISIBLE);
+                if (data.get(position - 1).isHeader())
+                    casted.firstDivider.setVisibility(View.INVISIBLE);
+                //todo day of month
+                Calendar calendar = Calendar.getInstance();
+                int bol = Utils.Time.isCurrentTimeBetween(lesson.getFrom(), lesson.getTo(),lesson.getDayOfWeek(), calendar);
 
-            ((ScheduleViewHolder) holder).teacher.setText(model.getTeacher());
-            ((ScheduleViewHolder) holder).subject.setText(model.getSubject());
-            ((ScheduleViewHolder) holder).time.setText(model.getFormattedTime());
-            ((ScheduleViewHolder) holder).auditory.setText(model.getFormattedAuditory());
+                if (bol == Utils.Time.CURRENT_TIME_LESS) {
+                    int colorRes = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+
+                    setColor(casted, colorRes, colorRes, colorRes);
+                } else if (bol == Utils.Time.CURRENT_TIME_BETWEEN) {
+                    int colorRes1 = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
+                    int colorRes2 = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+                    setColor(casted, colorRes1, colorRes2, colorRes2);
+
+                } else if (bol == Utils.Time.CURRENT_TIME_MORE) {
+                    int colorRes = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
+                    setColor(casted, colorRes, colorRes, colorRes);
+                }
+            } else casted.secondDivider.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -97,6 +124,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    private void setColor(ScheduleViewHolder holder, int firstDividerRes, int secondDividerRes, int circleRes) {
+
+        holder.firstDivider.setBackgroundColor(firstDividerRes);
+        holder.secondDivider.setBackgroundColor(secondDividerRes);
+        holder.statusCircle.setBackgroundColor(circleRes);
     }
 
 

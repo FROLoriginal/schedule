@@ -5,4 +5,11 @@
     <color name="colorAccent">#2BA0EC</color>
 
     <color name="backgroundColor">#2BA0EC</color>
+    
+    <color name="end_of_lesson_timeline">#42DA63</color>
+    <color name="lesson_is_not_started">#2BA0EC</color>
+
+    <color name="card_view_background">#fafafa</color>
+
+
 </resources>
