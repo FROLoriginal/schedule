@@ -131,18 +131,18 @@ public class LoginActivity extends AppCompatActivity {
         for (int dayOfWeek = 0; dayOfWeek < daysOfWeek; dayOfWeek++) {
             ContentValues cv = new ContentValues();
             Schedule schedule = jr.getSchedule().get(dayOfWeek);
-            cv.put(SQLManager.DAY_OF_WEEK, dayOfWeek);
+            cv.put(SQLManager.DAY_OF_WEEK, dayOfWeek+1);
 
             int lessons = schedule.getLessons().size();
 
             for (int lesson = 0; lesson < lessons; lesson++) {
                 cv.put(SQLManager.COUNTER, lesson);
                 Lesson les = schedule.getLessons().get(lesson);
-                int objects = les.getObject().size();
+                int objectSize = les.getObject().size();
                 cv.put(SQLManager.FROM, les.getFrom());
                 cv.put(SQLManager.TO, les.getTo());
 
-                for (int object = 0; object < objects; object++) {
+                for (int object = 0; object < objectSize; object++) {
                     Object_ object_ = les.getObject().get(object);
                     String type = les.getType();
                     cv.put(SQLManager.TYPE_OF_SUBJECT, type);
@@ -151,6 +151,10 @@ public class LoginActivity extends AppCompatActivity {
 
                         for (int subObject = 0; subObject < subObjects; subObject++) {
                             Subobject so = object_.getSubobject().get(subObject);
+                            if (les.getType().equals(ScheduleConstants.LessonType.CHANGING)){
+                                if (object == 0) cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.NUMERATOR);
+                                else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.DIVIDER);
+                            }else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.BOTH);
                             cv.put(SQLManager.STYLE_OF_SUBJECT, Utils.typeOfSubject(so.getSubject()));
                             cv.put(SQLManager.SUBJECT, so.getSubject());
                             cv.put(SQLManager.AUDITORY, so.getAuditory());

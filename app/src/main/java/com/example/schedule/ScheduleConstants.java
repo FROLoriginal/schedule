@@ -12,10 +12,10 @@ public class ScheduleConstants {
     public class LessonType {
 
         public static final String REQUIRED = "required";
-        public static final String OPRIONALLY = "optionally";
-        public static final String SEPARATION = "separation";
+        public static final String OPTIONALLY = "optionally";
         public static final String ACTIVITY = "activity";
         public static final String PASS = "pass";
+        public static final String CHANGING = "changing";
 
 
     }
