@@ -29,11 +29,8 @@
 
             <ImageView
                 android:id="@+id/lessonStatusTimelineCircle"
-                style="@style/ShapeOfButtonTheme"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/lesson_is_not_started"
-                app:srcCompat="@drawable/check_ic" />
+                android:layout_height="match_parent" />
         </com.google.android.material.card.MaterialCardView>
 
         <View

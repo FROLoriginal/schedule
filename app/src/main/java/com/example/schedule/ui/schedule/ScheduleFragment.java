@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
+import com.example.schedule.Utils;
+import com.example.schedule.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,6 +46,9 @@ public class ScheduleFragment extends Fragment {
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
         recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(new ArrayList<>(data)));
 
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getSupportActionBar().hide();
+
         return root;
     }
 
@@ -71,9 +76,9 @@ public class ScheduleFragment extends Fragment {
                     @Override
                     public void bindHeaderData(View header, int headerPosition) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.set(Calendar.DAY_OF_WEEK, data.get(headerPosition).getDayOfWeek() + 2);
+                        calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertDayOfWeekToUS(data.get(headerPosition).getDayOfWeek()));
                         String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-                        ((TextView) header.findViewById(R.id.day_of_week_header)).setText(displayName);
+                        ((TextView) header.findViewById(R.id.day_of_week_header)).setText(Utils.toUpperCaseFirstLetter(displayName));
                     }
                     @Override
                     public boolean isHeader(int itemPosition) {
@@ -93,10 +98,11 @@ public class ScheduleFragment extends Fragment {
                 SQLManager.AUDITORY,//index 5
                 SQLManager.COUNTER, //index 6
                 SQLManager.TYPE_OF_SUBJECT // index 7
+               // SQLManager.BOTH_NUMERATOR_DIVIDER  // index 8
         };
         List<SimplifiedScheduleModel> week = new ArrayList<>();
 
-        for (int dayOfWeek = 0; dayOfWeek < 6; dayOfWeek++) {
+        for (int dayOfWeek = 1; dayOfWeek < 7; dayOfWeek++) {
 
             Cursor c = db.query(tableName,
                     columns,
@@ -108,7 +114,33 @@ public class ScheduleFragment extends Fragment {
             s.setDayOfWeek(dayOfWeek);
             s.setHeader(true);
             week.add(s);
+//***********************************************************************
+/*            int weekStatus = getWeekStatus();
 
+            if (num) weekStatus = SQLManager.NUMERATOR;
+            else weekStatus = SQLManager.DIVIDER;
+
+            String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
+                    SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? OR " +
+                    SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? )";
+            String[] selectionArgs = new String[]{
+                    String.valueOf(dayOfWeek),
+                    String.valueOf(SQLManager.BOTH),
+                    String.valueOf(weekStatus)};
+
+            Cursor c = db.query(tableName,
+                    columns,
+                    selection,
+                  selectionArgs,
+                    null, null, null);
+
+            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
+            s.setDayOfWeek(dayOfWeek);
+            s.setHeader(true);
+            week.add(s);
+
+*/
+//***********************************************************************
             while (c.moveToNext()) {
 
                 SimplifiedScheduleModel lesson = new SimplifiedScheduleModel();

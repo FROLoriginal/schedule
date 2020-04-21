@@ -53,6 +53,14 @@ public class Utils {
         return subjectName;
     }
 
+    public static String toUpperCaseFirstLetter(String input) {
+        if (input != null) {
+            char firstLetter = input.charAt(0);
+            input = input.substring(1);
+            return Character.toUpperCase(firstLetter) + input;
+        }
+        return "";
+    }
     public static class Time {
 
         public static final int CURRENT_TIME_MORE = 0;
@@ -69,14 +77,13 @@ public class Utils {
             Calendar firstTime = Calendar.getInstance();
             Calendar secondTime = Calendar.getInstance();
 
-            firstTime.set(firstTime.get(Calendar.YEAR), firstTime.get(Calendar.MONTH),
-                    convertDayOfWeekToUS(dayOfWeek + 1), firstHalfFrom, secondHalfFrom);
+            firstTime.set(Calendar.DAY_OF_WEEK,convertDayOfWeekToUS(dayOfWeek + 1) - 1);
+            firstTime.set(Calendar.HOUR_OF_DAY,firstHalfFrom);
+            firstTime.set(Calendar.MINUTE,secondHalfFrom);
 
-            secondTime.set(secondTime.get(Calendar.YEAR), secondTime.get(Calendar.MONTH),
-                    convertDayOfWeekToUS(dayOfWeek + 1), firstHalfTo, secondHalfTo);
-
-            currentTime.set(currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH),
-                    currentTime.get(Calendar.DAY_OF_WEEK), currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE));
+            secondTime.set(Calendar.DAY_OF_WEEK,convertDayOfWeekToUS(dayOfWeek + 1) - 1);
+            secondTime.set(Calendar.HOUR_OF_DAY,firstHalfTo);
+            secondTime.set(Calendar.MINUTE,secondHalfTo);
 
             long current = currentTime.getTimeInMillis();
             long second = secondTime.getTimeInMillis();
@@ -95,7 +102,7 @@ public class Utils {
 
         }
 
-        private static int convertDayOfWeekToUS(int day) {
+        public static int convertDayOfWeekToUS(int day) {
 
             return day == 7 ? 1 : day + 1;
 

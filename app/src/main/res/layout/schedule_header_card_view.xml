@@ -10,8 +10,13 @@
     <TextView
         android:id="@+id/day_of_week_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:layout_height="56dp"
+        android:gravity="bottom"
+        android:paddingLeft="16dp"
+        android:paddingBottom="16dp"
         android:text="День"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:typeface="normal" />
 </com.google.android.material.card.MaterialCardView>

@@ -77,10 +77,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         SimplifiedScheduleModel lesson = data.get(position);
         if (holder.getItemViewType() == TYPE_TWO) {
             Calendar calendar = Calendar.getInstance();
-            //First day of week is sunday => sunday + 2 = monday
-            calendar.set(Calendar.DAY_OF_WEEK, lesson.getDayOfWeek() + 2);
-            ((ScheduleHeaderViewHolder) holder).dayOfWeek.setText(
-                    calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+
+            calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertDayOfWeekToUS(lesson.getDayOfWeek()));
+            String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+            ((ScheduleHeaderViewHolder) holder).dayOfWeek.setText(Utils.toUpperCaseFirstLetter(dayOfWeek));
 
         } else {
             ScheduleViewHolder casted = (ScheduleViewHolder) holder;
@@ -88,31 +88,36 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
             casted.time.setText(lesson.getFormattedTime());
             casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
+            casted.secondDivider.setVisibility(View.VISIBLE);
+            casted.firstDivider.setVisibility(View.VISIBLE);
+
             if (position + 1 < getItemCount()) {
-                casted.secondDivider.setVisibility(View.VISIBLE);
-                casted.firstDivider.setVisibility(View.VISIBLE);
                 if (data.get(position + 1).isHeader())
                     casted.secondDivider.setVisibility(View.INVISIBLE);
                 if (data.get(position - 1).isHeader())
                     casted.firstDivider.setVisibility(View.INVISIBLE);
-                //todo day of month
-                Calendar calendar = Calendar.getInstance();
-                int bol = Utils.Time.isCurrentTimeBetween(lesson.getFrom(), lesson.getTo(),lesson.getDayOfWeek(), calendar);
-
-                if (bol == Utils.Time.CURRENT_TIME_LESS) {
-                    int colorRes = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
-
-                    setColor(casted, colorRes, colorRes, colorRes);
-                } else if (bol == Utils.Time.CURRENT_TIME_BETWEEN) {
-                    int colorRes1 = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
-                    int colorRes2 = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
-                    setColor(casted, colorRes1, colorRes2, colorRes2);
-
-                } else if (bol == Utils.Time.CURRENT_TIME_MORE) {
-                    int colorRes = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
-                    setColor(casted, colorRes, colorRes, colorRes);
-                }
             } else casted.secondDivider.setVisibility(View.INVISIBLE);
+
+            Calendar calendar = Calendar.getInstance();
+
+            int bol = Utils.Time.isCurrentTimeBetween(lesson.getFrom(), lesson.getTo(), lesson.getDayOfWeek(), calendar);
+
+            int currentLesson = lesson.getCounter() + 1;
+            if (bol == Utils.Time.CURRENT_TIME_LESS) {
+                int colorRes = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+
+                setColor(casted, colorRes, colorRes, colorRes, currentLesson);
+            } else if (bol == Utils.Time.CURRENT_TIME_BETWEEN) {
+                int colorRes1 = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
+                int colorRes2 = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+                setColor(casted, colorRes1, colorRes2, colorRes2, currentLesson);
+
+            } else if (bol == Utils.Time.CURRENT_TIME_MORE) {
+                int colorRes = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
+                setColor(casted, colorRes, colorRes, colorRes, 0);
+            }
+
+
         }
     }
 
@@ -126,11 +131,16 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return data.size();
     }
 
-    private void setColor(ScheduleViewHolder holder, int firstDividerRes, int secondDividerRes, int circleRes) {
+    private int[] drawablesRes = new int[]{R.drawable.check_ic,
+            R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three,
+            R.drawable.ic_four, R.drawable.ic_five, R.drawable.ic_six,
+            R.drawable.ic_seven, R.drawable.ic_eight, R.drawable.ic_nine};
 
+    private void setColor(ScheduleViewHolder holder, int firstDividerRes, int secondDividerRes, int circleRes, int num) {
+        if (num == 0) holder.statusCircle.setBackgroundColor(circleRes);
+        holder.statusCircle.setImageResource(drawablesRes[num]);
         holder.firstDivider.setBackgroundColor(firstDividerRes);
         holder.secondDivider.setBackgroundColor(secondDividerRes);
-        holder.statusCircle.setBackgroundColor(circleRes);
     }
 
 
