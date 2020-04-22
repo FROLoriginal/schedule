@@ -57,21 +57,35 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/container_subject"
-                style="@style/Base.Widget.MaterialComponents.TextView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                android:layout_marginBottom="5dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Название длинного предмета"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/container_subject"
+                    style="@style/Base.Widget.MaterialComponents.TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+
+                    android:layout_marginBottom="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Название длинного предмета"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/show_optionally_subjects"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_show_more24px" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

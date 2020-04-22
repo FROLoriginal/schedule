@@ -2,6 +2,8 @@ package com.example.schedule.ui.schedule;
 
 import com.example.schedule.Utils;
 
+import java.util.List;
+
 class SimplifiedScheduleModel {
 
     private String from;
@@ -14,6 +16,46 @@ class SimplifiedScheduleModel {
     private int dayOfWeek;
     private int counter;
     private boolean isHeader = false;
+    private List<SimplifiedScheduleModel> ifOptionally;
+    private static boolean isNumerator;
+
+    SimplifiedScheduleModel() {
+    }
+
+    public SimplifiedScheduleModel(SimplifiedScheduleModel model) {
+
+        this.from = model.getFrom();
+        this.to = model.getTo();
+        this.teacher = model.getTeacher();
+        this.auditory = model.getAuditory();
+        this.typeOfSubject = model.getTypeOfSubject();
+        this.subject = model.getSubject();
+        this.styleOfSubject = model.getStyleOfSubject();
+        this.dayOfWeek = model.getDayOfWeek();
+        this.counter = model.getCounter();
+        this.isHeader = model.isHeader();
+        this.ifOptionally = model.getIfOptionally();
+    }
+
+    public List<SimplifiedScheduleModel> getIfOptionally() {
+        return ifOptionally;
+    }
+
+    public void setIfOptionally(final List<SimplifiedScheduleModel> ifOptionally) {
+        this.ifOptionally = ifOptionally;
+    }
+
+    public void setStyleOfSubject(String styleOfSubject) {
+        this.styleOfSubject = styleOfSubject;
+    }
+
+    public static boolean isNumerator() {
+        return isNumerator;
+    }
+
+    public static void setIsNumerator(boolean isNumerator) {
+        SimplifiedScheduleModel.isNumerator = isNumerator;
+    }
 
     public String getStyleOfSubject() {
         return styleOfSubject;
@@ -47,11 +89,11 @@ class SimplifiedScheduleModel {
         this.dayOfWeek = dayOfWeek;
     }
 
-     boolean isHeader() {
+    boolean isHeader() {
         return isHeader;
     }
 
-     void setHeader(boolean header) {
+    void setHeader(boolean header) {
         isHeader = header;
     }
 
@@ -95,20 +137,25 @@ class SimplifiedScheduleModel {
         this.counter = counter;
     }
 
-    String getFormattedTime(){
+    String getFormattedTime() {
 
         return from + " - " + to;
     }
-    String getAuditoryWithStyleOfSubject(){
 
-        switch (Utils.typeOfSubject(subject)){
+    String getAuditoryWithStyleOfSubject() {
 
-            case Utils.SEMINAR: return "Семинар, " + auditory;
-            case Utils.LABORATORY_WORK: return "Лаб. " + auditory;
-            case Utils.LECTURE: return "Лекция, " + auditory;
-            case Utils.OTHER: return auditory;
+        switch (Utils.typeOfSubject(subject)) {
+
+            case Utils.SEMINAR:
+                return "Семинар, " + auditory;
+            case Utils.LABORATORY_WORK:
+                return "Лаб. " + auditory;
+            case Utils.LECTURE:
+                return "Лекция, " + auditory;
+            case Utils.OTHER:
+                return auditory;
 
         }
-        return "";
+        return auditory;
     }
 }

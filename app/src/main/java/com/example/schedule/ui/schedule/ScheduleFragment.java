@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
+import com.example.schedule.ScheduleConstants;
 import com.example.schedule.Utils;
 import com.example.schedule.ui.MainActivity;
 
@@ -80,6 +81,7 @@ public class ScheduleFragment extends Fragment {
                         String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
                         ((TextView) header.findViewById(R.id.day_of_week_header)).setText(Utils.toUpperCaseFirstLetter(displayName));
                     }
+
                     @Override
                     public boolean isHeader(int itemPosition) {
                         return data.get(itemPosition).isHeader();
@@ -97,69 +99,80 @@ public class ScheduleFragment extends Fragment {
                 SQLManager.TO,      //index 4
                 SQLManager.AUDITORY,//index 5
                 SQLManager.COUNTER, //index 6
-                SQLManager.TYPE_OF_SUBJECT // index 7
-               // SQLManager.BOTH_NUMERATOR_DIVIDER  // index 8
+                SQLManager.TYPE_OF_SUBJECT, // index 7
+                SQLManager.SUBTYPE_OF_SUBJECT // index 8
         };
+
+        String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
+                SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? OR " +
+                SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? )";
+
         List<SimplifiedScheduleModel> week = new ArrayList<>();
+
+        int weekStatus = SQLManager.NUMERATOR;
+        boolean isNumerator = weekStatus == SQLManager.NUMERATOR;
 
         for (int dayOfWeek = 1; dayOfWeek < 7; dayOfWeek++) {
 
-            Cursor c = db.query(tableName,
-                    columns,
-                    SQLManager.DAY_OF_WEEK + " = ?",
-                    new String[]{String.valueOf(dayOfWeek)},
-                    null, null, null);
-
-            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
-            s.setDayOfWeek(dayOfWeek);
-            s.setHeader(true);
-            week.add(s);
-//***********************************************************************
-/*            int weekStatus = getWeekStatus();
-
-            if (num) weekStatus = SQLManager.NUMERATOR;
-            else weekStatus = SQLManager.DIVIDER;
-
-            String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
-                    SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? OR " +
-                    SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? )";
             String[] selectionArgs = new String[]{
                     String.valueOf(dayOfWeek),
                     String.valueOf(SQLManager.BOTH),
                     String.valueOf(weekStatus)};
 
-            Cursor c = db.query(tableName,
-                    columns,
-                    selection,
-                  selectionArgs,
+            Cursor c = db.query(tableName, columns,
+                    selection, selectionArgs,
                     null, null, null);
 
             SimplifiedScheduleModel s = new SimplifiedScheduleModel();
             s.setDayOfWeek(dayOfWeek);
             s.setHeader(true);
+            SimplifiedScheduleModel.setIsNumerator(isNumerator);
             week.add(s);
 
-*/
-//***********************************************************************
+            int counter = 0;
+            List<SimplifiedScheduleModel> list = new ArrayList<>();
+
             while (c.moveToNext()) {
 
-                SimplifiedScheduleModel lesson = new SimplifiedScheduleModel();
+                if (ScheduleConstants.LessonType.OPTIONALLY.equals(c.getString(8)) &&
+                        counter == c.getInt(6)) {
 
-                lesson.setFrom(c.getString(3));
-                lesson.setTo(c.getString(4));
-                lesson.setAuditory(c.getString(5));
-                lesson.setSubject(c.getString(1));
-                lesson.setTeacher(c.getString(2));
-                lesson.setCounter(c.getInt(6));
-                lesson.setTypeOfSubject(c.getString(7));
-                lesson.setDayOfWeek(dayOfWeek);
+                    SimplifiedScheduleModel lesson = fillModel(c, dayOfWeek);
 
-                week.add(lesson);
+                    SimplifiedScheduleModel obj = week.get(week.size() - 1);
+                    if (obj.getCounter() == c.getInt(6) && !obj.isHeader())
+                        week.remove(week.size() - 1);
 
+                    list.add(lesson);
+                    continue;
+                }
+                if (list.size() != 0) {
+                    SimplifiedScheduleModel model = new SimplifiedScheduleModel(list.get(0));
+                    model.setIfOptionally(list);
+                    week.add(model);
+                    list = new ArrayList<>();
+                }
+                counter = c.getInt(6);
+                week.add(fillModel(c, dayOfWeek));
             }
             c.close();
         }
-        return week;
 
+        return week;
+    }
+
+    private SimplifiedScheduleModel fillModel(Cursor c, int dayOfWeek) {
+
+        SimplifiedScheduleModel model = new SimplifiedScheduleModel();
+        model.setFrom(c.getString(3));
+        model.setTo(c.getString(4));
+        model.setAuditory(c.getString(5));
+        model.setSubject(c.getString(1));
+        model.setTeacher(c.getString(2));
+        model.setCounter(c.getInt(6));
+        model.setTypeOfSubject(c.getString(7));
+        model.setDayOfWeek(dayOfWeek);
+
+        return new SimplifiedScheduleModel(model);
     }
 }

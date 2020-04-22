@@ -34,6 +34,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         TextView auditoryWithStyleOfSubject;
         View firstDivider, secondDivider;
         ImageView statusCircle;
+        ImageView showOptionallySubjects;
+        ImageView teacherIc, clockIc;
 
         ScheduleViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -44,6 +46,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             firstDivider = itemView.findViewById(R.id.firstTimelineDivider);
             secondDivider = itemView.findViewById(R.id.secondTimelineDivider);
             statusCircle = itemView.findViewById(R.id.lessonStatusTimelineCircle);
+            showOptionallySubjects = itemView.findViewById(R.id.show_optionally_subjects);
+            clockIc = itemView.findViewById(R.id.container_clock_ic);
+            teacherIc = itemView.findViewById(R.id.container_teacher_ic);
+
         }
     }
 
@@ -84,10 +90,22 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         } else {
             ScheduleViewHolder casted = (ScheduleViewHolder) holder;
-            casted.teacher.setText(lesson.getTeacher());
-            casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
+            if (lesson.getIfOptionally() == null) {
+                casted.teacherIc.setVisibility(View.VISIBLE);
+                casted.teacher.setVisibility(View.VISIBLE);
+                casted.auditoryWithStyleOfSubject.setVisibility(View.VISIBLE);
+                casted.teacher.setText(lesson.getTeacher());
+                casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
+                casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
+            }else {
+                casted.showOptionallySubjects.setVisibility(View.VISIBLE);
+                casted.teacherIc.setVisibility(View.INVISIBLE);
+                casted.teacher.setVisibility(View.INVISIBLE);
+                casted.subject.setText("Предмет по выбору");
+                casted.auditoryWithStyleOfSubject.setVisibility(View.INVISIBLE);
+
+            }
             casted.time.setText(lesson.getFormattedTime());
-            casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
             casted.secondDivider.setVisibility(View.VISIBLE);
             casted.firstDivider.setVisibility(View.VISIBLE);
 
@@ -116,13 +134,12 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 int colorRes = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
                 setColor(casted, colorRes, colorRes, colorRes, 0);
             }
-
-
         }
     }
 
     @Override
     public int getItemViewType(int position) {
+
         return data.get(position).isHeader() ? TYPE_TWO : TYPE_ONE;
     }
 
@@ -131,14 +148,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return data.size();
     }
 
-    private int[] drawablesRes = new int[]{R.drawable.check_ic,
+    private static final int[] DRAWABLES_RES = new int[]{R.drawable.check_ic,
             R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three,
             R.drawable.ic_four, R.drawable.ic_five, R.drawable.ic_six,
             R.drawable.ic_seven, R.drawable.ic_eight, R.drawable.ic_nine};
 
     private void setColor(ScheduleViewHolder holder, int firstDividerRes, int secondDividerRes, int circleRes, int num) {
         if (num == 0) holder.statusCircle.setBackgroundColor(circleRes);
-        holder.statusCircle.setImageResource(drawablesRes[num]);
+        holder.statusCircle.setImageResource(DRAWABLES_RES[num]);
         holder.firstDivider.setBackgroundColor(firstDividerRes);
         holder.secondDivider.setBackgroundColor(secondDividerRes);
     }
