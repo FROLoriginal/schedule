@@ -9,15 +9,17 @@ public class ScheduleConstants {
     public static final String UNKNOWN_OBJECT = "неизвестно";
 
 
-    public class LessonType {
+    public class Type {
 
+        public static final String DEFAULT = "default";
+        public static final String ACTIVITY = "activity";
+        public static final String CHANGING = "changing";
+    }
+
+    public class Suptype {
+        public static final String PASS = "pass";
         public static final String REQUIRED = "required";
         public static final String OPTIONALLY = "optionally";
-        public static final String ACTIVITY = "activity";
-        public static final String PASS = "pass";
-        public static final String CHANGING = "changing";
-
-
     }
 
 }

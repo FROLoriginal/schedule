@@ -13,7 +13,6 @@ public class Utils {
     private static final String lab = "Лаб";
     private static final String lect = "Лекц";
 
-
     public static int typeOfSubject(String subjectName) {
 
         final String sem = "Пр";
@@ -67,7 +66,7 @@ public class Utils {
         public static final int CURRENT_TIME_BETWEEN = 1;
         public static final int CURRENT_TIME_LESS = 2;
 
-        public static int isCurrentTimeBetween(String from, String to, int dayOfWeek, Calendar currentTime) {
+        public static int isCurrentTimeBetween(String from, String to, int dayOfWeek) throws NullPointerException {
 
             int firstHalfFrom = Integer.valueOf(from.split(":")[0]);
             int secondHalfFrom = Integer.valueOf(from.split(":")[1]);
@@ -85,7 +84,7 @@ public class Utils {
             secondTime.set(Calendar.HOUR_OF_DAY,firstHalfTo);
             secondTime.set(Calendar.MINUTE,secondHalfTo);
 
-            long current = currentTime.getTimeInMillis();
+            long current = Calendar.getInstance().getTimeInMillis();
             long second = secondTime.getTimeInMillis();
 
             if (current >= firstTime.getTimeInMillis() && current <= second) {
@@ -96,7 +95,7 @@ public class Utils {
 
         }
 
-        public static int getDayOfWeekWhereFirstDayOfWeekIsMonday(int day) {
+        public static int convertUSDayOfWeekToEU(int day) {
 
             return day == 1 ? 7 : day - 1;
 

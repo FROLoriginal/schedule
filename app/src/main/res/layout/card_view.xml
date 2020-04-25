@@ -70,21 +70,22 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
-
                     android:layout_marginBottom="5dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Название длинного предмета"
+                    android:text="Название длин"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/show_optionally_subjects"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_show_more24px" />
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="12dp"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_click"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

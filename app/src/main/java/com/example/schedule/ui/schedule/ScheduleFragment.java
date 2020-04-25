@@ -45,7 +45,21 @@ public class ScheduleFragment extends Fragment {
 
         List<SimplifiedScheduleModel> data = fillSchedule(db, table);
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
-        recyclerView.setAdapter(new ScheduleRecyclerViewAdapter(new ArrayList<>(data)));
+        ScheduleRecyclerViewAdapter adapter = new ScheduleRecyclerViewAdapter(new ArrayList<>(data));
+        recyclerView.setAdapter(adapter);
+
+
+        int dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) - 1;
+
+        int pos = 0;
+        if (dayOfWeek == 6) // The high ground of day of week func
+            pos = data.size() - 1;
+        else {
+            while (data.get(pos).getDayOfWeek() != dayOfWeek + 1) {
+                pos++;
+            }
+        }
+        recyclerView.scrollToPosition(pos);
 
         MainActivity activity = (MainActivity) getActivity();
         activity.getSupportActionBar().hide();
@@ -78,8 +92,18 @@ public class ScheduleFragment extends Fragment {
                     public void bindHeaderData(View header, int headerPosition) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertDayOfWeekToUS(data.get(headerPosition).getDayOfWeek()));
-                        String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-                        ((TextView) header.findViewById(R.id.day_of_week_header)).setText(Utils.toUpperCaseFirstLetter(displayName));
+
+                        String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                        String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                        int date = calendar.get(Calendar.DATE);
+                        String displayedDate;
+                        if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == calendar.get(Calendar.DAY_OF_WEEK)) {
+                            dayOfWeek = getString(R.string.today_ru);
+                        } else dayOfWeek = Utils.toUpperCaseFirstLetter(dayOfWeek);
+
+                        displayedDate = dayOfWeek + ", " + date + " " + month;
+
+                        ((TextView) header.findViewById(R.id.day_of_week_header)).setText(displayedDate);
                     }
 
                     @Override
@@ -134,7 +158,7 @@ public class ScheduleFragment extends Fragment {
 
             while (c.moveToNext()) {
 
-                if (ScheduleConstants.LessonType.OPTIONALLY.equals(c.getString(8)) &&
+                if (ScheduleConstants.Suptype.OPTIONALLY.equals(c.getString(8)) &&
                         counter == c.getInt(6)) {
 
                     SimplifiedScheduleModel lesson = fillModel(c, dayOfWeek);

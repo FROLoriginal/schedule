@@ -1,5 +1,6 @@
 package com.example.schedule.ui.schedule;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.schedule.R;
+import com.example.schedule.ScheduleConstants;
 import com.example.schedule.Utils;
 
 import java.util.Calendar;
@@ -49,7 +51,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             showOptionallySubjects = itemView.findViewById(R.id.show_optionally_subjects);
             clockIc = itemView.findViewById(R.id.container_clock_ic);
             teacherIc = itemView.findViewById(R.id.container_teacher_ic);
-
         }
     }
 
@@ -77,33 +78,56 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    private static final int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         SimplifiedScheduleModel lesson = data.get(position);
+        Resources resources = holder.itemView.getResources();
+
         if (holder.getItemViewType() == TYPE_TWO) {
             Calendar calendar = Calendar.getInstance();
 
             calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertDayOfWeekToUS(lesson.getDayOfWeek()));
             String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-            ((ScheduleHeaderViewHolder) holder).dayOfWeek.setText(Utils.toUpperCaseFirstLetter(dayOfWeek));
+            String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+            int date = calendar.get(Calendar.DATE);
+            String displayedDate;
+
+            if (calendar.get(Calendar.DAY_OF_WEEK) == day) {
+                dayOfWeek = resources.getString(R.string.today_ru);
+            } else dayOfWeek = Utils.toUpperCaseFirstLetter(dayOfWeek);
+
+            displayedDate = dayOfWeek + ", " + date + " " + month;
+            ((ScheduleHeaderViewHolder) holder).dayOfWeek.setText(displayedDate);
 
         } else {
             ScheduleViewHolder casted = (ScheduleViewHolder) holder;
-            if (lesson.getIfOptionally() == null) {
+            casted.showOptionallySubjects.setVisibility(View.INVISIBLE);
+            if (lesson.getIfOptionally() == null &&
+                    !ScheduleConstants.Type.ACTIVITY.equals(lesson.getTypeOfSubject())) {
                 casted.teacherIc.setVisibility(View.VISIBLE);
                 casted.teacher.setVisibility(View.VISIBLE);
                 casted.auditoryWithStyleOfSubject.setVisibility(View.VISIBLE);
                 casted.teacher.setText(lesson.getTeacher());
                 casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
                 casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
-            }else {
-                casted.showOptionallySubjects.setVisibility(View.VISIBLE);
+            } else {
                 casted.teacherIc.setVisibility(View.INVISIBLE);
                 casted.teacher.setVisibility(View.INVISIBLE);
-                casted.subject.setText("Предмет по выбору");
                 casted.auditoryWithStyleOfSubject.setVisibility(View.INVISIBLE);
 
+                String typeOfSubject = lesson.getTypeOfSubject();
+                String subject;
+                if (!ScheduleConstants.Type.ACTIVITY.equals(typeOfSubject)) {
+                    casted.showOptionallySubjects.setVisibility(View.VISIBLE);
+                    subject = "Предмет по выбору";
+                    casted.showOptionallySubjects.setOnClickListener(p -> {
+
+                    });
+                } else subject = "Обед";
+                casted.subject.setText(subject);
             }
             casted.time.setText(lesson.getFormattedTime());
             casted.secondDivider.setVisibility(View.VISIBLE);
@@ -116,26 +140,34 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     casted.firstDivider.setVisibility(View.INVISIBLE);
             } else casted.secondDivider.setVisibility(View.INVISIBLE);
 
-            Calendar calendar = Calendar.getInstance();
-
-            int bol = Utils.Time.isCurrentTimeBetween(lesson.getFrom(), lesson.getTo(), lesson.getDayOfWeek(), calendar);
+            int bol = Utils.Time.isCurrentTimeBetween(lesson.getFrom(), lesson.getTo(),
+                    lesson.getDayOfWeek());
 
             int currentLesson = lesson.getCounter() + 1;
             if (bol == Utils.Time.CURRENT_TIME_LESS) {
-                int colorRes = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+                int colorRes = resources.getColor(R.color.lesson_is_not_started);
 
                 setColor(casted, colorRes, colorRes, colorRes, currentLesson);
             } else if (bol == Utils.Time.CURRENT_TIME_BETWEEN) {
-                int colorRes1 = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
-                int colorRes2 = casted.statusCircle.getResources().getColor(R.color.lesson_is_not_started);
+                int colorRes1 = resources.getColor(R.color.end_of_lesson_timeline);
+                int colorRes2 = resources.getColor(R.color.lesson_is_not_started);
                 setColor(casted, colorRes1, colorRes2, colorRes2, currentLesson);
 
             } else if (bol == Utils.Time.CURRENT_TIME_MORE) {
-                int colorRes = casted.statusCircle.getResources().getColor(R.color.end_of_lesson_timeline);
+                int colorRes = resources.getColor(R.color.end_of_lesson_timeline);
                 setColor(casted, colorRes, colorRes, colorRes, 0);
             }
         }
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            //
+
+        }
+    };
 
     @Override
     public int getItemViewType(int position) {

@@ -25,7 +25,6 @@ import com.example.schedule.POJO.OK_POJO.Subobject;
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
 import com.example.schedule.ScheduleConstants;
-import com.example.schedule.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,16 +125,16 @@ public class LoginActivity extends AppCompatActivity {
 
         List<ContentValues> cvList = new ArrayList<>();
 
-        int daysOfWeek = jr.getSchedule().size();
+        int dayOfWeekSize = jr.getSchedule().size();
 
-        for (int dayOfWeek = 0; dayOfWeek < daysOfWeek; dayOfWeek++) {
+        for (int dayOfWeek = 0; dayOfWeek < dayOfWeekSize; dayOfWeek++) {
             ContentValues cv = new ContentValues();
             Schedule schedule = jr.getSchedule().get(dayOfWeek);
-            cv.put(SQLManager.DAY_OF_WEEK, dayOfWeek+1);
+            cv.put(SQLManager.DAY_OF_WEEK, dayOfWeek + 1);
 
-            int lessons = schedule.getLessons().size();
+            int lessonSize = schedule.getLessons().size();
 
-            for (int lesson = 0; lesson < lessons; lesson++) {
+            for (int lesson = 0; lesson < lessonSize; lesson++) {
                 cv.put(SQLManager.COUNTER, lesson);
                 Lesson les = schedule.getLessons().get(lesson);
                 int objectSize = les.getObject().size();
@@ -145,28 +144,31 @@ public class LoginActivity extends AppCompatActivity {
                 for (int object = 0; object < objectSize; object++) {
                     Object_ object_ = les.getObject().get(object);
                     String type = les.getType();
+                    String subtype = object_.getSubtype();
                     cv.put(SQLManager.TYPE_OF_SUBJECT, type);
                     if (object_.getSubobject() != null) {
                         int subObjects = object_.getSubobject().size();
 
                         for (int subObject = 0; subObject < subObjects; subObject++) {
                             Subobject so = object_.getSubobject().get(subObject);
-                            if (les.getType().equals(ScheduleConstants.LessonType.CHANGING)){
-                                if (object == 0) cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.NUMERATOR);
-                                else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.DIVIDER);
-                            }else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER,SQLManager.BOTH);
-                            cv.put(SQLManager.STYLE_OF_SUBJECT, Utils.typeOfSubject(so.getSubject()));
+                            if (les.getType().equals(ScheduleConstants.Type.CHANGING)) {
+
+                                cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER, object == 0 ?
+                                        SQLManager.NUMERATOR : SQLManager.DIVIDER);
+
+                            } else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER, SQLManager.BOTH);
+
+                            cv.put(SQLManager.SUBTYPE_OF_SUBJECT, subtype);
                             cv.put(SQLManager.SUBJECT, so.getSubject());
                             cv.put(SQLManager.AUDITORY, so.getAuditory());
                             cv.put(SQLManager.TEACHER, so.getTeacher());
                             cvList.add(new ContentValues(cv));
                         }
                     } else {
-                        if (ScheduleConstants.LessonType.ACTIVITY.equals(type)) {
+                        if (ScheduleConstants.Type.ACTIVITY.equals(type)) {
                             //I don't know why subtype is name of activity subject...
-                            cv.put(SQLManager.STYLE_OF_SUBJECT,Utils.OTHER);
-                            cv.put(SQLManager.SUBJECT, object_.getSubtype());
-                            cv.put(SQLManager.AUDITORY,ScheduleConstants.UNKNOWN_OBJECT);
+                            cv.put(SQLManager.SUBJECT, subtype);
+                            cv.put(SQLManager.AUDITORY, ScheduleConstants.UNKNOWN_OBJECT);
                             cv.put(SQLManager.TEACHER, ScheduleConstants.UNKNOWN_OBJECT);
                         } else cv.put(SQLManager.SUBJECT, ScheduleConstants.UNKNOWN_OBJECT);
                         cvList.add(new ContentValues(cv));

@@ -14,7 +14,7 @@
         android:gravity="bottom"
         android:paddingLeft="16dp"
         android:paddingBottom="16dp"
-        android:text="День"
+        android:text="Сегодня, 24 апреля"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/white"
         android:textSize="20sp"
