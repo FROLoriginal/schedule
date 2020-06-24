@@ -4,8 +4,6 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.schedule.R;
 import com.example.schedule.ScheduleConstants;
@@ -29,50 +27,17 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         this.data = data;
     }
 
-    class ScheduleViewHolder extends RecyclerView.ViewHolder {
-        TextView teacher;
-        TextView subject;
-        TextView time;
-        TextView auditoryWithStyleOfSubject;
-        View firstDivider, secondDivider;
-        ImageView statusCircle;
-        ImageView showOptionallySubjects;
-        ImageView teacherIc, clockIc;
-
-        ScheduleViewHolder(@NonNull View itemView) {
-            super(itemView);
-            teacher = itemView.findViewById(R.id.container_name);
-            subject = itemView.findViewById(R.id.container_subject);
-            time = itemView.findViewById(R.id.container_clock_from_to);
-            auditoryWithStyleOfSubject = itemView.findViewById(R.id.container_auditory_with_style_of_subject);
-            firstDivider = itemView.findViewById(R.id.firstTimelineDivider);
-            secondDivider = itemView.findViewById(R.id.secondTimelineDivider);
-            statusCircle = itemView.findViewById(R.id.lessonStatusTimelineCircle);
-            showOptionallySubjects = itemView.findViewById(R.id.show_optionally_subjects);
-            clockIc = itemView.findViewById(R.id.container_clock_ic);
-            teacherIc = itemView.findViewById(R.id.container_teacher_ic);
-        }
-    }
-
-    class ScheduleHeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView dayOfWeek;
-
-        ScheduleHeaderViewHolder(@NonNull View itemView) {
-            super(itemView);
-            dayOfWeek = itemView.findViewById(R.id.day_of_week_header);
-        }
-    }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
+        View v;
         if (viewType == TYPE_ONE) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
 
             return new ScheduleViewHolder(v);
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_header_card_view, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_header_card_view, parent, false);
 
             return new ScheduleHeaderViewHolder(v);
         }
@@ -104,30 +69,18 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         } else {
             ScheduleViewHolder casted = (ScheduleViewHolder) holder;
-            casted.showOptionallySubjects.setVisibility(View.INVISIBLE);
-            if (lesson.getIfOptionally() == null &&
-                    !ScheduleConstants.Type.ACTIVITY.equals(lesson.getTypeOfSubject())) {
+            if (!ScheduleConstants.Type.ACTIVITY.equals(lesson.getTypeOfSubject())) {
                 casted.teacherIc.setVisibility(View.VISIBLE);
                 casted.teacher.setVisibility(View.VISIBLE);
                 casted.auditoryWithStyleOfSubject.setVisibility(View.VISIBLE);
                 casted.teacher.setText(lesson.getTeacher());
                 casted.subject.setText(Utils.deleteTypeOfSubjectPart(lesson.getSubject()));
                 casted.auditoryWithStyleOfSubject.setText(lesson.getAuditoryWithStyleOfSubject());
-            } else {
+            } else{
                 casted.teacherIc.setVisibility(View.INVISIBLE);
                 casted.teacher.setVisibility(View.INVISIBLE);
                 casted.auditoryWithStyleOfSubject.setVisibility(View.INVISIBLE);
-
-                String typeOfSubject = lesson.getTypeOfSubject();
-                String subject;
-                if (!ScheduleConstants.Type.ACTIVITY.equals(typeOfSubject)) {
-                    casted.showOptionallySubjects.setVisibility(View.VISIBLE);
-                    subject = "Предмет по выбору";
-                    casted.showOptionallySubjects.setOnClickListener(p -> {
-
-                    });
-                } else subject = "Обед";
-                casted.subject.setText(subject);
+                casted.subject.setText("Обед");
             }
             casted.time.setText(lesson.getFormattedTime());
             casted.secondDivider.setVisibility(View.VISIBLE);
@@ -159,15 +112,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             }
         }
     }
-
-    private View.OnClickListener listener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            //
-
-        }
-    };
 
     @Override
     public int getItemViewType(int position) {

@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
         LoginDialogFragment fragment = new LoginDialogFragment(this);
-        fragment.show(getSupportFragmentManager(), "dialog_login");
+        fragment.show(getSupportFragmentManager(), null);
         String editText = text.getText().toString();
 
         responseCall = NetworkService
@@ -158,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER, SQLManager.BOTH);
 
-                            cv.put(SQLManager.SUBTYPE_OF_SUBJECT, subtype);
                             cv.put(SQLManager.SUBJECT, so.getSubject());
                             cv.put(SQLManager.AUDITORY, so.getAuditory());
                             cv.put(SQLManager.TEACHER, so.getTeacher());

@@ -23,18 +23,21 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/getScheduleButton"
         android:layout_width="150dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="onClick"
         android:text="@string/getSchedule"
         android:textColor="@android:color/white"
-        app:backgroundTint="@android:color/holo_orange_dark"
-        app:cornerRadius="15dp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/group"
+        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="@+id/group"
         app:layout_constraintTop_toBottomOf="@+id/group"
-        app:rippleColor="@color/backgroundColor" />
+        app:layout_constraintVertical_bias="0.022"
+        app:rippleColor="#000000"
+        style="@style/LoginActBtnState"/>
 
     <EditText
         android:id="@+id/group"
@@ -64,7 +67,7 @@
         android:gravity="center"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:text="Добро пожаловать в  Raspisanie"
+        android:text="Добро пожаловать в Raspisanie"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/group"

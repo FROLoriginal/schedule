@@ -51,6 +51,7 @@ public class ScheduleHeaderItemDecorator extends RecyclerView.ItemDecoration {
             if (topChildPosition != RecyclerView.NO_POSITION) {
 
                 View currentHeader = getHeaderViewForItem(topChildPosition, parent);
+
                 fixLayoutSize(parent, currentHeader);
                 float contactPoint = currentHeader.getBottom();
                 View childInContact = getChildInContact(parent, (int) contactPoint);
@@ -98,21 +99,14 @@ public class ScheduleHeaderItemDecorator extends RecyclerView.ItemDecoration {
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
             if (child.getBottom() > contactPoint) {
-                if (child.getTop() <= contactPoint) {
-                    // This child overlaps the contactPoint
                     childInContact = child;
                     break;
-                }
             }
         }
         return childInContact;
     }
 
-    /**
-     * Properly measures and layouts the top sticky header.
-     *
-     * @param parent ViewGroup: RecyclerView in this case.
-     */
+
     private void fixLayoutSize(ViewGroup parent, View view) {
 
         // Specs for parent (RecyclerView)

@@ -11,5 +11,8 @@
 
     <color name="card_view_background">#fafafa</color>
 
+    <color name="disabled_state_button">#FFA759</color>
+    <color name="enabled_state_button">@android:color/holo_orange_dark</color>
+
 
 </resources>

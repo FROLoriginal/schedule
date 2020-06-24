@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
-import com.example.schedule.ScheduleConstants;
 import com.example.schedule.Utils;
 import com.example.schedule.ui.MainActivity;
 
@@ -50,11 +49,12 @@ public class ScheduleFragment extends Fragment {
 
 
         int dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) - 1;
+        int dataDayOfWeek = data.get(data.size() - 1).getDayOfWeek() - 1;
 
         int pos = 0;
-        if (dayOfWeek == 6) // The high ground of day of week func
+        if (dayOfWeek == dataDayOfWeek)
             pos = data.size() - 1;
-        else {
+        else if (dayOfWeek < dataDayOfWeek) {
             while (data.get(pos).getDayOfWeek() != dayOfWeek + 1) {
                 pos++;
             }
@@ -123,8 +123,7 @@ public class ScheduleFragment extends Fragment {
                 SQLManager.TO,      //index 4
                 SQLManager.AUDITORY,//index 5
                 SQLManager.COUNTER, //index 6
-                SQLManager.TYPE_OF_SUBJECT, // index 7
-                SQLManager.SUBTYPE_OF_SUBJECT // index 8
+                SQLManager.TYPE_OF_SUBJECT // index 7
         };
 
         String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
@@ -134,6 +133,7 @@ public class ScheduleFragment extends Fragment {
         List<SimplifiedScheduleModel> week = new ArrayList<>();
 
         int weekStatus = SQLManager.NUMERATOR;
+        //todo
         boolean isNumerator = weekStatus == SQLManager.NUMERATOR;
 
         for (int dayOfWeek = 1; dayOfWeek < 7; dayOfWeek++) {
@@ -153,30 +153,7 @@ public class ScheduleFragment extends Fragment {
             SimplifiedScheduleModel.setIsNumerator(isNumerator);
             week.add(s);
 
-            int counter = 0;
-            List<SimplifiedScheduleModel> list = new ArrayList<>();
-
             while (c.moveToNext()) {
-
-                if (ScheduleConstants.Suptype.OPTIONALLY.equals(c.getString(8)) &&
-                        counter == c.getInt(6)) {
-
-                    SimplifiedScheduleModel lesson = fillModel(c, dayOfWeek);
-
-                    SimplifiedScheduleModel obj = week.get(week.size() - 1);
-                    if (obj.getCounter() == c.getInt(6) && !obj.isHeader())
-                        week.remove(week.size() - 1);
-
-                    list.add(lesson);
-                    continue;
-                }
-                if (list.size() != 0) {
-                    SimplifiedScheduleModel model = new SimplifiedScheduleModel(list.get(0));
-                    model.setIfOptionally(list);
-                    week.add(model);
-                    list = new ArrayList<>();
-                }
-                counter = c.getInt(6);
                 week.add(fillModel(c, dayOfWeek));
             }
             c.close();

@@ -2,8 +2,6 @@ package com.example.schedule.ui.schedule;
 
 import com.example.schedule.Utils;
 
-import java.util.List;
-
 class SimplifiedScheduleModel {
 
     private String from;
@@ -16,7 +14,6 @@ class SimplifiedScheduleModel {
     private int dayOfWeek;
     private int counter;
     private boolean isHeader = false;
-    private List<SimplifiedScheduleModel> ifOptionally;
     private static boolean isNumerator;
 
     SimplifiedScheduleModel() {
@@ -34,15 +31,6 @@ class SimplifiedScheduleModel {
         this.dayOfWeek = model.getDayOfWeek();
         this.counter = model.getCounter();
         this.isHeader = model.isHeader();
-        this.ifOptionally = model.getIfOptionally();
-    }
-
-    public List<SimplifiedScheduleModel> getIfOptionally() {
-        return ifOptionally;
-    }
-
-    public void setIfOptionally(final List<SimplifiedScheduleModel> ifOptionally) {
-        this.ifOptionally = ifOptionally;
     }
 
     public void setStyleOfSubject(String styleOfSubject) {

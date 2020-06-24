@@ -13,11 +13,11 @@
         <item name="android:colorPrimaryDark">@color/backgroundColor</item>
     </style>
 
-    <style name="ShapeOfButtonTheme">
-        <item name="android:background">@drawable/button_login</item>
-    </style>
-
     <style name="Theme.MaterialComponents.NoActionBar.Custom">
         <item name="colorPrimaryDark">@color/backgroundColor</item>
+    </style>
+
+    <style name="LoginActBtnState">
+        <item name="android:backgroundTint">@drawable/login_activity_button_state</item>
     </style>
 </resources>
