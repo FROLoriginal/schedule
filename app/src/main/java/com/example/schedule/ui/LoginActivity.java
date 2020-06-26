@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                                         SQLManager.NUMERATOR : SQLManager.DIVIDER);
 
                             } else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER, SQLManager.BOTH);
-
+                            cv.put(SQLManager.OPTIONALLY, subtype.equals(ScheduleConstants.Subtype.OPTIONALLY)?1:0);
                             cv.put(SQLManager.SUBJECT, so.getSubject());
                             cv.put(SQLManager.AUDITORY, so.getAuditory());
                             cv.put(SQLManager.TEACHER, so.getTeacher());
@@ -165,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } else {
                         if (ScheduleConstants.Type.ACTIVITY.equals(type)) {
+                            cv.put(SQLManager.OPTIONALLY, 0);//todo
                             //I don't know why subtype is name of activity subject...
                             cv.put(SQLManager.SUBJECT, subtype);
                             cv.put(SQLManager.AUDITORY, ScheduleConstants.UNKNOWN_OBJECT);
