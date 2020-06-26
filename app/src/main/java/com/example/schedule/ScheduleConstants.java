@@ -16,7 +16,7 @@ public class ScheduleConstants {
         public static final String CHANGING = "changing";
     }
 
-    public class Suptype {
+    public class Subtype {
         public static final String PASS = "pass";
         public static final String REQUIRED = "required";
         public static final String OPTIONALLY = "optionally";
