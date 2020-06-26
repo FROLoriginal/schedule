@@ -52,59 +52,57 @@ public class Utils {
         return subjectName;
     }
 
-    public static String toUpperCaseFirstLetter(String input) {
-        if (input != null) {
+    public static String toUpperCaseFirstLetter(String input) throws NullPointerException {
             char firstLetter = input.charAt(0);
             input = input.substring(1);
             return Character.toUpperCase(firstLetter) + input;
-        }
-        return "";
     }
+
     public static class Time {
 
-        public static final int CURRENT_TIME_MORE = 0;
-        public static final int CURRENT_TIME_BETWEEN = 1;
-        public static final int CURRENT_TIME_LESS = 2;
+        public static final int LESSON_IS_NOT_EXISTS = -1;
+        public static final int LESSON_IS_OVER = 0;
+        public static final int LESSON_IS_NOT_OVER = 1;
+        public static final int LESSON_WILL_START = 2;
 
-        public static int isCurrentTimeBetween(String from, String to, int dayOfWeek) throws NullPointerException {
+        public static int lessonStatus(String from, String to, int dayOfWeek) {
+            try {
+                int firstHalfFrom = Integer.valueOf(from.split(":")[0]);
+                int secondHalfFrom = Integer.valueOf(from.split(":")[1]);
+                int firstHalfTo = Integer.valueOf(to.split(":")[0]);
+                int secondHalfTo = Integer.valueOf(to.split(":")[1]);
 
-            int firstHalfFrom = Integer.valueOf(from.split(":")[0]);
-            int secondHalfFrom = Integer.valueOf(from.split(":")[1]);
-            int firstHalfTo = Integer.valueOf(to.split(":")[0]);
-            int secondHalfTo = Integer.valueOf(to.split(":")[1]);
+                Calendar firstTime = Calendar.getInstance();
+                Calendar secondTime = Calendar.getInstance();
 
-            Calendar firstTime = Calendar.getInstance();
-            Calendar secondTime = Calendar.getInstance();
+                firstTime.set(Calendar.DAY_OF_WEEK, convertEUDayOfWeekToUS(dayOfWeek + 1) - 1);
+                firstTime.set(Calendar.HOUR_OF_DAY, firstHalfFrom);
+                firstTime.set(Calendar.MINUTE, secondHalfFrom);
 
-            firstTime.set(Calendar.DAY_OF_WEEK,convertDayOfWeekToUS(dayOfWeek + 1) - 1);
-            firstTime.set(Calendar.HOUR_OF_DAY,firstHalfFrom);
-            firstTime.set(Calendar.MINUTE,secondHalfFrom);
+                secondTime.set(Calendar.DAY_OF_WEEK, convertEUDayOfWeekToUS(dayOfWeek + 1) - 1);
+                secondTime.set(Calendar.HOUR_OF_DAY, firstHalfTo);
+                secondTime.set(Calendar.MINUTE, secondHalfTo);
 
-            secondTime.set(Calendar.DAY_OF_WEEK,convertDayOfWeekToUS(dayOfWeek + 1) - 1);
-            secondTime.set(Calendar.HOUR_OF_DAY,firstHalfTo);
-            secondTime.set(Calendar.MINUTE,secondHalfTo);
+                long current = Calendar.getInstance().getTimeInMillis();
+                long second = secondTime.getTimeInMillis();
 
-            long current = Calendar.getInstance().getTimeInMillis();
-            long second = secondTime.getTimeInMillis();
-
-            if (current >= firstTime.getTimeInMillis() && current <= second) {
-                return CURRENT_TIME_BETWEEN;
-            } else if (current > second) {
-                return CURRENT_TIME_MORE;
-            } else return CURRENT_TIME_LESS;
-
+                if (current >= firstTime.getTimeInMillis() && current <= second) {
+                    return LESSON_IS_NOT_OVER;
+                } else if (current > second) {
+                    return LESSON_IS_OVER;
+                } else return LESSON_WILL_START;
+            }catch (NullPointerException ex){
+                return LESSON_IS_NOT_EXISTS;
+            }
         }
-
         public static int convertUSDayOfWeekToEU(int day) {
 
             return day == 1 ? 7 : day - 1;
-
         }
 
-        public static int convertDayOfWeekToUS(int day) {
+        public static int convertEUDayOfWeekToUS(int day) {
 
             return day == 7 ? 1 : day + 1;
-
         }
     }
 }
