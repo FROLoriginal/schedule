@@ -42,7 +42,7 @@ public class ScheduleFragment extends Fragment {
         SQLManager sqlManager = new SQLManager(getActivity().getBaseContext(), table, null, 1);
         SQLiteDatabase db = sqlManager.getReadableDatabase();
 
-        List<SimplifiedScheduleModel> data = fillSchedule(db, table);
+        List<SimpleScheduleModel> data = fillSchedule(db, table);
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
         ScheduleRecyclerViewAdapter adapter = new ScheduleRecyclerViewAdapter(new ArrayList<>(data));
         recyclerView.setAdapter(adapter);
@@ -67,7 +67,7 @@ public class ScheduleFragment extends Fragment {
         return root;
     }
 
-    private ScheduleHeaderItemDecorator getDecorator(RecyclerView recyclerView, final List<SimplifiedScheduleModel> data) {
+    private ScheduleHeaderItemDecorator getDecorator(RecyclerView recyclerView, final List<SimpleScheduleModel> data) {
         return new ScheduleHeaderItemDecorator
                 (recyclerView, new ScheduleHeaderItemDecorator.StickyHeaderInterface() {
 
@@ -91,7 +91,7 @@ public class ScheduleFragment extends Fragment {
                     @Override
                     public void bindHeaderData(View header, int headerPosition) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertDayOfWeekToUS(data.get(headerPosition).getDayOfWeek()));
+                        calendar.set(Calendar.DAY_OF_WEEK, Utils.Time.convertEUDayOfWeekToUS(data.get(headerPosition).getDayOfWeek()));
 
                         String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
                         String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
@@ -113,7 +113,7 @@ public class ScheduleFragment extends Fragment {
                 });
     }
 
-    private List<SimplifiedScheduleModel> fillSchedule(SQLiteDatabase db, String tableName) {
+    private List<SimpleScheduleModel> fillSchedule(SQLiteDatabase db, String tableName) {
 
         String[] columns = new String[]{
                 SQLManager.ID,      //index 0
@@ -123,14 +123,15 @@ public class ScheduleFragment extends Fragment {
                 SQLManager.TO,      //index 4
                 SQLManager.AUDITORY,//index 5
                 SQLManager.COUNTER, //index 6
-                SQLManager.TYPE_OF_SUBJECT // index 7
+                SQLManager.TYPE_OF_SUBJECT, // index 7
+                SQLManager.OPTIONALLY // index 8
         };
 
         String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
                 SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? OR " +
                 SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? )";
 
-        List<SimplifiedScheduleModel> week = new ArrayList<>();
+        List<SimpleScheduleModel> week = new ArrayList<>();
 
         int weekStatus = SQLManager.NUMERATOR;
         //todo
@@ -147,10 +148,11 @@ public class ScheduleFragment extends Fragment {
                     selection, selectionArgs,
                     null, null, null);
 
-            SimplifiedScheduleModel s = new SimplifiedScheduleModel();
+            SimpleScheduleModel s = new SimpleScheduleModel();
             s.setDayOfWeek(dayOfWeek);
+            s.setCounter(-1);
             s.setHeader(true);
-            SimplifiedScheduleModel.setIsNumerator(isNumerator);
+            SimpleScheduleModel.setIsNumerator(isNumerator);
             week.add(s);
 
             while (c.moveToNext()) {
@@ -162,9 +164,9 @@ public class ScheduleFragment extends Fragment {
         return week;
     }
 
-    private SimplifiedScheduleModel fillModel(Cursor c, int dayOfWeek) {
+    private SimpleScheduleModel fillModel(Cursor c, int dayOfWeek) {
 
-        SimplifiedScheduleModel model = new SimplifiedScheduleModel();
+        SimpleScheduleModel model = new SimpleScheduleModel();
         model.setFrom(c.getString(3));
         model.setTo(c.getString(4));
         model.setAuditory(c.getString(5));
@@ -173,7 +175,8 @@ public class ScheduleFragment extends Fragment {
         model.setCounter(c.getInt(6));
         model.setTypeOfSubject(c.getString(7));
         model.setDayOfWeek(dayOfWeek);
+        model.setOptionally(c.getInt(8));
 
-        return new SimplifiedScheduleModel(model);
+        return new SimpleScheduleModel(model);
     }
 }
