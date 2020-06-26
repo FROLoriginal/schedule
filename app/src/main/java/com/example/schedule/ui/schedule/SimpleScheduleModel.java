@@ -2,7 +2,7 @@ package com.example.schedule.ui.schedule;
 
 import com.example.schedule.Utils;
 
-class SimplifiedScheduleModel {
+class SimpleScheduleModel {
 
     private String from;
     private String to;
@@ -12,14 +12,16 @@ class SimplifiedScheduleModel {
     private String subject;
     private String styleOfSubject;
     private int dayOfWeek;
-    private int counter;
+    //starts from zero
+    private int counter = -1;//def val
+    private int optionally;
     private boolean isHeader = false;
     private static boolean isNumerator;
 
-    SimplifiedScheduleModel() {
+    SimpleScheduleModel() {
     }
 
-    public SimplifiedScheduleModel(SimplifiedScheduleModel model) {
+    public SimpleScheduleModel(SimpleScheduleModel model) {
 
         this.from = model.getFrom();
         this.to = model.getTo();
@@ -31,6 +33,20 @@ class SimplifiedScheduleModel {
         this.dayOfWeek = model.getDayOfWeek();
         this.counter = model.getCounter();
         this.isHeader = model.isHeader();
+        this.optionally = model.isOptionally()?1:0;
+    }
+
+    public static boolean equals(SimpleScheduleModel s1, SimpleScheduleModel s2){
+
+        return s1.getCounter() == s2.getCounter() && s1.getCounter() >= 0 && s2.getCounter() >= 0;
+    }
+
+    public boolean isOptionally() {
+        return optionally == 1;
+    }
+
+    public void setOptionally(int optionally) {
+        this.optionally = optionally;
     }
 
     public void setStyleOfSubject(String styleOfSubject) {
@@ -42,7 +58,7 @@ class SimplifiedScheduleModel {
     }
 
     public static void setIsNumerator(boolean isNumerator) {
-        SimplifiedScheduleModel.isNumerator = isNumerator;
+        SimpleScheduleModel.isNumerator = isNumerator;
     }
 
     public String getStyleOfSubject() {

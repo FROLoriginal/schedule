@@ -14,11 +14,11 @@ class ScheduleViewHolder extends RecyclerView.ViewHolder {
     TextView subject;
     TextView time;
     TextView auditoryWithStyleOfSubject;
-    View firstDivider, secondDivider;
+    View firstDivider, secondDivider, fullSideDivider;
     ImageView statusCircle;
     ImageView teacherIc;
 
-        ScheduleViewHolder(@NonNull View itemView) {
+    ScheduleViewHolder(@NonNull View itemView) {
         super(itemView);
         teacher = itemView.findViewById(R.id.container_name);
         subject = itemView.findViewById(R.id.container_subject);
@@ -26,6 +26,7 @@ class ScheduleViewHolder extends RecyclerView.ViewHolder {
         auditoryWithStyleOfSubject = itemView.findViewById(R.id.container_auditory_with_style_of_subject);
         firstDivider = itemView.findViewById(R.id.firstTimelineDivider);
         secondDivider = itemView.findViewById(R.id.secondTimelineDivider);
+        fullSideDivider = itemView.findViewById(R.id.full_side_divider);
         statusCircle = itemView.findViewById(R.id.lessonStatusTimelineCircle);
         teacherIc = itemView.findViewById(R.id.container_teacher_ic);
 
