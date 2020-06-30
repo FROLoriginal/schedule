@@ -13,6 +13,7 @@ public class SQLManager extends SQLiteOpenHelper {
     private Context context;
 
     public static final String ID = "_id";
+    //Day of week start from one
     public static final String DAY_OF_WEEK = "day_of_week";
     public static final String COUNTER = "counter";
     public static final String SUBJECT = "subject";
@@ -25,6 +26,8 @@ public class SQLManager extends SQLiteOpenHelper {
     public static final String OPTIONALLY = "optionally";
     public static final String SHARED_PREFERENCES_TABLES = "tables";
     public static final String SHARED_PREFERENCES_TABLE = "table";
+
+    public static final int VERSION = 1;
 
     public static final int NUMERATOR = 1;
     public static final int DIVIDER = 2;

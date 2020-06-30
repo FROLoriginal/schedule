@@ -3,7 +3,6 @@ package com.example.schedule.ui.schedule;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.schedule.R;
 import com.example.schedule.SQL.SQLManager;
+import com.example.schedule.SQL.SQLScheduleReader;
 import com.example.schedule.Utils;
 import com.example.schedule.ui.MainActivity;
 
@@ -39,10 +39,7 @@ public class ScheduleFragment extends Fragment {
         SharedPreferences pref = getActivity().getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, Context.MODE_PRIVATE);
         String table = pref.getString(SQLManager.SHARED_PREFERENCES_TABLE, null);
 
-        SQLManager sqlManager = new SQLManager(getActivity().getBaseContext(), table, null, 1);
-        SQLiteDatabase db = sqlManager.getReadableDatabase();
-
-        List<SimpleScheduleModel> data = fillSchedule(db, table);
+        List<SimpleScheduleModel> data = fillSchedule(table);
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
         ScheduleRecyclerViewAdapter adapter = new ScheduleRecyclerViewAdapter(new ArrayList<>(data));
         recyclerView.setAdapter(adapter);
@@ -113,7 +110,7 @@ public class ScheduleFragment extends Fragment {
                 });
     }
 
-    private List<SimpleScheduleModel> fillSchedule(SQLiteDatabase db, String tableName) {
+    private List<SimpleScheduleModel> fillSchedule(String tableName) {
 
         String[] columns = new String[]{
                 SQLManager.ID,      //index 0
@@ -127,10 +124,6 @@ public class ScheduleFragment extends Fragment {
                 SQLManager.OPTIONALLY // index 8
         };
 
-        String selection = SQLManager.DAY_OF_WEEK + " = ? AND (" +
-                SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? OR " +
-                SQLManager.BOTH_NUMERATOR_DIVIDER + " = ? )";
-
         List<SimpleScheduleModel> week = new ArrayList<>();
 
         int weekStatus = SQLManager.NUMERATOR;
@@ -139,14 +132,9 @@ public class ScheduleFragment extends Fragment {
 
         for (int dayOfWeek = 1; dayOfWeek < 7; dayOfWeek++) {
 
-            String[] selectionArgs = new String[]{
-                    String.valueOf(dayOfWeek),
-                    String.valueOf(SQLManager.BOTH),
-                    String.valueOf(weekStatus)};
-
-            Cursor c = db.query(tableName, columns,
-                    selection, selectionArgs,
-                    null, null, null);
+            SQLScheduleReader reader = new SQLScheduleReader(getContext(),tableName,SQLManager.VERSION);
+            Cursor c = reader.getScheduleByDay(columns, dayOfWeek, weekStatus);
+            reader.close();
 
             SimpleScheduleModel s = new SimpleScheduleModel();
             s.setDayOfWeek(dayOfWeek);
@@ -176,6 +164,7 @@ public class ScheduleFragment extends Fragment {
         model.setTypeOfSubject(c.getString(7));
         model.setDayOfWeek(dayOfWeek);
         model.setOptionally(c.getInt(8));
+        model.setId(c.getInt(0));
 
         return new SimpleScheduleModel(model);
     }

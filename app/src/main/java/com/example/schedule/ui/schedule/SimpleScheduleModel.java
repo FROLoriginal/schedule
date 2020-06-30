@@ -4,6 +4,7 @@ import com.example.schedule.Utils;
 
 class SimpleScheduleModel {
 
+    private int id;
     private String from;
     private String to;
     private String teacher;
@@ -33,12 +34,21 @@ class SimpleScheduleModel {
         this.dayOfWeek = model.getDayOfWeek();
         this.counter = model.getCounter();
         this.isHeader = model.isHeader();
+        this.id = model.getId();
         this.optionally = model.isOptionally()?1:0;
     }
 
     public static boolean equals(SimpleScheduleModel s1, SimpleScheduleModel s2){
 
         return s1.getCounter() == s2.getCounter() && s1.getCounter() >= 0 && s2.getCounter() >= 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isOptionally() {
