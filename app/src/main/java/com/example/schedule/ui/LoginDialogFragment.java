@@ -14,11 +14,11 @@ import androidx.fragment.app.DialogFragment;
 
 public class LoginDialogFragment extends DialogFragment {
 
-    private LoginActivity object;
+    private LoginActivity.RequestOperation operation;
 
-    LoginDialogFragment(@NonNull LoginActivity object) {
+    LoginDialogFragment(@NonNull LoginActivity.RequestOperation operation) {
 
-        this.object = object;
+        this.operation = operation;
     }
 
     @NonNull
@@ -35,8 +35,7 @@ public class LoginDialogFragment extends DialogFragment {
 
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
-
-        object.cancelRequest();
+        if (operation != null) operation.cancelRequest();
 
     }
 }

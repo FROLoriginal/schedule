@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(text.getWindowToken(), 0);
-        LoginDialogFragment fragment = new LoginDialogFragment(this);
+        LoginDialogFragment fragment = new LoginDialogFragment(() -> responseCall.cancel());
         fragment.show(getSupportFragmentManager(), null);
         String editText = text.getText().toString();
 
@@ -103,8 +103,8 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
 
-    protected void cancelRequest() {
-        if (responseCall != null) responseCall.cancel();
+    interface RequestOperation{
+        void cancelRequest();
     }
 
     private TextWatcher textChangedListener = new TextWatcher() {
