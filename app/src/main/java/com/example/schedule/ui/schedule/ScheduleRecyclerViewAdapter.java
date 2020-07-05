@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -22,9 +25,11 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int HEADER = 2;
 
     private List<SimpleScheduleModel> data;
+    private Fragment fragment;
 
-    ScheduleRecyclerViewAdapter(List<SimpleScheduleModel> data) {
+    ScheduleRecyclerViewAdapter(List<SimpleScheduleModel> data, Fragment fragment) {
         this.data = data;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -33,8 +38,17 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         LayoutInflater li = LayoutInflater.from(parent.getContext());
         if (viewType == INFORMATION) {
-            return new ScheduleViewHolder(
-                    li.inflate(R.layout.card_view, parent, false));
+
+            View v = li.inflate(R.layout.card_view, parent, false);
+
+            v.setOnClickListener(i -> {
+                FragmentManager fm = fragment.getParentFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.hide(fragment);
+                ft.show(new ScheduleEditFragment(fragment));
+                ft.commit();
+            });
+            return new ScheduleViewHolder(v);
         } else {
             return new ScheduleHeaderViewHolder(
                     li.inflate(R.layout.schedule_header_card_view, parent, false));
@@ -76,7 +90,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     casted.firstDivider.setVisibility(View.INVISIBLE);
             } else casted.secondDivider.setVisibility(View.INVISIBLE);
 
-            SimpleScheduleModel nextLes = getNextLesson(lesson, position);
+            SimpleScheduleModel nextLes = SimpleScheduleModel.getNextLesson(data, position);
 
             int nextLesStat = Utils.Time.lessonStatus(
                     nextLes.getFrom(),
@@ -127,19 +141,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 }
             }
         }
-    }
-
-    private SimpleScheduleModel getNextLesson(SimpleScheduleModel currentLesson, int position) {
-        SimpleScheduleModel nextLes;
-        int i = 0;
-        do {
-            ++i;
-            nextLes = position + i < data.size()
-                    ? data.get(position + i) :
-                    new SimpleScheduleModel();
-
-        } while (SimpleScheduleModel.equals(currentLesson, nextLes));
-        return nextLes;
     }
 
     private boolean isOptLesHeader(int position) {

@@ -2,6 +2,8 @@ package com.example.schedule.ui.schedule;
 
 import com.example.schedule.Utils;
 
+import java.util.List;
+
 class SimpleScheduleModel {
 
     private int id;
@@ -41,6 +43,19 @@ class SimpleScheduleModel {
     public static boolean equals(SimpleScheduleModel s1, SimpleScheduleModel s2){
 
         return s1.getCounter() == s2.getCounter() && s1.getCounter() >= 0 && s2.getCounter() >= 0;
+    }
+
+    public static SimpleScheduleModel getNextLesson(List<SimpleScheduleModel> data, int position) {
+        SimpleScheduleModel nextLes;
+        int i = 0;
+        do {
+            ++i;
+            nextLes = position + i < data.size()
+                    ? data.get(position + i) :
+                    new SimpleScheduleModel();
+
+        } while (SimpleScheduleModel.equals(data.get(position), nextLes));
+        return nextLes;
     }
 
     public int getId() {
