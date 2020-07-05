@@ -41,7 +41,7 @@ public class ScheduleFragment extends Fragment {
 
         List<SimpleScheduleModel> data = fillSchedule(table);
         recyclerView.addItemDecoration(getDecorator(recyclerView, data));
-        ScheduleRecyclerViewAdapter adapter = new ScheduleRecyclerViewAdapter(new ArrayList<>(data));
+        ScheduleRecyclerViewAdapter adapter = new ScheduleRecyclerViewAdapter(new ArrayList<>(data),this);
         recyclerView.setAdapter(adapter);
 
 
@@ -129,12 +129,11 @@ public class ScheduleFragment extends Fragment {
         int weekStatus = SQLManager.NUMERATOR;
         //todo
         boolean isNumerator = weekStatus == SQLManager.NUMERATOR;
+        SQLScheduleReader reader = new SQLScheduleReader(getContext(),tableName,SQLManager.VERSION);
 
         for (int dayOfWeek = 1; dayOfWeek < 7; dayOfWeek++) {
 
-            SQLScheduleReader reader = new SQLScheduleReader(getContext(),tableName,SQLManager.VERSION);
             Cursor c = reader.getScheduleByDay(columns, dayOfWeek, weekStatus);
-            reader.close();
 
             SimpleScheduleModel s = new SimpleScheduleModel();
             s.setDayOfWeek(dayOfWeek);
@@ -148,6 +147,7 @@ public class ScheduleFragment extends Fragment {
             }
             c.close();
         }
+        reader.close();
 
         return week;
     }
