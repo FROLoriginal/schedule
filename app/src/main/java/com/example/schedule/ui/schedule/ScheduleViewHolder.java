@@ -20,6 +20,7 @@ class ScheduleViewHolder extends RecyclerView.ViewHolder {
 
     ScheduleViewHolder(@NonNull View itemView) {
         super(itemView);
+
         teacher = itemView.findViewById(R.id.container_name);
         subject = itemView.findViewById(R.id.container_subject);
         time = itemView.findViewById(R.id.container_clock_from_to);

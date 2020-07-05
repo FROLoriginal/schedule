@@ -14,10 +14,10 @@
         android:label="@string/title_activity_main">
 
     </activity>
-      <activity android:name=".ui.LoginActivity"
-          android:theme="@style/Theme.MaterialComponents.NoActionBar.Custom">
+    <activity android:name=".ui.LoginActivity"
+        android:theme="@style/Theme.MaterialComponents.NoActionBar.Custom">
 
-      </activity>
+    </activity>
 
     <activity android:name=".ui.SplashActivity"
         android:theme="@style/SplashTheme">
