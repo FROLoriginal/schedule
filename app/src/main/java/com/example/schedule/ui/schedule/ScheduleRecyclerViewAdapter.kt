@@ -26,15 +26,14 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: List<Si
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val li = LayoutInflater.from(parent.context)
         return if (viewType == INFORMATION) {
-            val v = li.inflate(R.layout.card_view, parent, false)
-            v.setOnClickListener {
+           /* v.setOnClickListener {
                 val fm = fragment.parentFragmentManager
                 val ft = fm.beginTransaction()
                 ft.hide(fragment)
                 ft.show(ScheduleEditFragment(fragment))
                 ft.commit()
-            }
-            ScheduleViewHolder(v)
+            }*/
+            ScheduleViewHolder(li.inflate(R.layout.card_view, parent, false))
         } else {
             ScheduleHeaderViewHolder(
                     li.inflate(R.layout.schedule_header_card_view, parent, false))
