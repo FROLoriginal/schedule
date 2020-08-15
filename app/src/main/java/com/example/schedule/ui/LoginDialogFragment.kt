@@ -6,10 +6,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.schedule.R
-import com.example.schedule.ui.LoginActivity.RequestOperation
 
-class LoginDialogFragment internal constructor(operation: RequestOperation) : DialogFragment() {
-    private val operation: RequestOperation?
+class LoginDialogFragment internal constructor(private val operation: DialogInterface.OnCancelListener)
+    : DialogFragment() {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         val inflater = requireActivity().layoutInflater
@@ -18,10 +18,8 @@ class LoginDialogFragment internal constructor(operation: RequestOperation) : Di
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        operation?.cancelRequest()
+        operation.onCancel(dialog)
     }
 
-    init {
-        this.operation = operation
-    }
+
 }
