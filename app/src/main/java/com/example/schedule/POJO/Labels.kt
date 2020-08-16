@@ -1,4 +1,4 @@
-package com.example.schedule.POJO.OK_POJO
+package com.example.schedule.POJO
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

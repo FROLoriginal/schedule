@@ -1,6 +1,6 @@
 package com.example.schedule.API
 
-import com.example.schedule.POJO.OK_POJO.Schedule
+import com.example.schedule.POJO.Schedule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit

@@ -3,7 +3,7 @@ package com.example.schedule.ui
 import android.content.Context
 import com.example.schedule.API.ApiHolder
 import com.example.schedule.API.NetworkService
-import com.example.schedule.POJO.OK_POJO.Response
+import com.example.schedule.POJO.Response
 import com.example.schedule.SQL.SQLScheduleEditor
 import retrofit2.Call
 import retrofit2.Callback

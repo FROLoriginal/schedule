@@ -1,10 +1,9 @@
 package com.example.schedule.API
 
-import com.example.schedule.POJO.ERROR_POJO.Error
-import com.example.schedule.POJO.OK_POJO.Lesson
-import com.example.schedule.POJO.OK_POJO.Object_
-import com.example.schedule.POJO.OK_POJO.Schedule
-import com.example.schedule.POJO.OK_POJO.Subobject
+import com.example.schedule.POJO.Lesson
+import com.example.schedule.POJO.Object_
+import com.example.schedule.POJO.Schedule
+import com.example.schedule.POJO.Subobject
 import com.example.schedule.ScheduleConstants
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
