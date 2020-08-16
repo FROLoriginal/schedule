@@ -4,17 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-class SQLScheduleReader(context: Context,
+class SQLScheduleReader(context: Context?,
                         tableName: String,
                         val version: Int)
-    : SQLManager(context,
-        tableName,
-        null,
-        version) {
+    : SQLManager(context, tableName,
+        null, version) {
 
 
     private var sqLiteDatabase: SQLiteDatabase = readableDatabase
-
 
     fun getScheduleByDay(columns: Array<String>, dayOfWeek: Int, weekStatus: Int): Cursor {
 
@@ -30,7 +27,9 @@ class SQLScheduleReader(context: Context,
 
         return sqLiteDatabase.query(databaseName, columns,
                 selection, selectionArgs,
-                null, null, null);
+                null, null, null)
     }
+
+
 
 }
