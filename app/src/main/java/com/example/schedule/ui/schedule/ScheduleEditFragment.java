@@ -6,9 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.schedule.R;
-import com.example.schedule.Utils;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,34 +37,5 @@ public class ScheduleEditFragment extends Fragment {
         });
 
         return root;
-    }
-
-    //todo сделать сортировку после добавления
-    private void addLessonToList(List<SimpleScheduleModel> list, SimpleScheduleModel lesson) {
-
-        if (!lesson.isHeader()) {
-
-            for (int i = 0; i < list.size(); i++) {
-
-                SimpleScheduleModel les = list.get(i);
-
-                if (les.getDayOfWeek() == lesson.getDayOfWeek()) {
-
-                    String lessonTo = lesson.getTo();
-                    SimpleScheduleModel nextLes = SimpleScheduleModel.getNextLesson(list, i);
-
-                    if (Utils.Time.timeToMinutes(lessonTo) <
-                            Utils.Time.timeToMinutes(nextLes.getFrom())) {
-                        lesson.setCounter(nextLes.getCounter() + 1);
-                        list.add(i, lesson);
-
-                    } else if (Utils.Time.isTimeIntersect(les.getFrom(), les.getTo(),
-                            lesson.getFrom(), lessonTo)) {
-                        lesson.setCounter(les.getCounter());
-                        list.add(i, lesson);
-                    }
-                }
-            }
-        }
     }
 }
