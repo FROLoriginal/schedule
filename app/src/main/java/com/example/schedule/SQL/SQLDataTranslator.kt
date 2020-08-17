@@ -7,7 +7,7 @@ class SQLDataTranslator {
 
     companion object {
         internal fun getListSimpleScheduleModel(reader: SQLScheduleReader):
-                List<SimpleScheduleModel> {
+                MutableList<SimpleScheduleModel> {
 
             val columns = arrayOf(
                     SQLManager.ID,  //index 0

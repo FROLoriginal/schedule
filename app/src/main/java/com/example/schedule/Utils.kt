@@ -1,6 +1,7 @@
 package com.example.schedule
 
 import java.util.*
+import kotlin.jvm.Throws
 
 object Utils {
     const val OTHER = 0
@@ -101,7 +102,7 @@ object Utils {
             val x2 = t1_to_[0] * 60 + t1_to_[1]
             val y1 = t2_from_[0] * 60 + t2_from_[1]
             val y2 = t2_to_[0] * 60 + t2_to_[1]
-            return x1 < y1 && y1 < x2 || x1 < y2 && y2 < x2 || y1 < x1 && x1 < y2 || y1 < x2 && x2 < y2
+            return y1 in x1..x2 || y2 in x1..x2 || x1 in y1..y2 || x2 in y1..y2
         }
 
         @JvmStatic

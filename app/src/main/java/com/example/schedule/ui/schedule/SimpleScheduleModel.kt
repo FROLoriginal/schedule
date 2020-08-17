@@ -12,6 +12,7 @@ internal class SimpleScheduleModel {
     var typeOfSubject: String? = null
     var subject: String? = null
     var styleOfSubject: String? = null
+    //Day of week starts from 1, zero is `header` value
     var dayOfWeek = 0
 
     //starts from zero
