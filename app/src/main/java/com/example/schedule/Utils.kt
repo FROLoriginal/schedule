@@ -46,17 +46,13 @@ object Utils {
 
     class Time(private val from : String? , private val to : String?) {
 
-
-
-        private fun stringArrToInt(arr: Array<String>): List<Int> = arr.map { p -> p.toInt() }
-
         companion object {
             fun lessonStatus(t : Time, dayOfWeek: Int): Int {
                 return if (t.from != null && t.to != null) {
-                    val firstHalfFrom = Integer.valueOf(t.from.split(":").toTypedArray()[0])
-                    val secondHalfFrom = Integer.valueOf(t.from.split(":").toTypedArray()[1])
-                    val firstHalfTo = Integer.valueOf(t.to.split(":").toTypedArray()[0])
-                    val secondHalfTo = Integer.valueOf(t.to.split(":").toTypedArray()[1])
+                    val firstHalfFrom = t.from.split(":")[0].toInt()
+                    val secondHalfFrom = t.from.split(":")[1].toInt()
+                    val firstHalfTo = t.to.split(":")[0].toInt()
+                    val secondHalfTo = t.to.split(":")[1].toInt()
                     val firstTime = Calendar.getInstance()
                     val secondTime = Calendar.getInstance()
                     firstTime[Calendar.DAY_OF_WEEK] = convertEUDayOfWeekToUS(dayOfWeek + 1) - 1
@@ -109,6 +105,7 @@ object Utils {
             }
 
             private fun stringArrToInt(arr: Array<String>): List<Int> = arr.map { p -> p.toInt() }
+
             const val LESSON_IS_NOT_OVER = 1
             const val LESSON_WILL_START = 2
             const val LESSON_IS_OVER = 0
