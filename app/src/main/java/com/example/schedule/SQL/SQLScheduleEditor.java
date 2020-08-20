@@ -38,7 +38,6 @@ public class SQLScheduleEditor extends SQLManager {
             int lessonSize = schedule.getLessons().size();
 
             for (int lesson = 0; lesson < lessonSize; lesson++) {
-                cv.put(SQLManager.COUNTER, lesson);
                 Lesson les = schedule.getLessons().get(lesson);
                 int objectSize = les.getObject().size();
                 cv.put(SQLManager.FROM, les.getFrom());

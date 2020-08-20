@@ -15,7 +15,6 @@ open class SQLManager(private val context: Context?,
             db.execSQL("CREATE TABLE IF NOT EXISTS " + name + " (" +
                     ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                     DAY_OF_WEEK + " INTEGER NOT NULL," +
-                    COUNTER + " INTEGER NOT NULL," +
                     SUBJECT + " TEXT," +
                     FROM + " TEXT NOT NULL," +
                     TO + " TEXT NOT NULL," +
@@ -37,7 +36,6 @@ open class SQLManager(private val context: Context?,
         const val ID = "_id"
         //Day of week start from one
         const val DAY_OF_WEEK = "day_of_week"
-        const val COUNTER = "counter"
         const val SUBJECT = "subject"
         const val FROM = "from_"
         const val TO = "to_"
