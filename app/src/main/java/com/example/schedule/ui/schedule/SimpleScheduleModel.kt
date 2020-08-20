@@ -3,7 +3,7 @@ package com.example.schedule.ui.schedule
 import com.example.schedule.Utils
 import com.example.schedule.Utils.typeOfSubject
 
-internal class SimpleScheduleModel {
+class SimpleScheduleModel {
     var id = 0
     var from: String? = null
     var to: String? = null
@@ -79,6 +79,10 @@ internal class SimpleScheduleModel {
             } while (equals(data[position], nextLes))
             return nextLes
         }
+        @JvmStatic
+        fun isOneDayLessons(target1 : SimpleScheduleModel,
+                            target2 : SimpleScheduleModel)
+                : Boolean = target1.dayOfWeek == target2.dayOfWeek
 
     }
 }
