@@ -30,6 +30,18 @@ class SQLScheduleReader(context: Context?,
                 null, null, null)
     }
 
+    fun getAllIdsNotes(): Cursor {
+
+        return sqLiteDatabase.query(databaseName, arrayOf(ID), null,
+                null, null, null, ID)
+
+    }
+
+    fun isIdExists(id : Int) : Cursor{
+       return sqLiteDatabase.rawQuery(
+               "SELECT EXISTS(SELECT $ID FROM $databaseName WHERE id = $id)",
+               null)
+    }
 
 
 }

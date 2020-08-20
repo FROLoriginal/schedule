@@ -51,5 +51,27 @@ class SQLDataTranslator {
             return SimpleScheduleModel(model)
 
         }
+
+        fun getFreeId(reader: SQLScheduleReader): Int {
+
+            val cursor: Cursor = reader.getAllIdsNotes()
+            cursor.moveToLast()
+            val freeId = cursor.getInt(0)
+            cursor.close()
+            return freeId + 1
+
+        }
+
+        fun isIdExists(id : Int, reader: SQLScheduleReader) : Boolean{
+
+            val cursor : Cursor = reader.isIdExists(id)
+            while (cursor.moveToNext())
+                if (cursor.getInt(0) == 1)
+                    return true
+            cursor.close()
+            return false
+        }
+
+
     }
 }

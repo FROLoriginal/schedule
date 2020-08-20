@@ -84,7 +84,7 @@ public class SQLScheduleEditor extends SQLManager {
     public void insert(ContentValues cv) {
         sqLiteDatabase.insert(getDatabaseName(), null, cv);
     }
-/*
+
     public void edit(ContentValues cv, int id) {
         sqLiteDatabase.update(
                 getDatabaseName(),
@@ -100,6 +100,6 @@ public class SQLScheduleEditor extends SQLManager {
                 new String[]{String.valueOf(id)});
 
     }
-    */
+
 
 }
