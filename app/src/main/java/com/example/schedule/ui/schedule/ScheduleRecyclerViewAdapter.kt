@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
 import com.example.schedule.ScheduleConstants
 import com.example.schedule.Utils
-import com.example.schedule.Utils.Time.convertEUDayOfWeekToUS
-import com.example.schedule.Utils.Time.lessonStatus
+import com.example.schedule.Utils.Time.Companion.convertEUDayOfWeekToUS
+import com.example.schedule.Utils.Time.Companion.lessonStatus
 import com.example.schedule.Utils.deleteTypeOfSubjectPart
 import com.example.schedule.Utils.toUpperCaseFirstLetter
 import com.example.schedule.ui.schedule.SimpleScheduleModel.Companion.equals
@@ -66,12 +66,12 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: List<Si
             } else casted.secondDivider.visibility = View.INVISIBLE
             val nextLes = getNextLesson(data, position)
             val nextLesStat = lessonStatus(
-                    nextLes.from,
-                    nextLes.to,
+                    Utils.Time(nextLes.from,
+                    nextLes.to),
                     nextLes.dayOfWeek)
             val curLesStat = lessonStatus(
-                    lesson.from,
-                    lesson.to,
+                    Utils.Time(lesson.from,
+                    lesson.to),
                     lesson.dayOfWeek)
             val currentLesson = lesson.counter + 1
             if (isOptLesHeader(position) || !lesson.isOptionally()) {
