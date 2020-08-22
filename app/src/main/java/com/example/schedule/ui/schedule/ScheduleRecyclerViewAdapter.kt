@@ -40,9 +40,9 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
 
     private fun getOnClickListenerForItems(scheduleViewHolder: ScheduleViewHolder): View.OnClickListener? {
         return View.OnClickListener {
-
+            val pos = scheduleViewHolder.adapterPosition
             val fr = ScheduleEditFragment(fragment,
-                    getOnClickListenerForChangingLesson(scheduleViewHolder.adapterPosition))
+                    getOnClickListenerForChangingLesson(pos), data[pos])
 
             fragment.parentFragmentManager
                     .beginTransaction()
@@ -53,11 +53,11 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         }
     }
 
-    private fun getOnClickListenerForChangingLesson(pos : Int): OnClickListener {
+    private fun getOnClickListenerForChangingLesson(pos: Int): OnClickListener {
         return object : OnClickListener {
             override fun onClickToChangeLesson(lesson: SimpleScheduleModel) {
                 if (pos != RecyclerView.NO_POSITION)
-                presenter.changeLesson(data, pos, lesson)
+                    presenter.changeLesson(data, pos, lesson)
             }
         }
     }
@@ -70,8 +70,8 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         notifyItemRemoved(pos)
     }
 
-    override fun onItemChanged(pos: Int) {
-        notifyItemChanged(pos)
+    override fun onItemChanged() {
+        notifyDataSetChanged()
     }
 
     interface OnClickListener {
@@ -99,6 +99,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                         else "${lesson.styleOfSubject}, ${lesson.auditory}"
 
             } else bindDinnerEl(casted)
+
             casted.time.text = lesson.formattedTime
             casted.secondDivider.visibility = View.VISIBLE
             casted.firstDivider.visibility = View.VISIBLE
@@ -108,16 +109,19 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                 if (data[position + 1].isHeader) casted.secondDivider.visibility = View.INVISIBLE
                 if (data[position - 1].isHeader) casted.firstDivider.visibility = View.INVISIBLE
             } else casted.secondDivider.visibility = View.INVISIBLE
+
             val nextLes = getNextLesson(data, position)
             val nextLesStat = lessonStatus(
                     Utils.Time(nextLes.from,
                             nextLes.to),
                     nextLes.dayOfWeek)
+
             val curLesStat = lessonStatus(
                     Utils.Time(lesson.from,
                             lesson.to),
                     lesson.dayOfWeek)
             val currentLesson = lesson.counter + 1
+
             if (isOptLesHeader(position) || !lesson.isOptionally()) {
                 val colorFirstOpt: Int
                 //Сверху и снизу идентификаторы синие. Урок не начат
