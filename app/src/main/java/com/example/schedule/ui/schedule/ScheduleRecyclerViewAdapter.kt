@@ -92,8 +92,12 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                 casted.teacher.visibility = View.VISIBLE
                 casted.auditoryWithStyleOfSubject.visibility = View.VISIBLE
                 casted.teacher.text = lesson.teacher
-                casted.subject.text = deleteTypeOfSubjectPart(lesson.subject!!)
-                casted.auditoryWithStyleOfSubject.text = lesson.auditoryWithStyleOfSubject
+                casted.subject.text = lesson.subject
+
+                casted.auditoryWithStyleOfSubject.text =
+                        if (lesson.styleOfSubject.isEmpty()) lesson.auditory
+                        else "${lesson.styleOfSubject}, ${lesson.auditory}"
+
             } else bindDinnerEl(casted)
             casted.time.text = lesson.formattedTime
             casted.secondDivider.visibility = View.VISIBLE

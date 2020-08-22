@@ -1,8 +1,5 @@
 package com.example.schedule.ui.schedule
 
-import com.example.schedule.Utils
-import com.example.schedule.Utils.typeOfSubject
-
 class SimpleScheduleModel {
     var id = 0
     var from: String? = null
@@ -11,7 +8,9 @@ class SimpleScheduleModel {
     var auditory: String? = null
     var typeOfSubject: String? = null
     var subject: String? = null
-    var styleOfSubject: String? = null
+    var styleOfSubject = ""
+    get() =  if(field == "null") "" else field
+
     //Day of week starts from 1, zero is `header` value
     var dayOfWeek = 0
 
@@ -20,7 +19,7 @@ class SimpleScheduleModel {
     private var optionally = 0
     var isHeader = false
 
-    constructor() {}
+    constructor()
     constructor(model: SimpleScheduleModel) {
         from = model.from
         to = model.to
@@ -44,23 +43,8 @@ class SimpleScheduleModel {
         this.optionally = optionally
     }
 
-    fun setStleOfSubject(styleOfSubject: String?) {
-        this.styleOfSubject = styleOfSubject
-    }
-
     val formattedTime: String
         get() = "$from - $to"
-
-    val auditoryWithStyleOfSubject: String?
-        get() {
-            when (typeOfSubject(subject!!)) {
-                Utils.SEMINAR -> return "Семинар, $auditory"
-                Utils.LABORATORY_WORK -> return "Лаб. $auditory"
-                Utils.LECTURE -> return "Лекция, $auditory"
-                Utils.OTHER -> return auditory
-            }
-            return auditory
-        }
 
     companion object {
         var isNumerator = false

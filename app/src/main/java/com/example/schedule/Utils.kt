@@ -13,24 +13,8 @@ object Utils {
     private const val lect = "Лекц"
 
     @JvmStatic
-    fun typeOfSubject(subjectName: String): Int {
-        val sem = "Пр"
-        val lab = "Лаб"
-        val lect = "Лекц"
-        val s = subjectName.split("\\.")
-        return if (s.isNotEmpty()) {
-            when (s[0]) {
-                sem -> SEMINAR
-                lab -> LABORATORY_WORK
-                lect -> LECTURE
-                else -> OTHER
-            }
-        } else OTHER
-    }
-
-    @JvmStatic
     fun deleteTypeOfSubjectPart(subjectName: String): String {
-        val s = subjectName.split("\\.")
+        val s = subjectName.split(".")
         return if (s.isNotEmpty()) {
             when (s[0]) {
                 sem, lab, lect -> s[1].trim()

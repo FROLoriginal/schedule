@@ -10,6 +10,7 @@ import com.example.schedule.POJO.Object_;
 import com.example.schedule.POJO.Schedule;
 import com.example.schedule.POJO.Subobject;
 import com.example.schedule.ScheduleConstants;
+import com.example.schedule.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +60,13 @@ public class SQLScheduleEditor extends SQLManager {
                                         SQLManager.NUMERATOR : SQLManager.DIVIDER);
 
                             } else cv.put(SQLManager.BOTH_NUMERATOR_DIVIDER, SQLManager.BOTH);
+                            String[] arr = so.getSubject().split("\\.");
+
+                            if (arr.length == 2) {
+                                cv.put(SQLManager.STYLE_OF_SUBJECT, arr[0]);
+                            } else cv.put(SQLManager.STYLE_OF_SUBJECT, "null");
                             cv.put(SQLManager.OPTIONALLY, subtype.equals(ScheduleConstants.Subtype.OPTIONALLY) ? 1 : 0);
-                            cv.put(SQLManager.SUBJECT, so.getSubject());
+                            cv.put(SQLManager.SUBJECT, Utils.deleteTypeOfSubjectPart(so.getSubject()));
                             cv.put(SQLManager.AUDITORY, so.getAuditory());
                             cv.put(SQLManager.TEACHER, so.getTeacher());
                             cvList.add(new ContentValues(cv));
