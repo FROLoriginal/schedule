@@ -36,21 +36,27 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
         val from: String = view.findViewById<EditText>(R.id.editTimeFrom).text.toString()
         val to: String = view.findViewById<EditText>(R.id.editTimeTo).text.toString()
 
-        fragment
-                .parentFragmentManager
-                .beginTransaction()
-                .hide(this)
-                .show(fragment)
-                .commit()
-        listener.onClickToChangeLesson(
-                SimpleScheduleModel().apply {
-                    this.subject = subject
-                    this.teacher = teacher
-                    this.auditory = auditory
-                    this.dayOfWeek = Utils.Time.convertStringDayOfWeekToEUNum(dayOfWeek)
-                    this.typeOfSubject = typeOfSubject
-                    this.from = from
-                    this.to = to
+        val subject = subjectEditText.text.toString()
+        val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
+        val from = fromEditText.text.toString()
+        val to = toEditText.text.toString()
+
+        val model = SimpleScheduleModel().apply {
+            this.subject = subject
+            this.teacher = teacher
+            this.auditory = auditory
+            this.dayOfWeek = Utils.Time.convertStringDayOfWeekToEUNum(dayOfWeek)
+            this.styleOfSubject = styleOfSubject
+            this.from = from
+            this.to = to
+            this.id = lesson.id
+        }
+        val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
+        val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
+        EditFragmentPresenter(this).applyChanges(model, editor)
+        listener.onClickToChangeLesson(model)
+    }
 
                 })
     }
