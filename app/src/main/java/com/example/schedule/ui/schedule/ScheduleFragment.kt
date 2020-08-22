@@ -27,15 +27,14 @@ class ScheduleFragment : Fragment(){
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, Context.MODE_PRIVATE)
-        val table = pref.getString(SQLManager.SHARED_PREFERENCES_TABLE, "")
+        val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, "")
         val data: MutableList<SimpleScheduleModel> = SQLDataTranslator.getRawListSimpleScheduleModel(
                 SQLScheduleReader(context, table!!, SQLManager.VERSION)
         )
         ScheduleFragmentPresenter(null).prepareData(data)
         recyclerView.addItemDecoration(getDecorator(recyclerView, data))
-        val adapter = ScheduleRecyclerViewAdapter(data, this,)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = ScheduleRecyclerViewAdapter(data, this)
         val dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
         recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
 
