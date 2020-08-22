@@ -17,7 +17,8 @@ class SQLDataTranslator {
                     SQLManager.TO,  //index 4
                     SQLManager.AUDITORY,  //index 5
                     SQLManager.TYPE_OF_SUBJECT,  // index 6
-                    SQLManager.OPTIONALLY // index 7
+                    SQLManager.OPTIONALLY, // index 7
+                    SQLManager.STYLE_OF_SUBJECT // index 8
             )
             val week: MutableList<SimpleScheduleModel> = ArrayList()
             //TODO
@@ -47,6 +48,7 @@ class SQLDataTranslator {
             model.typeOfSubject = c.getString(6)
             model.dayOfWeek = dayOfWeek
             model.setOptionally(c.getInt(7))
+            model.styleOfSubject = c.getString(8)
             model.id = c.getInt(0)
             return SimpleScheduleModel(model)
 
