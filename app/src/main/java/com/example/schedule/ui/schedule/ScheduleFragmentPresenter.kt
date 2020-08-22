@@ -1,6 +1,7 @@
 package com.example.schedule.ui.schedule
 
 import com.example.schedule.Utils
+import java.sql.Time
 
 class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
@@ -12,12 +13,13 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         sv?.onItemAdded()
     }
 
-    fun changeLesson(list : MutableList<SimpleScheduleModel>,
-                     pos : Int,
-                     newLesson : SimpleScheduleModel){
+    fun changeLesson(list: MutableList<SimpleScheduleModel>,
+                     pos: Int,
+                     newLesson: SimpleScheduleModel) {
 
         list[pos] = newLesson
-        sv?.onItemChanged(pos)
+        prepareData(list)
+        sv?.onItemChanged()
     }
 
     //Remove lesson from prepared to show list
@@ -35,7 +37,8 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
     }
 
-    fun prepareData(list: MutableList<SimpleScheduleModel>){
+    fun prepareData(list: MutableList<SimpleScheduleModel>) {
+        removeHeaders(list)
         list.sort()
         setCounters(list)
         addHeaders(list)
@@ -69,6 +72,24 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
                             Utils.Time(l2.from, l2.to))) l2.counter = counter
             else counter++
 
+        }
+
+        val l1 = list[list.lastIndex - 1]
+        val l2 = list.last()
+
+        if (Utils.Time.isTimeIntersect(
+                        Utils.Time(l1.from, l1.to),
+                        Utils.Time(l2.from, l2.to))) l2.counter = counter - 1
+        else l2.counter = counter
+
+    }
+
+    private fun removeHeaders(list: MutableList<SimpleScheduleModel>) {
+
+        var i = 0
+        while (i < list.size) {
+            if (list[i].isHeader) list.removeAt(i)
+            i++
         }
 
     }

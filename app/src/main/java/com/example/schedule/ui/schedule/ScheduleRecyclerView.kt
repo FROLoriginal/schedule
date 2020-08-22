@@ -4,5 +4,5 @@ interface ScheduleRecyclerView {
 
     fun onItemRemoved(pos : Int)
     fun onItemAdded()
-    fun onItemChanged(pos : Int)
+    fun onItemChanged()
 }
