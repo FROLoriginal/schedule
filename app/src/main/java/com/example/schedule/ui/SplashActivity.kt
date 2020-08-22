@@ -8,7 +8,7 @@ import com.example.schedule.SQL.SQLManager
 class SplashActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (getSharedPreferences(SQLManager.SHARED_PREFERENCES_TABLES, MODE_PRIVATE).all.isEmpty()) {
+        if (getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, MODE_PRIVATE).all.isEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
             startActivity(Intent(this, MainActivity::class.java))
