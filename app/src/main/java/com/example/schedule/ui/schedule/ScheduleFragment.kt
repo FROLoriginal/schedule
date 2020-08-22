@@ -19,7 +19,8 @@ import com.example.schedule.ui.MainActivity
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
 import java.util.*
 
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(){
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,13 +32,11 @@ class ScheduleFragment : Fragment() {
         val data: MutableList<SimpleScheduleModel> = SQLDataTranslator.getRawListSimpleScheduleModel(
                 SQLScheduleReader(context, table!!, SQLManager.VERSION)
         )
-        ScheduleFragmentPresenter().prepareDataToShow(data)
-
+        ScheduleFragmentPresenter(null).prepareData(data)
         recyclerView.addItemDecoration(getDecorator(recyclerView, data))
-        val adapter = ScheduleRecyclerViewAdapter(data, this)
+        val adapter = ScheduleRecyclerViewAdapter(data, this,)
         recyclerView.adapter = adapter
         val dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
-
         recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
 
         (requireActivity() as MainActivity?)!!.supportActionBar!!.hide()

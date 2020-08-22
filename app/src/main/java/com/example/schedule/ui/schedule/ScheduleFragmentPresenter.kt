@@ -2,26 +2,43 @@ package com.example.schedule.ui.schedule
 
 import com.example.schedule.Utils
 
-//todo
-class ScheduleFragmentPresenter{
+class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
-    fun prepareDataToShow(list : MutableList<SimpleScheduleModel>){
+    fun addLessonToSchedule(list: MutableList<SimpleScheduleModel>,
+                            lesson: SimpleScheduleModel) {
 
-        list.sort()
-        setCounters(list)
-        addHeaders(list)
+        list.add(lesson)
+        prepareData(list)
+        sv?.onItemAdded()
+    }
+
+    fun changeLesson(list : MutableList<SimpleScheduleModel>,
+                     pos : Int,
+                     newLesson : SimpleScheduleModel){
+
+        list[pos] = newLesson
+        sv?.onItemChanged(pos)
     }
 
     //Remove lesson from prepared to show list
-    fun removeLesson(pos : Int, list : MutableList<SimpleScheduleModel>){
-        if (list[pos - 1].isHeader && list[pos + 1].isHeader ){
+    fun removeLesson(pos: Int, list: MutableList<SimpleScheduleModel>) {
+        if (list[pos - 1].isHeader && list[pos + 1].isHeader) {
             list.removeAt(pos)
             list.removeAt(pos - 1) //Remove the header
-        }else {
+            sv?.onItemRemoved(pos - 1)
+
+        } else {
             list.removeAt(pos)
         }
         setCounters(list)
+        sv?.onItemRemoved(pos)
 
+    }
+
+    fun prepareData(list: MutableList<SimpleScheduleModel>){
+        list.sort()
+        setCounters(list)
+        addHeaders(list)
     }
 
     private fun MutableList<SimpleScheduleModel>.sort() {

@@ -78,6 +78,20 @@ object Utils {
             fun convertEUDayOfWeekToUS(day: Int): Int {
                 return if (day == 7) 1 else day + 1
             }
+            fun convertStringDayOfWeekToEUNum(dayOfWeek : String) : Int {
+
+               return when(dayOfWeek){
+                    "Понедельник" -> 1
+                    "Вторник" -> 2
+                    "Среда" -> 3
+                    "Четверг" -> 4
+                    "Пятница" -> 5
+                    "Суббота" -> 6
+                    "Воскресенье" -> 7
+                    else -> -1
+
+                }
+            }
 
             /*
             Timeline looks like

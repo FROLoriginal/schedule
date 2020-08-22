@@ -11,4 +11,13 @@
     <string name="hintGetSchedule">НПИбд–01–19</string>
 
     <string name="today_ru">Сегодня</string>
+
+    <string-array name="daysOfWeek">
+      <item>Понедельник</item>
+      <item>Вторник</item>
+      <item>Среда</item>
+      <item>Четверг</item>
+      <item>Пятница</item>
+      <item>Суббота</item>
+    </string-array>
 </resources>

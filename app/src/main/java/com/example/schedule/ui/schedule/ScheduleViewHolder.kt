@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
 
-internal class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+internal open class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     @JvmField
     val  teacher: TextView = itemView.findViewById(R.id.container_name)
     @JvmField
