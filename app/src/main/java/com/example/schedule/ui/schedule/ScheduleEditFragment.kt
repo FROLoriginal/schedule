@@ -12,14 +12,14 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Utils
 import com.example.schedule.ui.MainActivity
 
-class ScheduleEditFragment internal constructor(private val fragment: Fragment,
-                                                private val listener: ScheduleRecyclerViewAdapter.OnClickListener,
+class ScheduleEditFragment internal constructor(private val listener: ScheduleRecyclerViewAdapter.OnClickListener,
                                                 private val lesson: SimpleScheduleModel)
     : Fragment(), EditFragmentView {
 
@@ -32,6 +32,7 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
     private lateinit var dayOfWeekSpinner: Spinner
 
     private lateinit var activity: MainActivity
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -55,10 +56,11 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
         dayOfWeekSpinner.setSelection(lesson.dayOfWeek - 1)
 
         activity = requireActivity() as MainActivity
+        parentFragmentManager.addOnBackStackChangedListener { applyChanges() }
         return root
     }
 
-    override fun onPause() {
+    private fun applyChanges() {
 
         val teacher: String? = teacherEditText.text.toString()
         val auditory: String? = auditoryEditText.text.toString()
@@ -84,8 +86,6 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
         val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
         EditFragmentPresenter(this).applyChanges(model, editor)
         listener.onClickToChangeLesson(model)
-
-        super.onPause()
     }
 
     override fun onFieldIsNull() {

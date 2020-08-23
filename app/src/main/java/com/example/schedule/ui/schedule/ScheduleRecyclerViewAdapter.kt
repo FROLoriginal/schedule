@@ -41,8 +41,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
     private fun getOnClickListenerForItems(scheduleViewHolder: ScheduleViewHolder): View.OnClickListener? {
         return View.OnClickListener {
             val pos = scheduleViewHolder.adapterPosition
-            val fr = ScheduleEditFragment(fragment,
-                    getOnClickListenerForChangingLesson(pos), data[pos])
+            val fr = ScheduleEditFragment(getOnClickListenerForChangingLesson(pos), data[pos])
 
             fragment.parentFragmentManager
                     .beginTransaction()
