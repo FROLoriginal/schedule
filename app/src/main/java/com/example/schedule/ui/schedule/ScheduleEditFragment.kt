@@ -9,16 +9,19 @@ import android.widget.EditText
 import android.widget.MultiAutoCompleteTextView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Utils
+import com.example.schedule.ui.MainActivity
 
 class ScheduleEditFragment internal constructor(private val fragment: Fragment,
                                                 private val listener: ScheduleRecyclerViewAdapter.OnClickListener,
                                                 private val lesson: SimpleScheduleModel)
-    : Fragment(), View.OnClickListener, EditFragmentView {
+    : Fragment(), EditFragmentView {
 
     private lateinit var teacherEditText: EditText
     private lateinit var auditoryEditText: EditText
@@ -28,11 +31,12 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
     private lateinit var styleOfSubjectMACTV: MultiAutoCompleteTextView
     private lateinit var dayOfWeekSpinner: Spinner
 
+    private lateinit var activity: MainActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         val root = inflater.inflate(R.layout.fragment_schedule_edit, container, false)
-        root.findViewById<View>(R.id.applyButton).setOnClickListener(this)
 
         teacherEditText = root.findViewById(R.id.editTeacher)
         auditoryEditText = root.findViewById(R.id.editAuditory)
@@ -50,10 +54,11 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
         styleOfSubjectMACTV.setText(lesson.styleOfSubject)
         dayOfWeekSpinner.setSelection(lesson.dayOfWeek - 1)
 
+        activity = requireActivity() as MainActivity
         return root
     }
 
-    override fun onClick(v: View) {
+    override fun onPause() {
 
         val teacher: String? = teacherEditText.text.toString()
         val auditory: String? = auditoryEditText.text.toString()
@@ -74,24 +79,16 @@ class ScheduleEditFragment internal constructor(private val fragment: Fragment,
             this.to = to
             this.id = lesson.id
         }
-        val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
         val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
         val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
         EditFragmentPresenter(this).applyChanges(model, editor)
         listener.onClickToChangeLesson(model)
+
+        super.onPause()
     }
 
     override fun onFieldIsNull() {
         Toast.makeText(context, "Необходимые поля не заполнены", Toast.LENGTH_SHORT).show()
     }
-
-    override fun returnToRecyclerView() {
-        fragment
-                .parentFragmentManager
-                .beginTransaction()
-                .hide(this)
-                .show(fragment)
-                .commit()
-    }
-
 }

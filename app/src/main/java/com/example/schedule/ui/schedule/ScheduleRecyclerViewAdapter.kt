@@ -47,6 +47,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
             fragment.parentFragmentManager
                     .beginTransaction()
                     .hide(fragment)
+                    .addToBackStack("editFragment")
                     .add(fragment.id, fr)
                     .show(fr)
                     .commit()

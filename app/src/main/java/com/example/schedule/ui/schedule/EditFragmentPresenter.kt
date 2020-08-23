@@ -15,7 +15,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
         val id = lesson.id
 
         if (from!!.isEmpty() || to!!.isEmpty()
-                || subject!!.isEmpty() || dayOfWeek !in 1..7) efv.onFieldIsNull()
+                || subject!!.isEmpty() || dayOfWeek !in 1..6) efv.onFieldIsNull()
         else {
             val cv: ContentValues = ContentValues().apply {
                 put(SQLManager.FROM, from)
@@ -25,12 +25,10 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
 
                 put(SQLManager.TEACHER, if (lesson.teacher!!.isEmpty()) "null" else lesson.teacher)
                 put(SQLManager.AUDITORY, if (lesson.auditory!!.isEmpty()) "null" else lesson.auditory)
-                //TODO Привести к онормальному виду `TYPE_OF_SUBJECT`
                 put(SQLManager.STYLE_OF_SUBJECT, if (lesson.styleOfSubject.isEmpty()) "null" else lesson.styleOfSubject)
 
             }
             editor.edit(cv, id)
-            efv.returnToRecyclerView()
 
         }
 
