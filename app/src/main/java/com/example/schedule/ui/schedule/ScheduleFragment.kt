@@ -15,8 +15,9 @@ import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleReader
 import com.example.schedule.Utils
 import com.example.schedule.Utils.toUpperCaseFirstLetter
-import com.example.schedule.ui.MainActivity
+import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
+import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.*
 
 class ScheduleFragment : Fragment() {

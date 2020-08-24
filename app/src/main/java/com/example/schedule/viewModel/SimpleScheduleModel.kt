@@ -1,4 +1,4 @@
-package com.example.schedule.ui.schedule
+package com.example.schedule.viewModel
 
 class SimpleScheduleModel {
     var id = 0

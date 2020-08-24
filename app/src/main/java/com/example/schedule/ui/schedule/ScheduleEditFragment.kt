@@ -7,14 +7,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Utils
+import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.MainActivity
+import com.example.schedule.viewModel.SimpleScheduleModel
 
 class ScheduleEditFragment internal constructor(private val listener: ScheduleRecyclerViewAdapter.OnClickListener,
                                                 private val lesson: SimpleScheduleModel)

@@ -1,7 +1,7 @@
 package com.example.schedule.SQL
 
 import android.database.Cursor
-import com.example.schedule.ui.schedule.SimpleScheduleModel
+import com.example.schedule.viewModel.SimpleScheduleModel
 
 class SQLDataTranslator {
 

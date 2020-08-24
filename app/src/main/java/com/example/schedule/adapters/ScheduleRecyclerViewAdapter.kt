@@ -1,4 +1,4 @@
-package com.example.schedule.ui.schedule
+package com.example.schedule.adapters
 
 import android.content.res.Resources
 import android.os.Bundle
@@ -13,10 +13,13 @@ import com.example.schedule.ScheduleConstants
 import com.example.schedule.Utils
 import com.example.schedule.Utils.Time.Companion.convertEUDayOfWeekToUS
 import com.example.schedule.Utils.Time.Companion.lessonStatus
-import com.example.schedule.Utils.deleteTypeOfSubjectPart
 import com.example.schedule.Utils.toUpperCaseFirstLetter
-import com.example.schedule.ui.schedule.SimpleScheduleModel.Companion.equals
-import com.example.schedule.ui.schedule.SimpleScheduleModel.Companion.getNextLesson
+import com.example.schedule.ui.schedule.*
+import com.example.schedule.ui.schedule.ScheduleHeaderViewHolder
+import com.example.schedule.ui.schedule.ScheduleViewHolder
+import com.example.schedule.viewModel.SimpleScheduleModel
+import com.example.schedule.viewModel.SimpleScheduleModel.Companion.equals
+import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesson
 import java.util.*
 
 class ScheduleRecyclerViewAdapter internal constructor(private val data: MutableList<SimpleScheduleModel>,

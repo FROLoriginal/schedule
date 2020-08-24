@@ -1,7 +1,7 @@
 package com.example.schedule.ui.schedule
 
 import com.example.schedule.Utils
-import java.sql.Time
+import com.example.schedule.viewModel.SimpleScheduleModel
 
 class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 

@@ -1,4 +1,4 @@
-package com.example.schedule.API
+package com.example.schedule.adapters
 
 import com.example.schedule.POJO.Lesson
 import com.example.schedule.POJO.Object_
