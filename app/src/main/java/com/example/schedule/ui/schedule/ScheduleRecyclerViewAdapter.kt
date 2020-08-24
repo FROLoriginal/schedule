@@ -1,6 +1,7 @@
 package com.example.schedule.ui.schedule
 
 import android.content.res.Resources
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,9 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         return View.OnClickListener {
             val pos = scheduleViewHolder.adapterPosition
             val fr = ScheduleEditFragment(getOnClickListenerForChangingLesson(pos), data[pos])
+            val data = Bundle()
+            data.putString("edit", "Редактирование")
+            fr.arguments = data
 
             fragment.parentFragmentManager
                     .beginTransaction()

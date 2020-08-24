@@ -19,7 +19,7 @@ import com.example.schedule.ui.MainActivity
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
 import java.util.*
 
-class ScheduleFragment : Fragment(){
+class ScheduleFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -38,7 +38,6 @@ class ScheduleFragment : Fragment(){
         val dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
         recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
 
-        (requireActivity() as MainActivity?)!!.supportActionBar!!.hide()
         return root
     }
 

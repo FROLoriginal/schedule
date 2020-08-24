@@ -3,16 +3,13 @@ package com.example.schedule.ui.schedule
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.MultiAutoCompleteTextView
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
@@ -21,7 +18,7 @@ import com.example.schedule.ui.MainActivity
 
 class ScheduleEditFragment internal constructor(private val listener: ScheduleRecyclerViewAdapter.OnClickListener,
                                                 private val lesson: SimpleScheduleModel)
-    : Fragment(), EditFragmentView {
+    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener {
 
     private lateinit var teacherEditText: EditText
     private lateinit var auditoryEditText: EditText
@@ -56,39 +53,53 @@ class ScheduleEditFragment internal constructor(private val listener: ScheduleRe
         dayOfWeekSpinner.setSelection(lesson.dayOfWeek - 1)
 
         activity = requireActivity() as MainActivity
-        parentFragmentManager.addOnBackStackChangedListener { applyChanges() }
+
+        val toolbar = root.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = arguments?.getString("edit") ?: ""
+        toolbar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        toolbar.setOnMenuItemClickListener(this)
+        ///activity.setSupportActionBar(toolbar) todo
         return root
     }
 
-    private fun applyChanges() {
 
-        val teacher: String? = teacherEditText.text.toString()
-        val auditory: String? = auditoryEditText.text.toString()
-        val styleOfSubject: String = styleOfSubjectMACTV.text.toString()
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
 
-        val subject = subjectEditText.text.toString()
-        val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
-        val from = fromEditText.text.toString()
-        val to = toEditText.text.toString()
+        if (item!!.itemId == R.id.action_apply) {
 
-        val model = SimpleScheduleModel().apply {
-            this.subject = subject
-            this.teacher = teacher
-            this.auditory = auditory
-            this.dayOfWeek = Utils.Time.convertStringDayOfWeekToEUNum(dayOfWeek)
-            this.styleOfSubject = styleOfSubject
-            this.from = from
-            this.to = to
-            this.id = lesson.id
+            val teacher: String? = teacherEditText.text.toString()
+            val auditory: String? = auditoryEditText.text.toString()
+            val styleOfSubject: String = styleOfSubjectMACTV.text.toString()
+
+            val subject = subjectEditText.text.toString()
+            val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
+            val from = fromEditText.text.toString()
+            val to = toEditText.text.toString()
+
+            val model = SimpleScheduleModel().apply {
+                this.subject = subject
+                this.teacher = teacher
+                this.auditory = auditory
+                this.dayOfWeek = Utils.Time.convertStringDayOfWeekToEUNum(dayOfWeek)
+                this.styleOfSubject = styleOfSubject
+                this.from = from
+                this.to = to
+                this.id = lesson.id
+            }
+            val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+            val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
+            val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
+            EditFragmentPresenter(this).applyChanges(model, editor)
+            listener.onClickToChangeLesson(model)
+            parentFragmentManager.popBackStack()
+            return true
         }
-        val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
-        val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
-        val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
-        EditFragmentPresenter(this).applyChanges(model, editor)
-        listener.onClickToChangeLesson(model)
+        return false
     }
 
     override fun onFieldIsNull() {
         Toast.makeText(context, "Необходимые поля не заполнены", Toast.LENGTH_SHORT).show()
     }
+
+
 }
