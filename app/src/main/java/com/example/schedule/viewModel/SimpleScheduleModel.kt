@@ -9,7 +9,7 @@ class SimpleScheduleModel {
     var typeOfSubject: String? = null
     var subject: String? = null
     var styleOfSubject = ""
-    get() =  if(field == "null") "" else field
+        get() = if (field == "null") "" else field
 
     //Day of week starts from 1, zero is `header` value
     var dayOfWeek = 0
@@ -48,6 +48,7 @@ class SimpleScheduleModel {
 
     companion object {
         var isNumerator = false
+
         @JvmStatic
         fun equals(s1: SimpleScheduleModel, s2: SimpleScheduleModel): Boolean {
             return s1.counter == s2.counter && s1.counter >= 0 && s2.counter >= 0
@@ -63,9 +64,10 @@ class SimpleScheduleModel {
             } while (equals(data[position], nextLes))
             return nextLes
         }
+
         @JvmStatic
-        fun isOneDayLessons(target1 : SimpleScheduleModel,
-                            target2 : SimpleScheduleModel)
+        fun isOneDayLessons(target1: SimpleScheduleModel,
+                            target2: SimpleScheduleModel)
                 : Boolean = target1.dayOfWeek == target2.dayOfWeek
 
     }

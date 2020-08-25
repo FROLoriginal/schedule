@@ -1,10 +1,14 @@
 package com.example.schedule.ui.schedule
 
+import android.content.res.Resources
 import android.graphics.Canvas
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -14,6 +18,7 @@ class ScheduleHeaderItemDecorator internal constructor(recyclerView: RecyclerVie
                                                        private val mListener: StickyHeaderInterface)
     : ItemDecoration() {
     private var mStickyHeaderHeight = 0
+    private val res = recyclerView.resources
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
@@ -24,10 +29,10 @@ class ScheduleHeaderItemDecorator internal constructor(recyclerView: RecyclerVie
             if (topChildPosition != RecyclerView.NO_POSITION) {
                 val currentHeader = getHeaderViewForItem(topChildPosition, parent)
                 fixLayoutSize(parent, currentHeader)
+
                 val contactPoint = currentHeader.bottom.toFloat()
                 val childInContact = getChildInContact(parent, contactPoint.toInt())
-                val resources = parent.resources
-                val px = resources.getDimension(R.dimen.card_view_schedule_margin).toInt()
+                val px = toPx(res, R.dimen.card_view_schedule_margin)
 
                 if (childInContact != null) {
                     if (mListener.isHeader(parent.getChildAdapterPosition(childInContact))) {
@@ -41,6 +46,8 @@ class ScheduleHeaderItemDecorator internal constructor(recyclerView: RecyclerVie
             }
         }
     }
+
+    private fun toPx(res: Resources, id: Int) = res.getDimension(id).toInt()
 
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View {
         val headerPosition = mListener.getHeaderPositionForItem(itemPosition)

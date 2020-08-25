@@ -39,10 +39,10 @@ object Utils {
                     val secondHalfTo = t.to.split(":")[1].toInt()
                     val firstTime = Calendar.getInstance()
                     val secondTime = Calendar.getInstance()
-                    firstTime[Calendar.DAY_OF_WEEK] = convertEUDayOfWeekToUS(dayOfWeek + 1) - 1
+                    firstTime[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(dayOfWeek + 1) - 1
                     firstTime[Calendar.HOUR_OF_DAY] = firstHalfFrom
                     firstTime[Calendar.MINUTE] = secondHalfFrom
-                    secondTime[Calendar.DAY_OF_WEEK] = convertEUDayOfWeekToUS(dayOfWeek + 1) - 1
+                    secondTime[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(dayOfWeek + 1) - 1
                     secondTime[Calendar.HOUR_OF_DAY] = firstHalfTo
                     secondTime[Calendar.MINUTE] = secondHalfTo
                     val current = Calendar.getInstance().timeInMillis
@@ -55,14 +55,14 @@ object Utils {
                 }else LESSON_IS_NOT_EXISTS
             }
 
-            fun convertUSDayOfWeekToEU(day: Int): Int {
+            fun USDayOfWeekToEU(day: Int): Int {
                 return if (day == 1) 7 else day - 1
             }
 
-            fun convertEUDayOfWeekToUS(day: Int): Int {
+            fun EUDayOfWeekToUS(day: Int): Int {
                 return if (day == 7) 1 else day + 1
             }
-            fun convertStringDayOfWeekToEUNum(dayOfWeek : String) : Int {
+            fun strDayOfWeekToEUNum(dayOfWeek : String) : Int {
 
                return when(dayOfWeek){
                     "Понедельник" -> 1
