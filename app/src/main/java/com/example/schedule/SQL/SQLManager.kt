@@ -22,7 +22,6 @@ open class SQLManager(private val context: Context?,
                     TEACHER + " TEXT," +
                     TYPE_OF_SUBJECT + " TEXT," +
                     OPTIONALLY + " INTEGER," +
-                    BOTH_NUMERATOR_DIVIDER + " INTEGER NOT NULL," +
                     STYLE_OF_SUBJECT + " TEXT" +
                     ")")
             val sh : SharedPreferences
@@ -43,15 +42,11 @@ open class SQLManager(private val context: Context?,
         const val AUDITORY = "auditory"
         const val TEACHER = "teacher"
         const val TYPE_OF_SUBJECT = "type_of_subject"
-        const val BOTH_NUMERATOR_DIVIDER = "both_numerator_divider"
         const val OPTIONALLY = "optionally"
         const val SHARED_PREF_DB_TABLE_NAME = "tables"
         const val SHARED_PREF_TABLE_NAME_KEY = "table"
         const val STYLE_OF_SUBJECT = "STYLE_OF_SUBJECT"
         const val VERSION = 1
-        const val NUMERATOR = 1
-        const val DIVIDER = 2
-        const val BOTH = 0
     }
 
 }

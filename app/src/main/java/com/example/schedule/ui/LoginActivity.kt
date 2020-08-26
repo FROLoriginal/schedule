@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         imm.hideSoftInputFromWindow(text!!.windowToken, 0)
         showLoading()
         val editText = text!!.text.toString()
-        Thread(Runnable{presenter.makeRequest(editText)}).start()
+        Thread { presenter.makeRequest(editText) }.start()
     }
 
     override fun showGroupIsNotExists() {

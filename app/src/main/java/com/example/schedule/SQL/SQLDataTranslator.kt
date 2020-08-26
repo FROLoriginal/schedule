@@ -21,13 +21,9 @@ class SQLDataTranslator {
                     SQLManager.STYLE_OF_SUBJECT // index 8
             )
             val week: MutableList<SimpleScheduleModel> = ArrayList()
-            //TODO
-            val weekStatus = SQLManager.NUMERATOR
-            val isNumerator = weekStatus == SQLManager.NUMERATOR
 
             for (dayOfWeek in 1..6) {
-                val c: Cursor = reader.getScheduleByDay(columns, dayOfWeek, weekStatus)
-                SimpleScheduleModel.isNumerator = isNumerator
+                val c: Cursor = reader.getScheduleByDay(columns, dayOfWeek)
                 while (c.moveToNext()) {
                     week.add(getSimpleScheduleModel(c, dayOfWeek))
                 }
