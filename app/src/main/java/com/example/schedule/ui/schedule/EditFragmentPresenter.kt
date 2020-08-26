@@ -1,13 +1,18 @@
 package com.example.schedule.ui.schedule
 
 import android.content.ContentValues
+import com.example.schedule.SQL.SQLDataTranslator
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
+import com.example.schedule.SQL.SQLScheduleReader
 import com.example.schedule.viewModel.SimpleScheduleModel
 
 class EditFragmentPresenter(private val efv: EditFragmentView) {
 
-    fun applyChanges(lesson: SimpleScheduleModel, editor: SQLScheduleEditor) {
+    /**
+     * @return {@code true} if the value changes was applied, {@code false} otherwise
+     */
+    fun applyChanges(lesson: SimpleScheduleModel, editor: SQLScheduleEditor): Boolean {
 
         val from = lesson.from
         val to = lesson.to
@@ -16,9 +21,12 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
         val id = lesson.id
 
         if (from!!.isEmpty() || to!!.isEmpty()
-                || subject!!.isEmpty() || dayOfWeek !in 1..6) efv.onFieldIsNull()
-        else {
+                || subject!!.isEmpty() || dayOfWeek !in 1..6) {
+            efv.onFieldIsNull()
+            return false
+        } else {
             val cv: ContentValues = ContentValues().apply {
+
                 put(SQLManager.FROM, from)
                 put(SQLManager.TO, to)
                 put(SQLManager.SUBJECT, subject)
@@ -29,8 +37,11 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
                 put(SQLManager.STYLE_OF_SUBJECT, if (lesson.styleOfSubject.isEmpty()) "null" else lesson.styleOfSubject)
 
             }
-            editor.edit(cv, id)
+            if (id != 0) editor.edit(cv, id)
+            else editor.insert(cv)
+            editor.close()
 
+            return true
         }
 
     }

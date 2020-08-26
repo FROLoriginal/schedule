@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,27 +21,68 @@ import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeader
 import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.*
 
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, OnScheduleChangedListener {
+
+    private lateinit var adapter: ScheduleRecyclerViewAdapter
+    private val presenter = ScheduleFragmentPresenter(this)
+    private lateinit var data: MutableList<SimpleScheduleModel>
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
+
         val recyclerView: RecyclerView = root.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
         val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
         val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, "")
-        val data: MutableList<SimpleScheduleModel> = SQLDataTranslator.getRawListSimpleScheduleModel(
+        data = SQLDataTranslator.getRawListSimpleScheduleModel(
                 SQLScheduleReader(context, table!!, SQLManager.VERSION)
         )
-        ScheduleFragmentPresenter(null).prepareData(data)
-        recyclerView.addItemDecoration(getDecorator(recyclerView, data))
-        recyclerView.adapter = ScheduleRecyclerViewAdapter(data, this)
-        val dayOfWeek = Utils.Time.convertUSDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
-        recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
 
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addItemDecoration(getDecorator(recyclerView, data))
+        adapter = ScheduleRecyclerViewAdapter(data, this)
+        recyclerView.adapter = adapter
+
+        val dayOfWeek = Utils.Time.USDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
+        recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
+        presenter.prepareData(data)
+
+        root.findViewById<ImageButton>(R.id.addLesson).setOnClickListener {
+            onMove(ScheduleEditFragment(this, null, -1), IFragmentMovement.CREATE_INTENTION)
+        }
         return root
     }
+
+    override fun onScheduleIsChanged(lesson: SimpleScheduleModel, pos: Int, intention: String) {
+        presenter.addLessonToSchedule(data, lesson)
+    }
+
+    override fun onItemAdded() {
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun onItemChanged() {
+        //This fun is already implemented in ScheduleRecyclerViewAdapter
+    }
+
+    override fun onItemRemoved(pos: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMove(fragment: Fragment, intention: String) {
+        val data = Bundle()
+        data.putString("key", intention)
+        fragment.arguments = data
+        this.parentFragmentManager
+                .beginTransaction()
+                .hide(this)
+                .addToBackStack("editFragment")
+                .add(this.id, fragment)
+                .show(fragment)
+                .commit()
+    }
+
 
     private fun getActualPosition(data: List<SimpleScheduleModel>,
                                   dayOfWeek: Int): Int {
@@ -77,7 +119,7 @@ class ScheduleFragment : Fragment() {
 
             override fun bindHeaderData(header: View?, headerPosition: Int) {
                 val calendar = Calendar.getInstance()
-                calendar[Calendar.DAY_OF_WEEK] = Utils.Time.convertEUDayOfWeekToUS(data[headerPosition].dayOfWeek)
+                calendar[Calendar.DAY_OF_WEEK] = Utils.Time.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
                 var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
                 val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 val date = calendar[Calendar.DATE]

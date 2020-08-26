@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
 import com.example.schedule.ScheduleConstants
 import com.example.schedule.Utils
-import com.example.schedule.Utils.Time.Companion.convertEUDayOfWeekToUS
+import com.example.schedule.Utils.Time.Companion.EUDayOfWeekToUS
 import com.example.schedule.Utils.Time.Companion.lessonStatus
 import com.example.schedule.Utils.toUpperCaseFirstLetter
 import com.example.schedule.ui.schedule.*
@@ -23,8 +22,8 @@ import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesso
 import java.util.*
 
 class ScheduleRecyclerViewAdapter internal constructor(private val data: MutableList<SimpleScheduleModel>,
-                                                       private val fragment: Fragment)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ScheduleRecyclerView {
+                                                       private val move: IFragmentMovement)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ScheduleRecyclerView, OnScheduleChangedListener {
 
     private val presenter = ScheduleFragmentPresenter(this)
 
@@ -45,32 +44,18 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
     private fun getOnClickListenerForItems(scheduleViewHolder: ScheduleViewHolder): View.OnClickListener? {
         return View.OnClickListener {
             val pos = scheduleViewHolder.adapterPosition
-            val fr = ScheduleEditFragment(getOnClickListenerForChangingLesson(pos), data[pos])
-            val data = Bundle()
-            data.putString("edit", "Редактирование")
-            fr.arguments = data
-
-            fragment.parentFragmentManager
-                    .beginTransaction()
-                    .hide(fragment)
-                    .addToBackStack("editFragment")
-                    .add(fragment.id, fr)
-                    .show(fr)
-                    .commit()
+            val fr = ScheduleEditFragment(this, data[pos], pos)
+            move.onMove(fr, IFragmentMovement.EDIT_INTENTION)
         }
     }
 
-    private fun getOnClickListenerForChangingLesson(pos: Int): OnClickListener {
-        return object : OnClickListener {
-            override fun onClickToChangeLesson(lesson: SimpleScheduleModel) {
-                if (pos != RecyclerView.NO_POSITION)
-                    presenter.changeLesson(data, pos, lesson)
-            }
-        }
+    override fun onScheduleIsChanged(lesson: SimpleScheduleModel, pos: Int, intention: String) {
+        if (pos != RecyclerView.NO_POSITION)
+            presenter.changeLesson(data, pos, lesson)
     }
 
     override fun onItemAdded() {
-        notifyDataSetChanged()
+        //This fun is already implemented in ScheduleFragment
     }
 
     override fun onItemRemoved(pos: Int) {
@@ -79,11 +64,6 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
 
     override fun onItemChanged() {
         notifyDataSetChanged()
-    }
-
-    interface OnClickListener {
-
-        fun onClickToChangeLesson(lesson: SimpleScheduleModel)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -176,7 +156,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
     private fun bindHeader(holder: RecyclerView.ViewHolder,
                            lesson: SimpleScheduleModel, resources: Resources) {
         val calendar = Calendar.getInstance()
-        calendar[Calendar.DAY_OF_WEEK] = convertEUDayOfWeekToUS(lesson.dayOfWeek)
+        calendar[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(lesson.dayOfWeek)
         var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
         val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
         val date = calendar[Calendar.DATE]
