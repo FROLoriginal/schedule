@@ -10,20 +10,13 @@ class SQLScheduleReader(context: Context?,
     : SQLManager(context, tableName,
         null, version) {
 
-
     private var sqLiteDatabase: SQLiteDatabase = readableDatabase
 
-    fun getScheduleByDay(columns: Array<String>, dayOfWeek: Int, weekStatus: Int): Cursor {
+    fun getScheduleByDay(columns: Array<String>, dayOfWeek: Int): Cursor {
 
-        val selection = DAY_OF_WEEK + " = ? AND (" +
-                BOTH_NUMERATOR_DIVIDER + " = ? OR " +
-                BOTH_NUMERATOR_DIVIDER + " = ? )"
+        val selection = "$DAY_OF_WEEK = ? "
 
-        val selectionArgs: Array<String> = arrayOf(
-                dayOfWeek.toString(),
-                BOTH.toString(),
-                weekStatus.toString()
-        )
+        val selectionArgs: Array<String> = arrayOf(dayOfWeek.toString())
 
         return sqLiteDatabase.query(databaseName, columns,
                 selection, selectionArgs,
@@ -37,10 +30,10 @@ class SQLScheduleReader(context: Context?,
 
     }
 
-    fun isIdExists(id : Int) : Cursor{
-       return sqLiteDatabase.rawQuery(
-               "SELECT EXISTS(SELECT $ID FROM $databaseName WHERE id = $id)",
-               null)
+    fun isIdExists(id: Int): Cursor {
+        return sqLiteDatabase.rawQuery(
+                "SELECT EXISTS(SELECT $ID FROM $databaseName WHERE id = $id)",
+                null)
     }
 
 
