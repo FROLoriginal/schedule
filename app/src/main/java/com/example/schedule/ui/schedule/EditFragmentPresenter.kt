@@ -1,10 +1,8 @@
 package com.example.schedule.ui.schedule
 
 import android.content.ContentValues
-import com.example.schedule.SQL.SQLDataTranslator
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
-import com.example.schedule.SQL.SQLScheduleReader
 import com.example.schedule.viewModel.SimpleScheduleModel
 
 class EditFragmentPresenter(private val efv: EditFragmentView) {

@@ -1,13 +1,9 @@
 package com.example.schedule
 
 import java.util.*
-import kotlin.jvm.Throws
 
 object Utils {
-    const val OTHER = 0
-    const val SEMINAR = 1
-    const val LABORATORY_WORK = 2
-    const val LECTURE = 3
+
     private const val sem = "Пр"
     private const val lab = "Лаб"
     private const val lect = "Лекц"
@@ -24,7 +20,6 @@ object Utils {
     }
 
     @JvmStatic
-    @Throws(NullPointerException::class)
     fun toUpperCaseFirstLetter(input: String): String = input[0].toUpperCase() + input.substring(1)
 
     class Lesson(val from: Time, val to: Time)
@@ -57,7 +52,7 @@ object Utils {
                     } else if (current > second) {
                         LESSON_IS_OVER
                     } else LESSON_WILL_START
-                }else LESSON_IS_NOT_EXISTS
+                }
             }
 
             fun USDayOfWeekToEU(day: Int): Int {
@@ -101,7 +96,7 @@ object Utils {
 
             fun strDayOfWeekToEUNum(dayOfWeek: String): Int {
 
-               return when(dayOfWeek){
+                return when (dayOfWeek) {
                     "Понедельник" -> 1
                     "Вторник" -> 2
                     "Среда" -> 3
@@ -116,9 +111,8 @@ object Utils {
 
             /*
             Timeline looks like
-
-            (12:00)x1 - - - - - - - - (13:20)x2
-                            (12:30)y1 - - - - - - - - - (14:00)y2
+            (12:00)x1 - - - - -  - (13:20)x2
+                        (12:30)y1 - - - - - - (14:00)y2
              */
             fun isTimeIntersect(l1: Lesson, l2: Lesson): Boolean {
                 val x1 = l1.from.totalMin
@@ -128,13 +122,7 @@ object Utils {
                 return y1 in x1..x2 || y2 in x1..x2 || x1 in y1..y2 || x2 in y1..y2
             }
 
-
-            fun timeToMinutes(time: String): Int {
-                val arr = time.split(":")
-                return arr[0].toInt() * 60 + arr[1].toInt()
-            }
-
-            private fun stringArrToInt(arr: Array<String>): List<Int> = arr.map { p -> p.toInt() }
+            private fun isTimeCorrect(min: Int): Boolean = min in 0..60 * 24
 
             const val LESSON_IS_NOT_OVER = 1
             const val LESSON_WILL_START = 2

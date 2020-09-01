@@ -120,7 +120,7 @@ class ScheduleHeaderItemDecorator internal constructor(recyclerView: RecyclerVie
          * @param header         View. Header to set the data on.
          * @param headerPosition int. Position of the header item in the adapter.
          */
-        fun bindHeaderData(header: View?, headerPosition: Int)
+        fun bindHeaderData(header: View, headerPosition: Int)
 
         /**
          * This method gets called by [ScheduleHeaderItemDecorator] to verify whether the item represents a header.

@@ -33,6 +33,7 @@ open class SQLManager(private val context: Context?,
 
     companion object {
         const val ID = "_id"
+
         //Day of week start from one
         const val DAY_OF_WEEK = "day_of_week"
         const val SUBJECT = "subject"

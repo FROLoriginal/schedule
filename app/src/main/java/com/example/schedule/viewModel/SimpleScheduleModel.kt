@@ -11,7 +11,6 @@ class SimpleScheduleModel {
     var typeOfSubject: String? = null
     var subject: String? = null
     var styleOfSubject = ""
-        get() = if (field == "null") "" else field
 
     //Day of week starts from 1, zero is `header` value
     var dayOfWeek = 0

@@ -60,9 +60,9 @@ class SQLDataTranslator {
 
         }
 
-        fun isIdExists(id : Int, reader: SQLScheduleReader) : Boolean{
+        fun isIdExists(id: Int, reader: SQLScheduleReader): Boolean {
 
-            val cursor : Cursor = reader.isIdExists(id)
+            val cursor: Cursor = reader.isIdExists(id)
             while (cursor.moveToNext())
                 if (cursor.getInt(0) == 1)
                     return true

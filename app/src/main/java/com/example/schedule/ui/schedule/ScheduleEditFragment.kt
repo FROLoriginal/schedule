@@ -13,7 +13,6 @@ import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Utils
-import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.concurrent.TimeUnit
@@ -34,7 +33,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
     private lateinit var activity: MainActivity
     private lateinit var presenter: EditFragmentPresenter
 
-    private lateinit var intention: String;
+    private lateinit var intention: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

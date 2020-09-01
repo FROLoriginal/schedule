@@ -17,6 +17,7 @@ class SQLScheduleEditor(context: Context?,
     private var sqLiteDatabase: SQLiteDatabase = writableDatabase
 
     fun fillDataBase(jr: JsonResponse) {
+
         val cvList: MutableList<ContentValues> = ArrayList()
         val dayOfWeekSize = jr.schedule!!.size
 
@@ -71,11 +72,11 @@ class SQLScheduleEditor(context: Context?,
         cvList.forEach { insert(it) }
     }
 
-    fun insert(cv: ContentValues?) {
+    fun insert(cv: ContentValues) {
         sqLiteDatabase.insert(databaseName, null, cv)
     }
 
-    fun edit(cv: ContentValues?, id: Int) {
+    fun edit(cv: ContentValues, id: Int) {
         sqLiteDatabase.update(
                 databaseName,
                 cv,
