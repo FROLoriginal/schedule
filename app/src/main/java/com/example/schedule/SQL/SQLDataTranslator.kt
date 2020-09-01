@@ -36,8 +36,8 @@ class SQLDataTranslator {
         private fun getSimpleScheduleModel(c: Cursor, dayOfWeek: Int): SimpleScheduleModel {
 
             val model = SimpleScheduleModel()
-            model.from = c.getString(3)
-            model.to = c.getString(4)
+            model.from = c.getInt(3)
+            model.to = c.getInt(4)
             model.auditory = c.getString(5)
             model.subject = c.getString(1)
             model.teacher = c.getString(2)

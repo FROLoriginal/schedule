@@ -20,8 +20,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
         val dayOfWeek = lesson.dayOfWeek
         val id = lesson.id
 
-        if (from!!.isEmpty() || to!!.isEmpty()
-                || subject!!.isEmpty() || dayOfWeek !in 1..6) {
+        if (from < 0 || to < 0 || subject!!.isEmpty() || dayOfWeek !in 1..7) {
             efv.onFieldIsNull()
             return false
         } else {
@@ -31,10 +30,9 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
                 put(SQLManager.TO, to)
                 put(SQLManager.SUBJECT, subject)
                 put(SQLManager.DAY_OF_WEEK, dayOfWeek)
-
-                put(SQLManager.TEACHER, if (lesson.teacher!!.isEmpty()) "null" else lesson.teacher)
-                put(SQLManager.AUDITORY, if (lesson.auditory!!.isEmpty()) "null" else lesson.auditory)
-                put(SQLManager.STYLE_OF_SUBJECT, if (lesson.styleOfSubject.isEmpty()) "null" else lesson.styleOfSubject)
+                put(SQLManager.TEACHER, lesson.teacher)
+                put(SQLManager.AUDITORY, lesson.auditory)
+                put(SQLManager.STYLE_OF_SUBJECT, lesson.styleOfSubject)
 
             }
             if (id != 0) editor.edit(cv, id)

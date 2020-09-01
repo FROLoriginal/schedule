@@ -29,8 +29,8 @@ class SQLScheduleEditor(context: Context?,
             for (lesson in 0 until lessonSize) {
                 val les = schedule.lessons[lesson]
                 val objectSize = les.`object`.size
-                cv.put(FROM, les.from)
-                cv.put(TO, les.to)
+                cv.put(FROM, Utils.Time.displayedTimeToTime(les.from).totalMin)
+                cv.put(TO, Utils.Time.displayedTimeToTime(les.to).totalMin)
 
                 for (`object` in 0 until objectSize) {
                     val object_ = les.`object`[`object`]!!

@@ -1,9 +1,11 @@
 package com.example.schedule.viewModel
 
+import com.example.schedule.Utils
+
 class SimpleScheduleModel {
     var id = 0
-    var from: String? = null
-    var to: String? = null
+    var from = 0
+    var to = 0
     var teacher: String? = null
     var auditory: String? = null
     var typeOfSubject: String? = null
@@ -44,7 +46,7 @@ class SimpleScheduleModel {
     }
 
     val formattedTime: String
-        get() = "$from - $to"
+        get() = "${Utils.Time.minutesToDisplayedTime(from)} - ${Utils.Time.minutesToDisplayedTime(to)}"
 
     companion object {
         var isNumerator = false

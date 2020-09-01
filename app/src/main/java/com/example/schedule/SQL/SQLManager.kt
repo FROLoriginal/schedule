@@ -11,23 +11,22 @@ open class SQLManager(private val context: Context?,
                       factory: CursorFactory?,
                       version: Int) : SQLiteOpenHelper(context, name, factory, version) {
     override fun onCreate(db: SQLiteDatabase) {
-        name?.let {
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + name + " (" +
-                    ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                    DAY_OF_WEEK + " INTEGER NOT NULL," +
-                    SUBJECT + " TEXT," +
-                    FROM + " TEXT NOT NULL," +
-                    TO + " TEXT NOT NULL," +
-                    AUDITORY + " TEXT," +
-                    TEACHER + " TEXT," +
-                    TYPE_OF_SUBJECT + " TEXT," +
-                    OPTIONALLY + " INTEGER," +
-                    STYLE_OF_SUBJECT + " TEXT" +
-                    ")")
-            val sh : SharedPreferences
-                    = context!!.getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
-            sh.edit().putString(SHARED_PREF_TABLE_NAME_KEY, name).apply()
-        }
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + name + " (" +
+                ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                DAY_OF_WEEK + " INTEGER NOT NULL," +
+                SUBJECT + " TEXT," +
+                FROM + " INTEGER NOT NULL," +
+                TO + " INTEGER NOT NULL," +
+                AUDITORY + " TEXT," +
+                TEACHER + " TEXT," +
+                TYPE_OF_SUBJECT + " TEXT," +
+                OPTIONALLY + " INTEGER," +
+                STYLE_OF_SUBJECT + " TEXT" +
+                ")")
+        val sh: SharedPreferences = context.getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        sh.edit().putString(SHARED_PREF_TABLE_NAME_KEY, name).apply()
+
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}

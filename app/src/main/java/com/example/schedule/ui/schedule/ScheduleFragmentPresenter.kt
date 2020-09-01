@@ -46,17 +46,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
     }
 
     private fun MutableList<SimpleScheduleModel>.sort() {
-        sortWith(compareBy({ it.dayOfWeek }, {
-            when (it.from!!.length) {
-                4 -> "0" + it.from
-                else -> it.from
-            }
-        }, {
-            when (it.to!!.length) {
-                4 -> "0" + it.to
-                else -> it.to
-            }
-        }))
+        sortWith(compareBy({ it.dayOfWeek }, { it.from }, { it.to }))
     }
 
     private fun setCounters(list: MutableList<SimpleScheduleModel>) {
@@ -69,8 +59,9 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
             l1.counter = counter
             if (!SimpleScheduleModel.isOneDayLessons(l1, l2)) counter = 0
             else if (Utils.Time.isTimeIntersect(
-                            Utils.Time(l1.from, l1.to),
-                            Utils.Time(l2.from, l2.to))) l2.counter = counter
+                            Utils.Lesson(Utils.Time(l1.from), Utils.Time(l1.to)),
+                            Utils.Lesson(Utils.Time(l2.from), Utils.Time(l2.to))))
+                l2.counter = counter
             else counter++
 
         }
@@ -79,8 +70,9 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         val l2 = list.last()
 
         if (Utils.Time.isTimeIntersect(
-                        Utils.Time(l1.from, l1.to),
-                        Utils.Time(l2.from, l2.to))) l2.counter = counter - 1
+                        Utils.Lesson(Utils.Time(l1.from), Utils.Time(l1.to)),
+                        Utils.Lesson(Utils.Time(l2.from), Utils.Time(l2.to))))
+            l2.counter = counter - 1
         else l2.counter = counter
 
     }

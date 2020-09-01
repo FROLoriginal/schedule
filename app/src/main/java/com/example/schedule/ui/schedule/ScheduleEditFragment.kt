@@ -16,6 +16,7 @@ import com.example.schedule.Utils
 import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
+import java.util.concurrent.TimeUnit
 
 class ScheduleEditFragment internal constructor(private val listener: OnScheduleChangedListener?,
                                                 private val lesson: SimpleScheduleModel?,
@@ -51,8 +52,12 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         teacherEditText.setText(lesson?.teacher)
         auditoryEditText.setText(lesson?.auditory)
         subjectEditText.setText(lesson?.subject)
-        toEditText.setText(lesson?.to)
-        fromEditText.setText(lesson?.from)
+        toEditText.setText(
+                if (lesson == null) null
+                else Utils.Time.minutesToDisplayedTime(lesson.to))
+        fromEditText.setText(
+                if (lesson == null) null
+                else Utils.Time.minutesToDisplayedTime(lesson.from))
         styleOfSubjectMACTV.setText(lesson?.styleOfSubject)
         dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson.dayOfWeek - 1)
 
@@ -79,8 +84,21 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
 
             val subject = subjectEditText.text.toString()
             val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
-            val from = fromEditText.text.toString()
-            val to = toEditText.text.toString()
+
+            val fromStr = fromEditText.text.toString()
+            val toStr = toEditText.text.toString()
+
+            var from = -1
+            var to = -1
+
+            if (fromStr.isNotEmpty() && toStr.isNotEmpty()) {
+
+                val tFrom = Utils.Time.displayedTimeToTime(fromStr)
+                val tTo = Utils.Time.displayedTimeToTime(toStr)
+
+                from = TimeUnit.HOURS.toMinutes(tFrom.hour.toLong()).toInt() + tFrom.minutes
+                to = TimeUnit.HOURS.toMinutes(tTo.hour.toLong()).toInt() + tTo.minutes
+            }
 
             val model = SimpleScheduleModel().apply {
                 this.subject = subject
