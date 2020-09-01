@@ -31,12 +31,9 @@ object Utils {
     class Time(private val from : String? , private val to : String?) {
 
         companion object {
-            fun lessonStatus(t : Time, dayOfWeek: Int): Int {
-                return if (t.from != null && t.to != null) {
-                    val firstHalfFrom = t.from.split(":")[0].toInt()
-                    val secondHalfFrom = t.from.split(":")[1].toInt()
-                    val firstHalfTo = t.to.split(":")[0].toInt()
-                    val secondHalfTo = t.to.split(":")[1].toInt()
+            fun lessonStatus(from: Time, to: Time, dayOfWeek: Int): Int {
+                if (dayOfWeek !in 1..7) return LESSON_IS_NOT_EXISTS
+                return run {
                     val firstTime = Calendar.getInstance()
                     val secondTime = Calendar.getInstance()
                     firstTime[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(dayOfWeek + 1) - 1

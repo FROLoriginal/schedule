@@ -131,6 +131,9 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorRes1, colorFirstOpt, colorRes1, 0)
                 }
+                if (nextLesStat == Utils.Time.LESSON_IS_NOT_EXISTS) {
+                    casted.secondDivider.visibility = View.INVISIBLE
+                }
             } else {
                 (casted.statusCircle.parent as View).visibility = View.GONE
                 casted.firstDivider.visibility = View.GONE
