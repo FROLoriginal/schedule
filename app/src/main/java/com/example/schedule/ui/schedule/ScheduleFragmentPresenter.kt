@@ -1,8 +1,7 @@
 package com.example.schedule.ui.schedule
 
-import com.example.schedule.Utils
+import com.example.schedule.Util.Time
 import com.example.schedule.viewModel.SimpleScheduleModel
-import kotlin.IndexOutOfBoundsException
 
 class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
@@ -60,9 +59,9 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
             l1.counter = counter
 
             if (!SimpleScheduleModel.isOneDayLessons(l1, l2)) counter = 0
-            else if (Utils.Time.isTimeIntersect(
-                            Utils.Lesson(Utils.Time(l1.from), Utils.Time(l1.to)),
-                            Utils.Lesson(Utils.Time(l2.from), Utils.Time(l2.to))))
+            else if (Time.isTimeIntersect(
+                            Time.Lesson(Time(l1.from), Time(l1.to)),
+                            Time.Lesson(Time(l2.from), Time(l2.to))))
                 l2.counter = counter
             else counter++
 
@@ -71,9 +70,9 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         val l1 = list[list.lastIndex - 1]
         val l2 = list.last()
 
-        if (Utils.Time.isTimeIntersect(
-                        Utils.Lesson(Utils.Time(l1.from), Utils.Time(l1.to)),
-                        Utils.Lesson(Utils.Time(l2.from), Utils.Time(l2.to))))
+        if (Time.isTimeIntersect(
+                        Time.Lesson(Time(l1.from), Time(l1.to)),
+                        Time.Lesson(Time(l2.from), Time(l2.to))))
             l2.counter = counter - 1
         else l2.counter = counter
 

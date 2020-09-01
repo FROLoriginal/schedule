@@ -14,8 +14,8 @@ import com.example.schedule.R
 import com.example.schedule.SQL.SQLDataTranslator
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleReader
-import com.example.schedule.Utils
-import com.example.schedule.Utils.toUpperCaseFirstLetter
+import com.example.schedule.Util.Time
+import com.example.schedule.Util.Utils
 import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
 import com.example.schedule.viewModel.SimpleScheduleModel
@@ -45,7 +45,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
         adapter = ScheduleRecyclerViewAdapter(data, this)
         recyclerView.adapter = adapter
 
-        val dayOfWeek = Utils.Time.USDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
+        val dayOfWeek = Time.USDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
         recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
         presenter.prepareData(data)
 
@@ -120,14 +120,14 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
 
             override fun bindHeaderData(header: View, headerPosition: Int) {
                 val calendar = Calendar.getInstance()
-                calendar[Calendar.DAY_OF_WEEK] = Utils.Time.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
+                calendar[Calendar.DAY_OF_WEEK] = Time.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
                 var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
                 val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 val date = calendar[Calendar.DATE]
                 val displayedDate: String
                 dayOfWeek = if (Calendar.getInstance()[Calendar.DAY_OF_WEEK] == calendar[Calendar.DAY_OF_WEEK]) {
                     getString(R.string.today_ru)
-                } else toUpperCaseFirstLetter(dayOfWeek!!)
+                } else Utils.toUpperCaseFirstLetter(dayOfWeek!!)
                 displayedDate = "$dayOfWeek, $date $month"
                 header.findViewById<TextView>(R.id.day_of_week_header).text = displayedDate
             }

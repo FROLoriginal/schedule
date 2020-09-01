@@ -1,4 +1,4 @@
-package com.example.schedule
+package com.example.schedule.Util
 
 object ScheduleConstants {
     const val TEACHER = "teacher"

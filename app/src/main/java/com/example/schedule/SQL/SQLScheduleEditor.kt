@@ -4,9 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.example.schedule.POJO.JsonResponse
-import com.example.schedule.ScheduleConstants
-import com.example.schedule.Utils
-import com.example.schedule.Utils.deleteTypeOfSubjectPart
+import com.example.schedule.Util.ScheduleConstants
+import com.example.schedule.Util.Time
+import com.example.schedule.Util.Utils
 import java.util.*
 
 class SQLScheduleEditor(context: Context,
@@ -31,8 +31,8 @@ class SQLScheduleEditor(context: Context,
             for (lesson in 0 until lessonSize) {
                 val les = schedule.lessons[lesson]
                 val objectSize = les.`object`.size
-                cv.put(FROM, Utils.Time.displayedTimeToTime(les.from).totalMin)
-                cv.put(TO, Utils.Time.displayedTimeToTime(les.to).totalMin)
+                cv.put(FROM, Time.displayedTimeToTime(les.from).totalMin)
+                cv.put(TO, Time.displayedTimeToTime(les.to).totalMin)
 
                 for (`object` in 0 until objectSize) {
                     val object_ = les.`object`[`object`]!!
@@ -52,7 +52,7 @@ class SQLScheduleEditor(context: Context,
                             } else cv.put(STYLE_OF_SUBJECT, "")
 
                             cv.put(OPTIONALLY, if (subtype == ScheduleConstants.Subtype.OPTIONALLY) 1 else 0)
-                            cv.put(SUBJECT, deleteTypeOfSubjectPart(so.subject))
+                            cv.put(SUBJECT, Utils.deleteTypeOfSubjectPart(so.subject))
                             cv.put(AUDITORY, so.auditory)
                             cv.put(TEACHER, so.teacher)
                             cvList.add(ContentValues(cv))

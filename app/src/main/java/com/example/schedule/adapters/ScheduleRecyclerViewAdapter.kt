@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
-import com.example.schedule.ScheduleConstants
-import com.example.schedule.Utils
-import com.example.schedule.Utils.Time.Companion.EUDayOfWeekToUS
-import com.example.schedule.Utils.Time.Companion.lessonStatus
-import com.example.schedule.Utils.toUpperCaseFirstLetter
+import com.example.schedule.Util.ScheduleConstants
+import com.example.schedule.Util.Time
+import com.example.schedule.Util.Utils
+import com.example.schedule.Util.Time.Companion.EUDayOfWeekToUS
+import com.example.schedule.Util.Time.Companion.lessonStatus
 import com.example.schedule.ui.schedule.*
 import com.example.schedule.viewModel.SimpleScheduleModel
 import com.example.schedule.viewModel.SimpleScheduleModel.Companion.equals
@@ -96,13 +96,13 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
 
             val nextLes = getNextLesson(data, position)
             val nextLesStat = lessonStatus(
-                    Utils.Time(nextLes.from),
-                    Utils.Time(nextLes.to),
+                    Time(nextLes.from),
+                    Time(nextLes.to),
                     nextLes.dayOfWeek)
 
             val curLesStat = lessonStatus(
-                    Utils.Time(lesson.from),
-                    Utils.Time(lesson.to),
+                    Time(lesson.from),
+                    Time(lesson.to),
                     lesson.dayOfWeek)
             val currentLesson = lesson.counter + 1
 
@@ -110,16 +110,16 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                 val colorFirstOpt: Int
                 //Сверху и снизу идентификаторы синие. Урок не начат
 
-                if (curLesStat == Utils.Time.LESSON_WILL_START) {
+                if (curLesStat == Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)
                     //Сверху и снизу идентификаторы зеленые. Урок закончен
-                } else if (curLesStat == Utils.Time.LESSON_IS_OVER &&
-                        nextLesStat != Utils.Time.LESSON_WILL_START) {
+                } else if (curLesStat == Time.LESSON_IS_OVER &&
+                        nextLesStat != Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
                     setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, 0)
                     //Сверху зеленое, урон не начат, снизу синее
-                } else if (curLesStat == Utils.Time.LESSON_IS_NOT_OVER) {
+                } else if (curLesStat == Time.LESSON_IS_NOT_OVER) {
                     val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorRes1, colorFirstOpt, colorFirstOpt, currentLesson)
@@ -129,7 +129,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorRes1, colorFirstOpt, colorRes1, 0)
                 }
-                if (nextLesStat == Utils.Time.LESSON_IS_NOT_EXISTS) {
+                if (nextLesStat == Time.LESSON_IS_NOT_EXISTS) {
                     casted.secondDivider.visibility = View.INVISIBLE
                 }
             } else {
@@ -137,7 +137,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                 casted.firstDivider.visibility = View.GONE
                 casted.secondDivider.visibility = View.GONE
                 casted.fullSideDivider.visibility = View.VISIBLE
-                if (nextLesStat == Utils.Time.LESSON_IS_OVER || nextLesStat == Utils.Time.LESSON_IS_NOT_OVER) {
+                if (nextLesStat == Time.LESSON_IS_OVER || nextLesStat == Time.LESSON_IS_NOT_OVER) {
                     val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
                     casted.fullSideDivider.setBackgroundColor(colorRes1)
                 } else {
@@ -164,7 +164,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         val displayedDate: String
         dayOfWeek = if (calendar[Calendar.DAY_OF_WEEK] == day) {
             resources.getString(R.string.today_ru)
-        } else toUpperCaseFirstLetter(dayOfWeek)
+        } else Utils.toUpperCaseFirstLetter(dayOfWeek)
         displayedDate = "$dayOfWeek, $date $month"
         (holder as ScheduleHeaderViewHolder).dayOfWeek.text = displayedDate
     }

@@ -4,7 +4,7 @@ import com.example.schedule.POJO.Lesson
 import com.example.schedule.POJO.Object_
 import com.example.schedule.POJO.Schedule
 import com.example.schedule.POJO.Subobject
-import com.example.schedule.ScheduleConstants
+import com.example.schedule.Util.ScheduleConstants
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken

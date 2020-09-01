@@ -1,6 +1,6 @@
 package com.example.schedule.viewModel
 
-import com.example.schedule.Utils
+import com.example.schedule.Util.Utils
 
 class SimpleScheduleModel {
     var id = 0

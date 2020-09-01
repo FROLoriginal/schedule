@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.MultiAutoCompleteTextView
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
-import com.example.schedule.Utils
+import com.example.schedule.Util.Time
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.concurrent.TimeUnit
@@ -53,10 +56,10 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         subjectEditText.setText(lesson?.subject)
         toEditText.setText(
                 if (lesson == null) null
-                else Utils.Time.minutesToDisplayedTime(lesson.to))
+                else Time.minutesToDisplayedTime(lesson.to))
         fromEditText.setText(
                 if (lesson == null) null
-                else Utils.Time.minutesToDisplayedTime(lesson.from))
+                else Time.minutesToDisplayedTime(lesson.from))
         styleOfSubjectMACTV.setText(lesson?.styleOfSubject)
         dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson.dayOfWeek - 1)
 
@@ -92,8 +95,8 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
 
             if (fromStr.isNotEmpty() && toStr.isNotEmpty()) {
 
-                val tFrom = Utils.Time.displayedTimeToTime(fromStr)
-                val tTo = Utils.Time.displayedTimeToTime(toStr)
+                val tFrom = Time.displayedTimeToTime(fromStr)
+                val tTo = Time.displayedTimeToTime(toStr)
 
                 from = TimeUnit.HOURS.toMinutes(tFrom.hour.toLong()).toInt() + tFrom.minutes
                 to = TimeUnit.HOURS.toMinutes(tTo.hour.toLong()).toInt() + tTo.minutes
@@ -103,7 +106,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
                 this.subject = subject
                 this.teacher = teacher
                 this.auditory = auditory
-                this.dayOfWeek = Utils.Time.strDayOfWeekToEUNum(dayOfWeek)
+                this.dayOfWeek = Time.strDayOfWeekToEUNum(dayOfWeek)
                 this.styleOfSubject = styleOfSubject
                 this.from = from
                 this.to = to
