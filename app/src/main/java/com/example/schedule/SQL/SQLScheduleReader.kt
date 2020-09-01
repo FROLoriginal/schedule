@@ -13,6 +13,7 @@ class SQLScheduleReader(context: Context?,
     private var sqLiteDatabase: SQLiteDatabase = readableDatabase
 
     fun getScheduleByDay(columns: Array<String>, dayOfWeek: Int): Cursor {
+        if (dayOfWeek !in 1..7) throw IllegalArgumentException("DayOfWeek $dayOfWeek must be in 1..7")
 
         val selection = "$DAY_OF_WEEK = ? "
 

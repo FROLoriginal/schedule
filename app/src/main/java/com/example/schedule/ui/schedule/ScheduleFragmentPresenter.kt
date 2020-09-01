@@ -16,7 +16,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
     fun changeLesson(list: MutableList<SimpleScheduleModel>,
                      pos: Int,
                      newLesson: SimpleScheduleModel) {
-
+        if (pos < -1) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
         list[pos] = newLesson
         prepareData(list)
         sv?.onItemChanged()
@@ -24,6 +24,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
     //Remove lesson from prepared to show list
     fun removeLesson(pos: Int, list: MutableList<SimpleScheduleModel>) {
+        if (pos < -1) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
         if (list[pos - 1].isHeader && list[pos + 1].isHeader) {
             list.removeAt(pos)
             list.removeAt(pos - 1) //Remove the header

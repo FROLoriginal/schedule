@@ -56,10 +56,12 @@ object Utils {
             }
 
             fun USDayOfWeekToEU(day: Int): Int {
+                if (day !in 1..7) throw IllegalArgumentException("Day $day must be in 1..7")
                 return if (day == 1) 7 else day - 1
             }
 
             fun EUDayOfWeekToUS(day: Int): Int {
+                if (day !in 1..7) throw IllegalArgumentException("Day $day must be in 1..7")
                 return if (day == 7) 1 else day + 1
             }
             fun strDayOfWeekToEUNum(dayOfWeek : String) : Int {
@@ -72,7 +74,7 @@ object Utils {
                     "Пятница" -> 5
                     "Суббота" -> 6
                     "Воскресенье" -> 7
-                    else -> -1
+                    else -> throw IllegalArgumentException("DayOFWeek $dayOfWeek must be in 1..7")
 
                 }
             }

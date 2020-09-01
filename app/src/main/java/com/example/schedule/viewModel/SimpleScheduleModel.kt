@@ -56,13 +56,17 @@ class SimpleScheduleModel {
 
         @JvmStatic
         fun getNextLesson(data: List<SimpleScheduleModel>, position: Int): SimpleScheduleModel {
-            var nextLes: SimpleScheduleModel
-            var i = 0
-            do {
-                ++i
-                nextLes = if (position + i < data.size) data[position + i] else SimpleScheduleModel()
-            } while (equals(data[position], nextLes))
-            return nextLes
+            if (position >= data.size)
+                throw IndexOutOfBoundsException("Data size ${data.size} must be more then $position position")
+            if (position > -1) {
+                var nextLes: SimpleScheduleModel
+                var i = 0
+                do {
+                    nextLes = if (position + i < data.size) data[position + i] else SimpleScheduleModel()
+                    i++
+                } while (equals(data[position], nextLes))
+                return nextLes
+            } else throw IllegalArgumentException("Position $position must be positive value")
         }
 
         @JvmStatic
