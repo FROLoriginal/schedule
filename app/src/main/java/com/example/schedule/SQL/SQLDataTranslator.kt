@@ -22,7 +22,7 @@ class SQLDataTranslator {
             )
             val week: MutableList<SimpleScheduleModel> = ArrayList()
 
-            for (dayOfWeek in 1..6) {
+            for (dayOfWeek in 1..7) {
                 val c: Cursor = reader.getScheduleByDay(columns, dayOfWeek)
                 while (c.moveToNext()) {
                     week.add(getSimpleScheduleModel(c, dayOfWeek))
