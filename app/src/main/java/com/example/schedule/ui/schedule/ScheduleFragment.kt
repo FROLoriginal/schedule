@@ -35,6 +35,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
         val recyclerView: RecyclerView = root.findViewById(R.id.recyclerView)
         val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
         val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, "")
+        val context = requireContext()
         data = SQLDataTranslator.getRawListSimpleScheduleModel(
                 SQLScheduleReader(context, table!!, SQLManager.VERSION)
         )
@@ -117,7 +118,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
                 return R.layout.schedule_header_card_view
             }
 
-            override fun bindHeaderData(header: View?, headerPosition: Int) {
+            override fun bindHeaderData(header: View, headerPosition: Int) {
                 val calendar = Calendar.getInstance()
                 calendar[Calendar.DAY_OF_WEEK] = Utils.Time.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
                 var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
@@ -126,9 +127,9 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
                 val displayedDate: String
                 dayOfWeek = if (Calendar.getInstance()[Calendar.DAY_OF_WEEK] == calendar[Calendar.DAY_OF_WEEK]) {
                     getString(R.string.today_ru)
-                } else toUpperCaseFirstLetter(dayOfWeek)
+                } else toUpperCaseFirstLetter(dayOfWeek!!)
                 displayedDate = "$dayOfWeek, $date $month"
-                header!!.findViewById<TextView>(R.id.day_of_week_header).text = displayedDate
+                header.findViewById<TextView>(R.id.day_of_week_header).text = displayedDate
             }
 
             override fun isHeader(itemPosition: Int): Boolean {

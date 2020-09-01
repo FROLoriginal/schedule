@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-class SQLScheduleReader(context: Context?,
+class SQLScheduleReader(context: Context,
                         tableName: String,
                         val version: Int)
     : SQLManager(context, tableName,

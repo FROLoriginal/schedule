@@ -2,13 +2,10 @@ package com.example.schedule.ui.schedule
 
 import android.content.res.Resources
 import android.graphics.Canvas
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -24,7 +21,7 @@ class ScheduleHeaderItemDecorator internal constructor(recyclerView: RecyclerVie
         super.onDrawOver(c, parent, state)
 
         val topChild = parent.getChildAt(0)
-        topChild?.let {
+        if (topChild != null) {
             val topChildPosition = parent.getChildAdapterPosition(topChild)
             if (topChildPosition != RecyclerView.NO_POSITION) {
                 val currentHeader = getHeaderViewForItem(topChildPosition, parent)

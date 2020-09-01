@@ -20,8 +20,8 @@ import com.example.schedule.R
 
 class LoginActivity : AppCompatActivity(), LoginLoadingView {
 
-    private var text: EditText? = null
-    private var button: Button? = null
+    private lateinit var text: EditText
+    private lateinit var button: Button
     private lateinit var presenter: LoginActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,23 +29,23 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         setContentView(R.layout.activity_login)
         text = findViewById(R.id.group)
         button = findViewById(R.id.getScheduleButton)
-        button!!.isEnabled = false
-        text!!.addTextChangedListener(textChangedListener)
-        text!!.setOnEditorActionListener(inputGroup)
+        button.isEnabled = false
+        text.addTextChangedListener(textChangedListener)
+        text.setOnEditorActionListener(inputGroup)
         presenter = LoginActivityPresenter(this,applicationContext)
     }
 
     fun onClick(v: View?) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(text!!.windowToken, 0)
+        imm.hideSoftInputFromWindow(text.windowToken, 0)
         showLoading()
-        val editText = text!!.text.toString()
+        val editText = text.text.toString()
         Thread { presenter.makeRequest(editText) }.start()
     }
 
     override fun showGroupIsNotExists() {
         Toast.makeText(applicationContext, R.string.unknownGroup, Toast.LENGTH_LONG).show()
-        text!!.setText("")
+        text.setText("")
     }
 
     override fun showConnectionError() {
@@ -81,14 +81,14 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
         override fun afterTextChanged(s: Editable) {
-            button!!.isEnabled = s.toString() != ""
+            button.isEnabled = s.toString() != ""
         }
     }
 
     private val inputGroup = OnEditorActionListener { _: TextView?, actionId: Int, _: KeyEvent? ->
-        if (actionId == EditorInfo.IME_ACTION_DONE && button!!.isEnabled) {
+        if (actionId == EditorInfo.IME_ACTION_DONE && button.isEnabled) {
             onClick(null)
-            button!!.isEnabled = false
+            button.isEnabled = false
             true
         }else false
     }

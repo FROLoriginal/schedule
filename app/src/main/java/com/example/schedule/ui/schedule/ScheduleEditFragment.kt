@@ -112,7 +112,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
 
             val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
             val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
-            val editor = SQLScheduleEditor(context, table, SQLManager.VERSION)
+            val editor = SQLScheduleEditor(requireContext(), table!!, SQLManager.VERSION)
 
             val isChanged = presenter.applyChanges(model, editor)
             if (isChanged) {

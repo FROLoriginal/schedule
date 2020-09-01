@@ -48,8 +48,6 @@ class SimpleScheduleModel {
         get() = "${Utils.Time.minutesToDisplayedTime(from)} - ${Utils.Time.minutesToDisplayedTime(to)}"
 
     companion object {
-        var isNumerator = false
-
         @JvmStatic
         fun equals(s1: SimpleScheduleModel, s2: SimpleScheduleModel): Boolean {
             return s1.counter == s2.counter && s1.counter >= 0 && s2.counter >= 0

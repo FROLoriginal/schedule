@@ -5,11 +5,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.example.schedule.POJO.JsonResponse
 import com.example.schedule.ScheduleConstants
+import com.example.schedule.Utils
 import com.example.schedule.Utils.deleteTypeOfSubjectPart
 import java.util.*
 
-class SQLScheduleEditor(context: Context?,
-                        tableName: String?,
+class SQLScheduleEditor(context: Context,
+                        tableName: String,
                         version: Int)
     : SQLManager(context, tableName,
         null, version) {
@@ -48,7 +49,7 @@ class SQLScheduleEditor(context: Context?,
                             val arr = so.subject.split(".")
                             if (arr.size == 2) {
                                 cv.put(STYLE_OF_SUBJECT, arr[0])
-                            } else cv.put(STYLE_OF_SUBJECT, "null")
+                            } else cv.put(STYLE_OF_SUBJECT, "")
 
                             cv.put(OPTIONALLY, if (subtype == ScheduleConstants.Subtype.OPTIONALLY) 1 else 0)
                             cv.put(SUBJECT, deleteTypeOfSubjectPart(so.subject))

@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
 
-open class SQLManager(private val context: Context?,
-                      private val name: String?,
+open class SQLManager(private val context: Context,
+                      private val name: String,
                       factory: CursorFactory?,
                       version: Int) : SQLiteOpenHelper(context, name, factory, version) {
     override fun onCreate(db: SQLiteDatabase) {
