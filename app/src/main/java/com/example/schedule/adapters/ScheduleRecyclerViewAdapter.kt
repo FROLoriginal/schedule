@@ -1,7 +1,6 @@
 package com.example.schedule.adapters
 
 import android.content.res.Resources
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,6 @@ import com.example.schedule.Utils.Time.Companion.EUDayOfWeekToUS
 import com.example.schedule.Utils.Time.Companion.lessonStatus
 import com.example.schedule.Utils.toUpperCaseFirstLetter
 import com.example.schedule.ui.schedule.*
-import com.example.schedule.ui.schedule.ScheduleHeaderViewHolder
-import com.example.schedule.ui.schedule.ScheduleViewHolder
 import com.example.schedule.viewModel.SimpleScheduleModel
 import com.example.schedule.viewModel.SimpleScheduleModel.Companion.equals
 import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesson
@@ -99,19 +96,20 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
 
             val nextLes = getNextLesson(data, position)
             val nextLesStat = lessonStatus(
-                    Utils.Time(nextLes.from,
-                            nextLes.to),
+                    Utils.Time(nextLes.from),
+                    Utils.Time(nextLes.to),
                     nextLes.dayOfWeek)
 
             val curLesStat = lessonStatus(
-                    Utils.Time(lesson.from,
-                            lesson.to),
+                    Utils.Time(lesson.from),
+                    Utils.Time(lesson.to),
                     lesson.dayOfWeek)
             val currentLesson = lesson.counter + 1
 
             if (isOptLesHeader(position) || !lesson.isOptionally()) {
                 val colorFirstOpt: Int
                 //Сверху и снизу идентификаторы синие. Урок не начат
+
                 if (curLesStat == Utils.Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)

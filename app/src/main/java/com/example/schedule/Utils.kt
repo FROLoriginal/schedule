@@ -27,6 +27,9 @@ object Utils {
     @Throws(NullPointerException::class)
     fun toUpperCaseFirstLetter(input: String): String = input[0].toUpperCase() + input.substring(1)
 
+    class Lesson(val from: Time, val to: Time)
+
+    class Time(val totalMin: Int) {
 
     class Time(private val from : String? , private val to : String?) {
 
