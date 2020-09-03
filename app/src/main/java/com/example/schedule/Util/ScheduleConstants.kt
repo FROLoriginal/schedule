@@ -5,7 +5,6 @@ object ScheduleConstants {
     const val AUDITORY = "class"
     const val SUBJECT = "subject"
     const val LABEL = "label"
-    const val UNKNOWN_OBJECT = "неизвестно"
 
     object Type {
         const val DEFAULT = "default"

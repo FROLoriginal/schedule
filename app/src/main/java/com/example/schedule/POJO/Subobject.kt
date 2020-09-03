@@ -7,15 +7,14 @@ class Subobject {
 
     @SerializedName("subject")
     @Expose
-    var subject = "неизвестно"
+    var subject = ""
 
     @SerializedName("teacher")
     @Expose
-    var teacher = "неизвестно"
+    var teacher = ""
 
     @SerializedName("class")
     @Expose
-    var auditory = "неизвестно"
-    var counter = 0
+    var auditory = ""
 
 }

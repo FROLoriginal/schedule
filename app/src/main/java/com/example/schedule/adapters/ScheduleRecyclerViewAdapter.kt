@@ -71,18 +71,17 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         } else {
             val casted = holder as ScheduleViewHolder
 
-            if (ScheduleConstants.Type.ACTIVITY != lesson.typeOfSubject) {
-                casted.teacherIc.visibility = View.VISIBLE
-                casted.teacher.visibility = View.VISIBLE
-                casted.auditoryWithStyleOfSubject.visibility = View.VISIBLE
-                casted.teacher.text = lesson.teacher
-                casted.subject.text = lesson.subject
-
-                casted.auditoryWithStyleOfSubject.text =
-                        if (lesson.styleOfSubject.isEmpty()) lesson.auditory
-                        else "${lesson.styleOfSubject}, ${lesson.auditory}"
-
-            } else bindDinnerEl(casted)
+                if (lesson.teacher.isNullOrEmpty()) {
+                    casted.teacherIc.visibility = View.INVISIBLE
+                    casted.teacher.visibility = View.INVISIBLE
+                }else {
+                    casted.teacherIc.visibility = View.VISIBLE
+                    casted.teacher.visibility = View.VISIBLE
+                    casted.teacher.text = lesson.teacher
+                }
+            casted.subject.text = lesson.subject
+            casted.auditoryWithStyleOfSubject.visibility = View.VISIBLE
+            casted.auditoryWithStyleOfSubject.text = lesson.auditoryWithStyleOfSubject
 
             casted.time.text = lesson.formattedTime
             casted.secondDivider.visibility = View.VISIBLE
@@ -163,16 +162,9 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         val displayedDate: String
         dayOfWeek = if (calendar[Calendar.DAY_OF_WEEK] == day) {
             resources.getString(R.string.today_ru)
-        } else Utils.toUpperCaseFirstLetter(dayOfWeek)
+        } else Utils.toUpperCaseFirstLetter(dayOfWeek!!)
         displayedDate = "$dayOfWeek, $date $month"
         (holder as ScheduleHeaderViewHolder).dayOfWeek.text = displayedDate
-    }
-
-    private fun bindDinnerEl(casted: ScheduleViewHolder) {
-        casted.teacherIc.visibility = View.INVISIBLE
-        casted.teacher.visibility = View.INVISIBLE
-        casted.auditoryWithStyleOfSubject.visibility = View.INVISIBLE
-        casted.subject.text = "Обед"
     }
 
     override fun getItemViewType(position: Int): Int {

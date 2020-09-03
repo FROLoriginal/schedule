@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class Object_ {
     @SerializedName("subtype")
     @Expose
-    var subtype = "null"
+    lateinit var subtype : String
 
     @SerializedName("subobject")
     @Expose
@@ -14,6 +14,6 @@ class Object_ {
 
     @SerializedName("name")
     @Expose
-    var name = "null"
+    lateinit var name : String
 
 }

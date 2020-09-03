@@ -43,7 +43,19 @@ class SimpleScheduleModel {
     }
 
     val formattedTime: String
-        get() = "${Utils.Time.minutesToDisplayedTime(from)} - ${Utils.Time.minutesToDisplayedTime(to)}"
+        get() = "${Time.minutesToDisplayedTime(from)} - ${Time.minutesToDisplayedTime(to)}"
+
+    val auditoryWithStyleOfSubject: String
+        get() {
+            return if (styleOfSubject.isEmpty() && auditory.isNullOrEmpty()) {
+                ""
+            } else if (styleOfSubject.isEmpty()) {
+                auditory!!
+            } else if (auditory.isNullOrEmpty()) {
+                styleOfSubject
+            } else "$styleOfSubject, $auditory"
+        }
+
 
     companion object {
         @JvmStatic
