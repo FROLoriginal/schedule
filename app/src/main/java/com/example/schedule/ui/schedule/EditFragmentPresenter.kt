@@ -18,7 +18,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
         val dayOfWeek = lesson.dayOfWeek
         val id = lesson.id
 
-        if (from < 0 || to < 0 || subject!!.isEmpty() || dayOfWeek !in 1..7) {
+        if (from !in 0..1440 || to !in 0..1440 || subject!!.isEmpty() || dayOfWeek !in 1..7) {
             efv.onFieldIsNull()
             return false
         } else {
