@@ -36,9 +36,7 @@ class SQLScheduleEditor(context: Context,
 
                 for (`object` in 0 until objectSize) {
                     val object_ = les.`object`[`object`]!!
-                    val type = les.type
                     val subtype = object_.subtype
-                    cv.put(TYPE_OF_SUBJECT, type)
 
                     if (object_.subobject != null) {
 
@@ -46,7 +44,7 @@ class SQLScheduleEditor(context: Context,
                         for (subObject in 0 until subObjects) {
                             val so = object_.subobject!![subObject]
 
-                            val arr = so.subject.split(".")
+                            val arr = so.subject.split('.')
                             if (arr.size == 2) {
                                 cv.put(STYLE_OF_SUBJECT, arr[0])
                             } else cv.put(STYLE_OF_SUBJECT, "")
@@ -58,13 +56,14 @@ class SQLScheduleEditor(context: Context,
                             cvList.add(ContentValues(cv))
                         }
                     } else {
-                        if (ScheduleConstants.Type.ACTIVITY == type) {
-                            cv.put(OPTIONALLY, 0) //todo
-                            //I don't know why subtype is name of activity subject...
-                            cv.put(SUBJECT, subtype)
-                            cv.put(AUDITORY, ScheduleConstants.UNKNOWN_OBJECT)
-                            cv.put(TEACHER, ScheduleConstants.UNKNOWN_OBJECT)
-                        } else cv.put(SUBJECT, ScheduleConstants.UNKNOWN_OBJECT)
+
+                        cv.put(OPTIONALLY, 0) //todo
+                        //I don't know why subtype is name of activity subject...
+                        cv.put(SUBJECT, subtype)
+                        cv.put(AUDITORY, "")
+                        cv.put(TEACHER, "")
+                        cv.put(STYLE_OF_SUBJECT, "")
+
                         cvList.add(ContentValues(cv))
                     }
                 }

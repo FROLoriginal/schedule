@@ -9,7 +9,6 @@ object ScheduleConstants {
 
     object Type {
         const val DEFAULT = "default"
-        const val ACTIVITY = "activity"
         const val CHANGING = "changing"
     }
 

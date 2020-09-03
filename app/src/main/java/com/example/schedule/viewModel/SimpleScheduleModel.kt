@@ -1,6 +1,6 @@
 package com.example.schedule.viewModel
 
-import com.example.schedule.Util.Utils
+import com.example.schedule.Util.Time
 
 class SimpleScheduleModel {
     var id = 0
@@ -8,7 +8,6 @@ class SimpleScheduleModel {
     var to = 0
     var teacher: String? = null
     var auditory: String? = null
-    var typeOfSubject: String? = null
     var subject: String? = null
     var styleOfSubject = ""
 
@@ -26,7 +25,6 @@ class SimpleScheduleModel {
         to = model.to
         teacher = model.teacher
         auditory = model.auditory
-        typeOfSubject = model.typeOfSubject
         subject = model.subject
         styleOfSubject = model.styleOfSubject
         dayOfWeek = model.dayOfWeek

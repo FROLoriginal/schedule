@@ -109,7 +109,6 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
             if (isOptLesHeader(position) || !lesson.isOptionally()) {
                 val colorFirstOpt: Int
                 //Сверху и снизу идентификаторы синие. Урок не начат
-
                 if (curLesStat == Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)

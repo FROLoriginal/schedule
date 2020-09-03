@@ -19,7 +19,6 @@ open class SQLManager(private val context: Context,
                 TO + " INTEGER NOT NULL," +
                 AUDITORY + " TEXT," +
                 TEACHER + " TEXT," +
-                TYPE_OF_SUBJECT + " TEXT," +
                 OPTIONALLY + " INTEGER," +
                 STYLE_OF_SUBJECT + " TEXT" +
                 ")")
@@ -41,7 +40,6 @@ open class SQLManager(private val context: Context,
         const val TO = "to_"
         const val AUDITORY = "auditory"
         const val TEACHER = "teacher"
-        const val TYPE_OF_SUBJECT = "type_of_subject"
         const val OPTIONALLY = "optionally"
         const val SHARED_PREF_DB_TABLE_NAME = "tables"
         const val SHARED_PREF_TABLE_NAME_KEY = "table"
