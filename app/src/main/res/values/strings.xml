@@ -21,4 +21,11 @@
       <item>Суббота</item>
       <item>Воскресенье</item>
     </string-array>
+
+    <string-array name="stylesOfSubject">
+        <item>Лекция</item>
+        <item>Семинар</item>
+        <item>Практика</item>
+        <item>Лабораторная</item>
+    </string-array>
 </resources>

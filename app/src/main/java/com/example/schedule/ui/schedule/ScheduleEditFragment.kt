@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.MultiAutoCompleteTextView
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.schedule.R
@@ -19,6 +16,7 @@ import com.example.schedule.Util.Time
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.concurrent.TimeUnit
+
 
 class ScheduleEditFragment internal constructor(private val listener: OnScheduleChangedListener?,
                                                 private val lesson: SimpleScheduleModel?,
@@ -50,6 +48,11 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         fromEditText = root.findViewById(R.id.editTimeFrom)
         styleOfSubjectMACTV = root.findViewById(R.id.editStyleOfSybject)
         dayOfWeekSpinner = root.findViewById(R.id.dayOfWeekSpinner)
+
+        val styles = resources.getStringArray(R.array.stylesOfSubject)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, styles)
+
+        styleOfSubjectMACTV.setAdapter(adapter)
 
         teacherEditText.setText(lesson?.teacher)
         auditoryEditText.setText(lesson?.auditory)
