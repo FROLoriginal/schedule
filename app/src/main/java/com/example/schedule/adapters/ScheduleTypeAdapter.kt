@@ -19,87 +19,87 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
     }
 
     @Throws(IOException::class)
-    override fun read(`in`: JsonReader): Schedule? {
+    override fun read(input: JsonReader): Schedule? {
         val lessons: MutableList<Lesson> = ArrayList()
         var oList: MutableList<Object_?>
         var from: String?
         var to: String?
         var type: String?
-        `in`.beginArray()
-        while (`in`.peek() == JsonToken.BEGIN_OBJECT) {
-            `in`.beginObject()
+        input.beginArray()
+        while (input.peek() == JsonToken.BEGIN_OBJECT) {
+            input.beginObject()
             val o = Object_()
-            `in`.nextName()
-            from = `in`.nextString()
-            `in`.nextName()
-            to = `in`.nextString()
-            `in`.nextName()
-            type = `in`.nextString()
-            `in`.nextName()
-            if (`in`.peek() == JsonToken.BEGIN_ARRAY) {
-                `in`.beginArray()
-                while (`in`.hasNext()) {
-                    `in`.beginObject()
-                    `in`.nextName()
-                    o.subtype = `in`.nextString()
-                    parser(`in`, o)
-                    `in`.endObject()
+            input.nextName()
+            from = input.nextString()
+            input.nextName()
+            to = input.nextString()
+            input.nextName()
+            type = input.nextString()
+            input.nextName()
+            if (input.peek() == JsonToken.BEGIN_ARRAY) {
+                input.beginArray()
+                while (input.hasNext()) {
+                    input.beginObject()
+                    input.nextName()
+                    o.subtype = input.nextString()
+                    parser(input, o)
+                    input.endObject()
                 }
-                if (`in`.peek() == JsonToken.END_OBJECT) {
-                    `in`.endObject()
-                } else if (`in`.peek() == JsonToken.END_ARRAY) {
-                    `in`.endArray()
+                if (input.peek() == JsonToken.END_OBJECT) {
+                    input.endObject()
+                } else if (input.peek() == JsonToken.END_ARRAY) {
+                    input.endArray()
                 }
-            } else if (`in`.peek() == JsonToken.BEGIN_OBJECT) {
-                `in`.beginObject()
-                `in`.nextName()
-                o.subtype = `in`.nextString()
-                parser(`in`, o)
-                `in`.endObject()
+            } else if (input.peek() == JsonToken.BEGIN_OBJECT) {
+                input.beginObject()
+                input.nextName()
+                o.subtype = input.nextString()
+                parser(input, o)
+                input.endObject()
             }
             oList = ArrayList()
             oList.add(o)
-            `in`.endObject()
+            input.endObject()
             lessons.add(Lesson(from, to, type, oList))
         }
-        `in`.endArray()
+        input.endArray()
         return Schedule(lessons)
     }
 
     companion object {
         @Throws(IOException::class)
-        private fun parser(`in`: JsonReader, o: Object_) {
-            if (`in`.hasNext()) { //Имеется ли объект после subtype?
-                `in`.nextName()
-                if (`in`.peek() == JsonToken.BEGIN_ARRAY) {
-                    `in`.beginArray()
+        private fun parser(input: JsonReader, o: Object_) {
+            if (input.hasNext()) { //Имеется ли объект после subtype?
+                input.nextName()
+                if (input.peek() == JsonToken.BEGIN_ARRAY) {
+                    input.beginArray()
                     val list: MutableList<Subobject> = ArrayList()
-                    while (`in`.hasNext()) {
-                        `in`.beginObject()
+                    while (input.hasNext()) {
+                        input.beginObject()
                         val s = Subobject()
-                        while (`in`.hasNext()) when (`in`.nextName()) {
-                            ScheduleConstants.LABEL -> `in`.nextString()
-                            ScheduleConstants.SUBJECT -> s.subject = `in`.nextString()
-                            ScheduleConstants.TEACHER -> s.teacher = `in`.nextString()
-                            ScheduleConstants.AUDITORY -> s.auditory = `in`.nextString()
+                        while (input.hasNext()) when (input.nextName()) {
+                            ScheduleConstants.LABEL -> input.nextString()
+                            ScheduleConstants.SUBJECT -> s.subject = input.nextString()
+                            ScheduleConstants.TEACHER -> s.teacher = input.nextString()
+                            ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
                         }
-                        `in`.endObject()
+                        input.endObject()
                         list.add(s)
                     }
                     o.subobject = list
-                    `in`.endArray()
-                } else if (`in`.peek() == JsonToken.BEGIN_OBJECT) {
-                    `in`.beginObject()
+                    input.endArray()
+                } else if (input.peek() == JsonToken.BEGIN_OBJECT) {
+                    input.beginObject()
                     val s = Subobject()
-                    while (`in`.hasNext()) when (`in`.nextName()) {
-                        ScheduleConstants.SUBJECT -> s.subject = `in`.nextString()
-                        ScheduleConstants.TEACHER -> s.teacher = `in`.nextString()
-                        ScheduleConstants.AUDITORY -> s.auditory = `in`.nextString()
+                    while (input.hasNext()) when (input.nextName()) {
+                        ScheduleConstants.SUBJECT -> s.subject = input.nextString()
+                        ScheduleConstants.TEACHER -> s.teacher = input.nextString()
+                        ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
                     }
                     val list: MutableList<Subobject> = ArrayList()
                     list.add(s)
                     o.subobject = list
-                    `in`.endObject()
+                    input.endObject()
                 }
             }
         }

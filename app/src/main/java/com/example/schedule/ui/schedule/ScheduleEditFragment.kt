@@ -1,5 +1,6 @@
 package com.example.schedule.ui.schedule
 
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,19 +16,19 @@ import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Util.Time
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
-import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.fragment_schedule_edit.*
 
 
 class ScheduleEditFragment internal constructor(private val listener: OnScheduleChangedListener?,
                                                 private val lesson: SimpleScheduleModel?,
                                                 private val pos: Int)
-    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener {
+    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener, View.OnClickListener {
 
     private lateinit var teacherEditText: EditText
     private lateinit var auditoryEditText: EditText
     private lateinit var subjectEditText: EditText
-    private lateinit var toEditText: EditText
-    private lateinit var fromEditText: EditText
+    private lateinit var toTime: TextView
+    private lateinit var fromTime: TextView
     private lateinit var styleOfSubjectMACTV: MultiAutoCompleteTextView
     private lateinit var dayOfWeekSpinner: Spinner
 
@@ -44,25 +45,25 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         teacherEditText = root.findViewById(R.id.editTeacher)
         auditoryEditText = root.findViewById(R.id.editAuditory)
         subjectEditText = root.findViewById(R.id.editSubject)
-        toEditText = root.findViewById(R.id.editTimeTo)
-        fromEditText = root.findViewById(R.id.editTimeFrom)
+        fromTime = root.findViewById(R.id.fromTextViewTime)
+        toTime = root.findViewById(R.id.toTextViewTime)
         styleOfSubjectMACTV = root.findViewById(R.id.editStyleOfSybject)
         dayOfWeekSpinner = root.findViewById(R.id.dayOfWeekSpinner)
 
         val styles = resources.getStringArray(R.array.stylesOfSubject)
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, styles)
-
         styleOfSubjectMACTV.setAdapter(adapter)
+
+        fromTime.setOnClickListener(this)
+        toTime.setOnClickListener(this)
 
         teacherEditText.setText(lesson?.teacher)
         auditoryEditText.setText(lesson?.auditory)
         subjectEditText.setText(lesson?.subject)
-        toEditText.setText(
-                if (lesson == null) null
-                else Time.minutesToDisplayedTime(lesson.to))
-        fromEditText.setText(
-                if (lesson == null) null
-                else Time.minutesToDisplayedTime(lesson.from))
+        toTime.text = if (lesson == null) null
+        else Time.minutesToDisplayedTime(lesson.to)
+        fromTime.text = if (lesson == null) null
+        else Time.minutesToDisplayedTime(lesson.from)
         styleOfSubjectMACTV.setText(lesson?.styleOfSubject)
         dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson.dayOfWeek - 1)
 
@@ -78,6 +79,28 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         return root
     }
 
+    private var totalMinTo = -1
+    private var totalMinFrom = -1
+
+    override fun onClick(v: View?) {
+
+        val time: Time = if (v!!.id == R.id.fromTextViewTime) {
+            Time.displayedTimeToTime(fromTime.text.toString())
+        } else Time.displayedTimeToTime(toTime.text.toString())
+
+        TimePickerDialog(context, { _, hourOfDay, minute ->
+            val totalMin = hourOfDay * 60 + minute
+            if (v.id == R.id.fromTextViewTime) {
+                totalMinFrom = totalMin
+                fromTime.text = Time.minutesToDisplayedTime(totalMin)
+            }
+            if (v.id == R.id.toTextViewTime) {
+                totalMinTo = totalMin
+                toTime.text = Time.minutesToDisplayedTime(totalMin)
+            }
+        }, time.hour, time.minutes, true).show()
+    }
+
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
 
@@ -90,29 +113,14 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
             val subject = subjectEditText.text.toString()
             val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
 
-            val fromStr = fromEditText.text.toString()
-            val toStr = toEditText.text.toString()
-
-            var from = -1
-            var to = -1
-
-            if (fromStr.isNotEmpty() && toStr.isNotEmpty()) {
-
-                val tFrom = Time.displayedTimeToTime(fromStr)
-                val tTo = Time.displayedTimeToTime(toStr)
-
-                from = TimeUnit.HOURS.toMinutes(tFrom.hour.toLong()).toInt() + tFrom.minutes
-                to = TimeUnit.HOURS.toMinutes(tTo.hour.toLong()).toInt() + tTo.minutes
-            }
-
             val model = SimpleScheduleModel().apply {
                 this.subject = subject
                 this.teacher = teacher
                 this.auditory = auditory
                 this.dayOfWeek = Time.strDayOfWeekToEUNum(dayOfWeek)
                 this.styleOfSubject = styleOfSubject
-                this.from = from
-                this.to = to
+                this.from = totalMinFrom
+                this.to = totalMinTo
                 this.id = lesson?.id ?: 0
             }
 

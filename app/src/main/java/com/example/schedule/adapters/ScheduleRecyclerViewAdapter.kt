@@ -69,29 +69,29 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         if (holder.itemViewType == HEADER) {
             bindHeader(holder, lesson, context.resources)
         } else {
-            val casted = holder as ScheduleViewHolder
+            holder as ScheduleViewHolder
 
-                if (lesson.teacher.isNullOrEmpty()) {
-                    casted.teacherIc.visibility = View.INVISIBLE
-                    casted.teacher.visibility = View.INVISIBLE
-                }else {
-                    casted.teacherIc.visibility = View.VISIBLE
-                    casted.teacher.visibility = View.VISIBLE
-                    casted.teacher.text = lesson.teacher
-                }
-            casted.subject.text = lesson.subject
-            casted.auditoryWithStyleOfSubject.visibility = View.VISIBLE
-            casted.auditoryWithStyleOfSubject.text = lesson.auditoryWithStyleOfSubject
+            if (lesson.teacher.isNullOrEmpty()) {
+                holder.teacherIc.visibility = View.INVISIBLE
+                holder.teacher.visibility = View.INVISIBLE
+            } else {
+                holder.teacherIc.visibility = View.VISIBLE
+                holder.teacher.visibility = View.VISIBLE
+                holder.teacher.text = lesson.teacher
+            }
+            holder.subject.text = lesson.subject
+            holder.auditoryWithStyleOfSubject.visibility = View.VISIBLE
+            holder.auditoryWithStyleOfSubject.text = lesson.auditoryWithStyleOfSubject
 
-            casted.time.text = lesson.formattedTime
-            casted.secondDivider.visibility = View.VISIBLE
-            casted.firstDivider.visibility = View.VISIBLE
-            casted.fullSideDivider.visibility = View.GONE
-            (casted.statusCircle.parent as View).visibility = View.VISIBLE
+            holder.time.text = lesson.formattedTime
+            holder.secondDivider.visibility = View.VISIBLE
+            holder.firstDivider.visibility = View.VISIBLE
+            holder.fullSideDivider.visibility = View.GONE
+            (holder.statusCircle.parent as View).visibility = View.VISIBLE
             if (position + 1 < itemCount) {
-                if (data[position + 1].isHeader) casted.secondDivider.visibility = View.INVISIBLE
-                if (data[position - 1].isHeader) casted.firstDivider.visibility = View.INVISIBLE
-            } else casted.secondDivider.visibility = View.INVISIBLE
+                if (data[position + 1].isHeader) holder.secondDivider.visibility = View.INVISIBLE
+                if (data[position - 1].isHeader) holder.firstDivider.visibility = View.INVISIBLE
+            } else holder.secondDivider.visibility = View.INVISIBLE
 
             val nextLes = getNextLesson(data, position)
             val nextLesStat = lessonStatus(
@@ -110,37 +110,37 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                 //Сверху и снизу идентификаторы синие. Урок не начат
                 if (curLesStat == Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)
+                    setColor(holder, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)
                     //Сверху и снизу идентификаторы зеленые. Урок закончен
                 } else if (curLesStat == Time.LESSON_IS_OVER &&
                         nextLesStat != Time.LESSON_WILL_START) {
                     colorFirstOpt = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    setColor(casted, colorFirstOpt, colorFirstOpt, colorFirstOpt, 0)
+                    setColor(holder, colorFirstOpt, colorFirstOpt, colorFirstOpt, 0)
                     //Сверху зеленое, урон не начат, снизу синее
                 } else if (curLesStat == Time.LESSON_IS_NOT_OVER) {
                     val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(casted, colorRes1, colorFirstOpt, colorFirstOpt, currentLesson)
+                    setColor(holder, colorRes1, colorFirstOpt, colorFirstOpt, currentLesson)
                 } else {
                     //Сверху зеленое, урок закончен, снизу синее
                     val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(casted, colorRes1, colorFirstOpt, colorRes1, 0)
+                    setColor(holder, colorRes1, colorFirstOpt, colorRes1, 0)
                 }
                 if (nextLesStat == Time.LESSON_IS_NOT_EXISTS) {
-                    casted.secondDivider.visibility = View.INVISIBLE
+                    holder.secondDivider.visibility = View.INVISIBLE
                 }
             } else {
-                (casted.statusCircle.parent as View).visibility = View.GONE
-                casted.firstDivider.visibility = View.GONE
-                casted.secondDivider.visibility = View.GONE
-                casted.fullSideDivider.visibility = View.VISIBLE
+                (holder.statusCircle.parent as View).visibility = View.GONE
+                holder.firstDivider.visibility = View.GONE
+                holder.secondDivider.visibility = View.GONE
+                holder.fullSideDivider.visibility = View.VISIBLE
                 if (nextLesStat == Time.LESSON_IS_OVER || nextLesStat == Time.LESSON_IS_NOT_OVER) {
                     val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    casted.fullSideDivider.setBackgroundColor(colorRes1)
+                    holder.fullSideDivider.setBackgroundColor(colorRes1)
                 } else {
                     val colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    casted.fullSideDivider.setBackgroundColor(colorFirstOpt)
+                    holder.fullSideDivider.setBackgroundColor(colorFirstOpt)
                 }
             }
         }
@@ -148,23 +148,22 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
 
     private fun isOptLesHeader(position: Int): Boolean {
         return if (position > 0) {
-            !equals(data[position - 1], data[position])
+            data[position - 1] != data[position]
         } else false
     }
 
     private fun bindHeader(holder: RecyclerView.ViewHolder,
-                           lesson: SimpleScheduleModel, resources: Resources) {
+                           lesson: SimpleScheduleModel,
+                           resources: Resources) {
         val calendar = Calendar.getInstance()
         calendar[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(lesson.dayOfWeek)
         var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
         val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
         val date = calendar[Calendar.DATE]
-        val displayedDate: String
         dayOfWeek = if (calendar[Calendar.DAY_OF_WEEK] == day) {
             resources.getString(R.string.today_ru)
         } else Utils.toUpperCaseFirstLetter(dayOfWeek!!)
-        displayedDate = "$dayOfWeek, $date $month"
-        (holder as ScheduleHeaderViewHolder).dayOfWeek.text = displayedDate
+        (holder as ScheduleHeaderViewHolder).dayOfWeek.text = "$dayOfWeek, $date $month"
     }
 
     override fun getItemViewType(position: Int): Int {

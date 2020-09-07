@@ -1,14 +1,11 @@
 package com.example.schedule.Util
 
-import java.util.*
-
 object Utils {
 
     private const val sem = "Пр"
     private const val lab = "Лаб"
     private const val lect = "Лекц"
 
-    @JvmStatic
     fun deleteTypeOfSubjectPart(subjectName: String): String {
         val s = subjectName.split(".")
         return if (s.isNotEmpty()) {
@@ -19,6 +16,5 @@ object Utils {
         } else subjectName
     }
 
-    @JvmStatic
-    fun toUpperCaseFirstLetter(input: String): String = input[0].toUpperCase() + input.substring(1)
+    fun toUpperCaseFirstLetter(input: String) = input[0].toUpperCase() + input.substring(1)
 }

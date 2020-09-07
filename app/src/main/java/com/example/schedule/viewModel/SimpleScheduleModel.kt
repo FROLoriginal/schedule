@@ -34,9 +34,8 @@ class SimpleScheduleModel {
         optionally = if (model.isOptionally()) 1 else 0
     }
 
-    fun isOptionally(): Boolean {
-        return optionally == 1
-    }
+    fun isOptionally() = optionally == 1
+
 
     fun setOptionally(optionally: Int) {
         this.optionally = optionally
@@ -56,12 +55,14 @@ class SimpleScheduleModel {
             } else "$styleOfSubject, $auditory"
         }
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        else if (other !is SimpleScheduleModel)
+            throw IllegalArgumentException("Parameter ${other.javaClass} must be a SimpleScheduleModel")
+        return this.counter == other.counter && this.counter >= 0
+    }
 
     companion object {
-        @JvmStatic
-        fun equals(s1: SimpleScheduleModel, s2: SimpleScheduleModel): Boolean {
-            return s1.counter == s2.counter && s1.counter >= 0 && s2.counter >= 0
-        }
 
         @JvmStatic
         fun getNextLesson(data: List<SimpleScheduleModel>, position: Int): SimpleScheduleModel {
@@ -73,7 +74,7 @@ class SimpleScheduleModel {
                 do {
                     nextLes = if (position + i < data.size) data[position + i] else SimpleScheduleModel()
                     i++
-                } while (equals(data[position], nextLes))
+                } while (data[position] == nextLes)
                 return nextLes
             } else throw IllegalArgumentException("Position $position must be positive value")
         }

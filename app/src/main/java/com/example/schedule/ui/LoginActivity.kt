@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         button.isEnabled = false
         text.addTextChangedListener(textChangedListener)
         text.setOnEditorActionListener(inputGroup)
-        presenter = LoginActivityPresenter(this,applicationContext)
+        presenter = LoginActivityPresenter(this, applicationContext)
     }
 
     fun onClick(v: View?) {
@@ -56,22 +56,20 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         Toast.makeText(applicationContext, R.string.internalErrorOccurred, Toast.LENGTH_LONG).show()
     }
 
-    private val fragment = LoginDialogFragment(DialogInterface.OnCancelListener{
-        presenter.cancelRequest()
-    })
+    private val fragment = LoginDialogFragment { presenter.cancelRequest() }
 
     override fun showLoading() {
         fragment.show(supportFragmentManager, null)
     }
 
-    override fun hideLoading(toFinish : Boolean) {
+    override fun hideLoading(toFinish: Boolean) {
         fragment.dismiss()
         if (toFinish) finish()
 
     }
 
     override fun startMainActivity() {
-        startActivity(Intent(applicationContext,MainActivity::class.java))
+        startActivity(Intent(applicationContext, MainActivity::class.java))
     }
 
     private val textChangedListener: TextWatcher = object : TextWatcher {
@@ -90,7 +88,7 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
             onClick(null)
             button.isEnabled = false
             true
-        }else false
+        } else false
     }
 
     companion object {
