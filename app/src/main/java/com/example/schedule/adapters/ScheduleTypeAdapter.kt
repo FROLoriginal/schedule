@@ -81,6 +81,7 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                             ScheduleConstants.LABEL -> input.nextString()
                             ScheduleConstants.SUBJECT -> s.subject = input.nextString()
                             ScheduleConstants.TEACHER -> s.teacher = input.nextString()
+                            ScheduleConstants.PREFIX -> s.subjectPrefix = input.nextString()
                             ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
                         }
                         input.endObject()

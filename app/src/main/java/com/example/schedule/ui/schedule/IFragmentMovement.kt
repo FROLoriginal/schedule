@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 interface IFragmentMovement{
 
     /**
-     * @param fragment the way move to
+     * @param to the way move to
      * @param intention the reason of moving
      **/
 
-    fun onMove(fragment : Fragment, intention : String)
+    fun onMove(to : Fragment, intention : String)
 
     companion object {
         val EDIT_INTENTION: String

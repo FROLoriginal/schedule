@@ -17,4 +17,8 @@ class Subobject {
     @Expose
     var auditory = ""
 
+    @SerializedName("prefix")
+    @Expose
+    var subjectPrefix = ""
+
 }

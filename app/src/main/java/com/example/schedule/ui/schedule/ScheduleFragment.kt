@@ -127,7 +127,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
                 val displayedDate: String
                 dayOfWeek = if (Calendar.getInstance()[Calendar.DAY_OF_WEEK] == calendar[Calendar.DAY_OF_WEEK]) {
                     getString(R.string.today_ru)
-                } else Utils.toUpperCaseFirstLetter(dayOfWeek!!)
+                } else dayOfWeek!!.capitalize(Locale.getDefault())
                 displayedDate = "$dayOfWeek, $date $month"
                 header.findViewById<TextView>(R.id.day_of_week_header).text = displayedDate
             }

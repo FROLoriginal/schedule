@@ -72,7 +72,7 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
         startActivity(Intent(applicationContext, MainActivity::class.java))
     }
 
-    private val textChangedListener: TextWatcher = object : TextWatcher {
+    private val textChangedListener = object : TextWatcher {
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 

@@ -17,7 +17,7 @@ class SQLDataTranslator {
                     SQLManager.TO,  //index 4
                     SQLManager.AUDITORY,  //index 5
                     SQLManager.OPTIONALLY, // index 6
-                    SQLManager.STYLE_OF_SUBJECT // index 7
+                    SQLManager.PREFIX_OF_SUBJECT // index 7
             )
             val week: MutableList<SimpleScheduleModel> = ArrayList()
 
@@ -33,15 +33,15 @@ class SQLDataTranslator {
         }
 
         private fun getSimpleScheduleModel(c: Cursor, dayOfWeek: Int): SimpleScheduleModel {
-
+            //see indices higher
             return SimpleScheduleModel().apply {
                 from = c.getInt(3)
                 to = c.getInt(4)
                 auditory = c.getString(5)
                 subject = c.getString(1)
                 teacher = c.getString(2)
-                setOptionally(c.getInt(6))
-                styleOfSubject = c.getString(7)
+                setOptionally(c.getInt(6) == 1)
+                prefixOfSubject = c.getString(7)
                 id = c.getInt(0)
                 this.dayOfWeek = dayOfWeek
             }

@@ -30,7 +30,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
                 put(SQLManager.DAY_OF_WEEK, dayOfWeek)
                 put(SQLManager.TEACHER, lesson.teacher)
                 put(SQLManager.AUDITORY, lesson.auditory)
-                put(SQLManager.STYLE_OF_SUBJECT, lesson.styleOfSubject)
+                put(SQLManager.PREFIX_OF_SUBJECT, lesson.prefixOfSubject)
 
             }
             if (id != 0) editor.edit(cv, id)

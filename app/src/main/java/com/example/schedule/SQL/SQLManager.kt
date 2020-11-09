@@ -20,7 +20,7 @@ open class SQLManager(private val context: Context,
                 AUDITORY + " TEXT," +
                 TEACHER + " TEXT," +
                 OPTIONALLY + " INTEGER," +
-                STYLE_OF_SUBJECT + " TEXT" +
+                PREFIX_OF_SUBJECT + " TEXT" +
                 ")")
         val sh: SharedPreferences = context.getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
         sh.edit().putString(SHARED_PREF_TABLE_NAME_KEY, name).apply()
@@ -43,7 +43,7 @@ open class SQLManager(private val context: Context,
         const val OPTIONALLY = "optionally"
         const val SHARED_PREF_DB_TABLE_NAME = "tables"
         const val SHARED_PREF_TABLE_NAME_KEY = "table"
-        const val STYLE_OF_SUBJECT = "STYLE_OF_SUBJECT"
+        const val PREFIX_OF_SUBJECT = "STYLE_OF_SUBJECT"
         const val VERSION = 1
     }
 

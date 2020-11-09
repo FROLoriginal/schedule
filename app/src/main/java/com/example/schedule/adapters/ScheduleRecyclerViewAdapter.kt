@@ -146,11 +146,10 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         }
     }
 
-    private fun isOptLesHeader(position: Int): Boolean {
-        return if (position > 0) {
-            data[position - 1] != data[position]
-        } else false
-    }
+    private fun isOptLesHeader(position: Int) = if (position > 0) {
+        data[position - 1] != data[position]
+    } else false
+
 
     private fun bindHeader(holder: RecyclerView.ViewHolder,
                            lesson: SimpleScheduleModel,
@@ -162,7 +161,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         val date = calendar[Calendar.DATE]
         dayOfWeek = if (calendar[Calendar.DAY_OF_WEEK] == day) {
             resources.getString(R.string.today_ru)
-        } else Utils.toUpperCaseFirstLetter(dayOfWeek!!)
+        } else dayOfWeek!!.capitalize(Locale.getDefault())
         (holder as ScheduleHeaderViewHolder).dayOfWeek.text = "$dayOfWeek, $date $month"
     }
 
@@ -175,11 +174,11 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
     }
 
     private fun setColor(holder: ScheduleViewHolder, firstDividerRes: Int, secondDividerRes: Int, circleRes: Int, num: Int) {
+        if (num == 0) holder.statusCircle.setBackgroundColor(circleRes)
         val DRAWABLES_RES = intArrayOf(R.drawable.check_ic,
                 R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three,
                 R.drawable.ic_four, R.drawable.ic_five, R.drawable.ic_six,
                 R.drawable.ic_seven, R.drawable.ic_eight, R.drawable.ic_nine)
-        if (num == 0) holder.statusCircle.setBackgroundColor(circleRes)
         holder.statusCircle.setImageResource(DRAWABLES_RES[num])
         holder.firstDivider.setBackgroundColor(firstDividerRes)
         holder.secondDivider.setBackgroundColor(secondDividerRes)

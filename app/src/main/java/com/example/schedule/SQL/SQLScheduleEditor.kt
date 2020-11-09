@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase
 import com.example.schedule.POJO.JsonResponse
 import com.example.schedule.Util.ScheduleConstants
 import com.example.schedule.Util.Time
-import com.example.schedule.Util.Utils
 import java.util.*
 
 class SQLScheduleEditor(context: Context,
@@ -46,11 +45,11 @@ class SQLScheduleEditor(context: Context,
 
                             val arr = so.subject.split('.')
                             if (arr.size == 2) {
-                                cv.put(STYLE_OF_SUBJECT, arr[0])
-                            } else cv.put(STYLE_OF_SUBJECT, "")
+                                cv.put(PREFIX_OF_SUBJECT, arr[0])
+                            } else cv.put(PREFIX_OF_SUBJECT, "")
 
                             cv.put(OPTIONALLY, if (subtype == ScheduleConstants.Subtype.OPTIONALLY) 1 else 0)
-                            cv.put(SUBJECT, Utils.deleteTypeOfSubjectPart(so.subject))
+                            cv.put(SUBJECT, so.subject)
                             cv.put(AUDITORY, so.auditory)
                             cv.put(TEACHER, so.teacher)
                             cvList.add(ContentValues(cv))
@@ -62,7 +61,7 @@ class SQLScheduleEditor(context: Context,
                         cv.put(SUBJECT, subtype)
                         cv.put(AUDITORY, "")
                         cv.put(TEACHER, "")
-                        cv.put(STYLE_OF_SUBJECT, "")
+                        cv.put(PREFIX_OF_SUBJECT, "")
 
                         cvList.add(ContentValues(cv))
                     }

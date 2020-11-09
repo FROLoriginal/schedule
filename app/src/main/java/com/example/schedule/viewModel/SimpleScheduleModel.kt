@@ -9,7 +9,7 @@ class SimpleScheduleModel {
     var teacher: String? = null
     var auditory: String? = null
     var subject: String? = null
-    var styleOfSubject = ""
+    var prefixOfSubject = ""
 
     //Day of week starts from 1, zero is `header` value
     var dayOfWeek = 0
@@ -26,7 +26,7 @@ class SimpleScheduleModel {
         teacher = model.teacher
         auditory = model.auditory
         subject = model.subject
-        styleOfSubject = model.styleOfSubject
+        prefixOfSubject = model.prefixOfSubject
         dayOfWeek = model.dayOfWeek
         counter = model.counter
         isHeader = model.isHeader
@@ -46,13 +46,13 @@ class SimpleScheduleModel {
 
     val auditoryWithStyleOfSubject: String
         get() {
-            return if (styleOfSubject.isEmpty() && auditory.isNullOrEmpty()) {
+            return if (prefixOfSubject.isEmpty() && auditory.isNullOrEmpty()) {
                 ""
-            } else if (styleOfSubject.isEmpty()) {
+            } else if (prefixOfSubject.isEmpty()) {
                 auditory!!
             } else if (auditory.isNullOrEmpty()) {
-                styleOfSubject
-            } else "$styleOfSubject, $auditory"
+                prefixOfSubject
+            } else "$prefixOfSubject, $auditory"
         }
 
     override fun equals(other: Any?): Boolean {
