@@ -12,7 +12,7 @@ interface ApiHolder {
                     @Query(TEAM) team: String?): Call<Response?>?
 
     companion object {
-        const val API_GET_SCHEDULE_METHOD = "/rudn/schedule/api/teams.get"
+        const val API_GET_SCHEDULE_METHOD = "teams.get"
         const val VERSION = "v"
         const val ACCESS_TOKEN = "accessToken"
         const val TEAM = "team"

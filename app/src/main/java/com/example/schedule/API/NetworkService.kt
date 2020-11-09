@@ -10,10 +10,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class NetworkService private constructor() {
     companion object {
         private var mInstance: NetworkService? = null
-        private const val BASE_URL = "https://artfpr.ru"
+        private const val BASE_URL = "https://api.schedule.artfpr.ru"
         private lateinit var mRetrofit: Retrofit
 
-        fun getInstance(): NetworkService = mInstance ?: NetworkService()
+        fun getInstance() = mInstance ?: NetworkService()
     }
 
     init {
