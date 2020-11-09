@@ -4,7 +4,7 @@ import com.example.schedule.viewModel.SimpleScheduleModel
 
 interface OnScheduleChangedListener {
 
-    fun onScheduleIsChanged(lesson: SimpleScheduleModel,
-                            pos : Int,
-                            intention : String)
+    fun onScheduleIsChanged(pos : Int,
+                            intention : String,
+                            lesson: SimpleScheduleModel? = null)
 }

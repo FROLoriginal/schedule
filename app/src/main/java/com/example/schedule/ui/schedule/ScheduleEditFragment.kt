@@ -16,13 +16,11 @@ import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Util.Time
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
-import kotlinx.android.synthetic.main.fragment_schedule_edit.*
-
 
 class ScheduleEditFragment internal constructor(private val listener: OnScheduleChangedListener?,
                                                 private val lesson: SimpleScheduleModel?,
                                                 private val pos: Int)
-    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener, View.OnClickListener {
+    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener {
 
     private lateinit var teacherEditText: EditText
     private lateinit var auditoryEditText: EditText
@@ -54,8 +52,8 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, styles)
         styleOfSubjectMACTV.setAdapter(adapter)
 
-        fromTime.setOnClickListener(this)
-        toTime.setOnClickListener(this)
+        fromTime.setOnClickListener(timePickerListener)
+        toTime.setOnClickListener(timePickerListener)
 
         teacherEditText.setText(lesson?.teacher)
         auditoryEditText.setText(lesson?.auditory)
@@ -64,11 +62,19 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         else Time.minutesToDisplayedTime(lesson.to)
         fromTime.text = if (lesson == null) null
         else Time.minutesToDisplayedTime(lesson.from)
-        styleOfSubjectMACTV.setText(lesson?.styleOfSubject)
+        styleOfSubjectMACTV.setText(lesson?.prefixOfSubject)
         dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson.dayOfWeek - 1)
 
         activity = requireActivity() as MainActivity
-        presenter = EditFragmentPresenter(this)
+
+        val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
+        val editor = SQLScheduleEditor(requireContext(), table!!, SQLManager.VERSION)
+
+        presenter = EditFragmentPresenter(this, editor)
+
+        val fab: View = root.findViewById(R.id.fab_apply)
+        fab.setOnClickListener(fabListener)
 
         val toolbar = root.findViewById<Toolbar>(R.id.toolbar)
         intention = arguments?.getString("key") ?: ""
@@ -79,61 +85,61 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         return root
     }
 
-    private var totalMinTo = -1
-    private var totalMinFrom = -1
 
-    override fun onClick(v: View?) {
+    private var totalMinTo = lesson?.to ?: -1
+    private var totalMinFrom = lesson?.from ?: -1
 
-        val time: Time = if (v!!.id == R.id.fromTextViewTime) {
+    private val timePickerListener = View.OnClickListener {
+        val time: Time = if (it.id == R.id.fromTextViewTime) {
             Time.displayedTimeToTime(fromTime.text.toString())
         } else Time.displayedTimeToTime(toTime.text.toString())
 
         TimePickerDialog(context, { _, hourOfDay, minute ->
             val totalMin = hourOfDay * 60 + minute
-            if (v.id == R.id.fromTextViewTime) {
+            if (it.id == R.id.fromTextViewTime) {
                 totalMinFrom = totalMin
                 fromTime.text = Time.minutesToDisplayedTime(totalMin)
             }
-            if (v.id == R.id.toTextViewTime) {
+            if (it.id == R.id.toTextViewTime) {
                 totalMinTo = totalMin
                 toTime.text = Time.minutesToDisplayedTime(totalMin)
             }
         }, time.hour, time.minutes, true).show()
     }
 
+    private val fabListener = View.OnClickListener {
+        val teacher: String? = teacherEditText.text.toString()
+        val auditory: String? = auditoryEditText.text.toString()
+        val styleOfSubject: String = styleOfSubjectMACTV.text.toString()
+
+        val subject = subjectEditText.text.toString()
+        val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
+
+        val model = SimpleScheduleModel().apply {
+            this.subject = subject
+            this.teacher = teacher
+            this.auditory = auditory
+            this.dayOfWeek = Time.strDayOfWeekToEUNum(dayOfWeek)
+            this.prefixOfSubject = styleOfSubject
+            this.from = totalMinFrom
+            this.to = totalMinTo
+            this.id = lesson?.id ?: 0
+        }
+        if (presenter.applyChanges(model)) {
+            listener?.onScheduleIsChanged(pos, intention, model)
+            parentFragmentManager.popBackStack()
+        }
+    }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
 
-        if (item!!.itemId == R.id.action_apply) {
-
-            val teacher: String? = teacherEditText.text.toString()
-            val auditory: String? = auditoryEditText.text.toString()
-            val styleOfSubject: String = styleOfSubjectMACTV.text.toString()
-
-            val subject = subjectEditText.text.toString()
-            val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
-
-            val model = SimpleScheduleModel().apply {
-                this.subject = subject
-                this.teacher = teacher
-                this.auditory = auditory
-                this.dayOfWeek = Time.strDayOfWeekToEUNum(dayOfWeek)
-                this.styleOfSubject = styleOfSubject
-                this.from = totalMinFrom
-                this.to = totalMinTo
-                this.id = lesson?.id ?: 0
+        if (item!!.itemId == R.id.action_remove) {
+            if (lesson != null) {
+                presenter.removeLesson(lesson.id)
+                listener?.onScheduleIsChanged(pos, IFragmentMovement.REMOVE_INTENTION)
             }
+            parentFragmentManager.popBackStack()
 
-            val pref = activity.getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
-            val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, null)
-            val editor = SQLScheduleEditor(requireContext(), table!!, SQLManager.VERSION)
-
-            val isChanged = presenter.applyChanges(model, editor)
-            if (isChanged) {
-                listener?.onScheduleIsChanged(model, pos, intention)
-                parentFragmentManager.popBackStack()
-            }
-            return isChanged
         }
         return false
     }

@@ -1,7 +1,6 @@
 package com.example.schedule.SQL
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
@@ -22,10 +21,11 @@ open class SQLManager(private val context: Context,
                 OPTIONALLY + " INTEGER," +
                 PREFIX_OF_SUBJECT + " TEXT" +
                 ")")
-        val sh: SharedPreferences = context.getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
-        sh.edit().putString(SHARED_PREF_TABLE_NAME_KEY, name).apply()
-
-
+        context
+                .getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putString(SHARED_PREF_TABLE_NAME_KEY, name)
+                .apply()
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}

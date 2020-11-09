@@ -5,12 +5,13 @@ import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.viewModel.SimpleScheduleModel
 
-class EditFragmentPresenter(private val efv: EditFragmentView) {
+class EditFragmentPresenter(private val efv: EditFragmentView,
+                            private val editor: SQLScheduleEditor) {
 
     /**
      * @return {@code true} if the value changes was applied, {@code false} otherwise
      */
-    fun applyChanges(lesson: SimpleScheduleModel, editor: SQLScheduleEditor): Boolean {
+    fun applyChanges(lesson: SimpleScheduleModel): Boolean {
 
         val from = lesson.from
         val to = lesson.to
@@ -40,6 +41,11 @@ class EditFragmentPresenter(private val efv: EditFragmentView) {
             return true
         }
 
+    }
+
+    fun removeLesson(id : Int){
+        editor.remove(id)
+        editor.close()
     }
 
 

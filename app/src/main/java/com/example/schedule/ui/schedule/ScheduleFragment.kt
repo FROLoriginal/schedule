@@ -15,7 +15,6 @@ import com.example.schedule.SQL.SQLDataTranslator
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleReader
 import com.example.schedule.Util.Time
-import com.example.schedule.Util.Utils
 import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
 import com.example.schedule.viewModel.SimpleScheduleModel
@@ -55,8 +54,8 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
         return root
     }
 
-    override fun onScheduleIsChanged(lesson: SimpleScheduleModel, pos: Int, intention: String) {
-        presenter.addLessonToSchedule(data, lesson)
+    override fun onScheduleIsChanged(pos: Int, intention: String, lesson: SimpleScheduleModel?) {
+        presenter.addLessonToSchedule(data, lesson!!)
     }
 
     override fun onItemAdded() {
@@ -68,7 +67,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
     }
 
     override fun onItemRemoved(pos: Int) {
-        TODO("Not yet implemented")
+        //This fun is already implemented in ScheduleFragment
     }
 
     override fun onMove(fragment: Fragment, intention: String) {

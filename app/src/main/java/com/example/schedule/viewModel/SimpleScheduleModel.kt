@@ -37,8 +37,8 @@ class SimpleScheduleModel {
     fun isOptionally() = optionally == 1
 
 
-    fun setOptionally(optionally: Int) {
-        this.optionally = optionally
+    fun setOptionally(optionally: Boolean) {
+        this.optionally = if (optionally) 1 else 0
     }
 
     val formattedTime: String
@@ -64,25 +64,40 @@ class SimpleScheduleModel {
 
     companion object {
 
-        @JvmStatic
         fun getNextLesson(data: List<SimpleScheduleModel>, position: Int): SimpleScheduleModel {
             if (position >= data.size)
                 throw IndexOutOfBoundsException("Data size ${data.size} must be more then $position position")
             if (position > -1) {
-                var nextLes: SimpleScheduleModel
-                var i = 0
-                do {
-                    nextLes = if (position + i < data.size) data[position + i] else SimpleScheduleModel()
-                    i++
-                } while (data[position] == nextLes)
-                return nextLes
+                for (i in position until data.size) {
+                    when {
+                        i == data.lastIndex ->
+                            throw IllegalArgumentException("It is the last lesson. Use isNextLessonExists(data,pos)")
+                        data[i + 1].isHeader ->
+                            throw IllegalArgumentException("It is the last lesson (next element is header). Use isNextLessonExists(data,pos)")
+                        data[position] != data[i] -> return data[i]
+                    }
+
+                }
+                throw IllegalArgumentException("Lesson is not exists or it is header. Use isNextLessonExists(data,pos)")
             } else throw IllegalArgumentException("Position $position must be positive value")
         }
 
-        @JvmStatic
-        fun isOneDayLessons(target1: SimpleScheduleModel,
-                            target2: SimpleScheduleModel)
-                : Boolean = target1.dayOfWeek == target2.dayOfWeek
+        fun SimpleScheduleModel.isOneDayLessons(target: SimpleScheduleModel) = this.dayOfWeek == target.dayOfWeek
 
+
+        fun isNextLessonExists(data: List<SimpleScheduleModel>, position: Int): Boolean {
+            if (position >= data.size)
+                throw IndexOutOfBoundsException("Data size ${data.size} must be more then $position position")
+            if (position > -1) {
+                for (i in position until data.size) {
+                    when {
+                        i == data.lastIndex -> return false
+                        data[i + 1].isHeader -> return false
+                        data[position] != data[i] -> return true
+                    }
+                }
+                return false
+            } else throw IllegalArgumentException("Position $position must be positive value")
+        }
     }
 }

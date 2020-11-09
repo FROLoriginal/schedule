@@ -17,5 +17,8 @@ interface IFragmentMovement{
 
         val CREATE_INTENTION: String
             get() = "Создание"
+
+        val REMOVE_INTENTION: String
+            get() = "Удаление"
     }
 }

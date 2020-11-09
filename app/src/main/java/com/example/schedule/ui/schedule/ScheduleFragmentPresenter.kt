@@ -2,6 +2,7 @@ package com.example.schedule.ui.schedule
 
 import com.example.schedule.Util.Time
 import com.example.schedule.viewModel.SimpleScheduleModel
+import com.example.schedule.viewModel.SimpleScheduleModel.Companion.isOneDayLessons
 
 class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
@@ -16,24 +17,32 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
     fun changeLesson(list: MutableList<SimpleScheduleModel>,
                      pos: Int,
                      newLesson: SimpleScheduleModel) {
-        if (pos < -1) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
+        if (pos < -1 || pos >= list.size) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
         list[pos] = newLesson
         prepareData(list)
         sv?.onItemChanged()
     }
 
-    //Remove lesson from prepared to show list
+    //Remove lesson from prepared list to show list
     fun removeLesson(pos: Int, list: MutableList<SimpleScheduleModel>) {
-        if (pos < -1) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
-        if (list[pos - 1].isHeader && list[pos + 1].isHeader) {
-            list.removeAt(pos)
-            list.removeAt(pos - 1) //Remove the header
-            sv?.onItemRemoved(pos - 1)
 
-        } else {
-            list.removeAt(pos)
+        fun removeAndNotify(pos: Int) {
+            list.removeAt(pos) // remove the header
+            sv?.onItemRemoved(pos)
         }
-        setCounters(list)
+        if (pos < -1 || pos >= list.size) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
+
+        list.removeAt(pos)
+        if (pos != list.size) {
+            if (list[pos - 1].isHeader && list[pos].isHeader) {
+                removeAndNotify(pos - 1)
+            }
+        } else {
+            if (list[pos - 1].isHeader) {
+                removeAndNotify(pos - 1)
+            }
+        }
+        if (list.isNotEmpty()) prepareData(list)
         sv?.onItemRemoved(pos)
 
     }
@@ -58,23 +67,23 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
             l1.counter = counter
 
-            if (!SimpleScheduleModel.isOneDayLessons(l1, l2)) counter = 0
+            if (!l1.isOneDayLessons(l2))
+                counter = 0
             else if (Time.isTimeIntersect(
                             Time.Lesson(Time(l1.from), Time(l1.to)),
-                            Time.Lesson(Time(l2.from), Time(l2.to))))
+                            Time.Lesson(Time(l2.from), Time(l2.to)))) {
+                l1.setOptionally(true)
+                l2.setOptionally(true)
                 l2.counter = counter
-            else counter++
+            } else {
+                if (i == list.size - 2) {
+                    l2.setOptionally(false)
+                    l2.counter = counter
+                } else counter++
+            }
 
         }
 
-        val l1 = list[list.lastIndex - 1]
-        val l2 = list.last()
-
-        if (Time.isTimeIntersect(
-                        Time.Lesson(Time(l1.from), Time(l1.to)),
-                        Time.Lesson(Time(l2.from), Time(l2.to))))
-            l2.counter = counter - 1
-        else l2.counter = counter
 
     }
 
@@ -98,7 +107,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         var i = 1
         while (i < list.size - 1) {
 
-            if (!SimpleScheduleModel.isOneDayLessons(list[i], list[i + 1])) {
+            if (!list[i].isOneDayLessons(list[i + 1])) {
 
                 model.dayOfWeek = list[i + 1].dayOfWeek
                 list.add(i + 1, SimpleScheduleModel(model))

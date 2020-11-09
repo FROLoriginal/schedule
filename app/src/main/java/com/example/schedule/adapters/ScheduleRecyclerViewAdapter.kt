@@ -7,14 +7,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
-import com.example.schedule.Util.ScheduleConstants
 import com.example.schedule.Util.Time
-import com.example.schedule.Util.Utils
 import com.example.schedule.Util.Time.Companion.EUDayOfWeekToUS
 import com.example.schedule.Util.Time.Companion.lessonStatus
 import com.example.schedule.ui.schedule.*
 import com.example.schedule.viewModel.SimpleScheduleModel
-import com.example.schedule.viewModel.SimpleScheduleModel.Companion.equals
 import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesson
 import java.util.*
 
@@ -46,9 +43,17 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         }
     }
 
-    override fun onScheduleIsChanged(lesson: SimpleScheduleModel, pos: Int, intention: String) {
-        if (pos != RecyclerView.NO_POSITION)
-            presenter.changeLesson(data, pos, lesson)
+    override fun onScheduleIsChanged(pos: Int, intention: String, lesson: SimpleScheduleModel?) {
+        if (pos != RecyclerView.NO_POSITION) {
+            when (intention) {
+                IFragmentMovement.EDIT_INTENTION -> {
+                    presenter.changeLesson(data, pos, lesson!!)
+                }
+                IFragmentMovement.REMOVE_INTENTION -> {
+                    presenter.removeLesson(pos, data)
+                }
+            }
+        }
     }
 
     override fun onItemAdded() {
@@ -56,7 +61,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
     }
 
     override fun onItemRemoved(pos: Int) {
-        notifyItemRemoved(pos)
+        notifyDataSetChanged()
     }
 
     override fun onItemChanged() {
@@ -88,16 +93,20 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
             holder.firstDivider.visibility = View.VISIBLE
             holder.fullSideDivider.visibility = View.GONE
             (holder.statusCircle.parent as View).visibility = View.VISIBLE
+
+            if (data[position - 1].isHeader) holder.firstDivider.visibility = View.INVISIBLE
             if (position + 1 < itemCount) {
                 if (data[position + 1].isHeader) holder.secondDivider.visibility = View.INVISIBLE
-                if (data[position - 1].isHeader) holder.firstDivider.visibility = View.INVISIBLE
             } else holder.secondDivider.visibility = View.INVISIBLE
 
-            val nextLes = getNextLesson(data, position)
-            val nextLesStat = lessonStatus(
-                    Time(nextLes.from),
-                    Time(nextLes.to),
-                    nextLes.dayOfWeek)
+            val nextLesStat: Int =
+                    if (SimpleScheduleModel.isNextLessonExists(data, position)) {
+                        val nextLes = getNextLesson(data, position)
+                        lessonStatus(
+                                Time(nextLes.from),
+                                Time(nextLes.to),
+                                nextLes.dayOfWeek)
+                    } else Time.LESSON_IS_NOT_EXISTS
 
             val curLesStat = lessonStatus(
                     Time(lesson.from),
@@ -105,7 +114,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                     lesson.dayOfWeek)
             val currentLesson = lesson.counter + 1
 
-            if (isOptLesHeader(position) || !lesson.isOptionally()) {
+            if (isOptLesHeader(position) || !lesson.isOptionally() || position == itemCount - 1) {
                 val colorFirstOpt: Int
                 //Сверху и снизу идентификаторы синие. Урок не начат
                 if (curLesStat == Time.LESSON_WILL_START) {
