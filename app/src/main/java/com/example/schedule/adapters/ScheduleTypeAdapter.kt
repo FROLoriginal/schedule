@@ -20,8 +20,7 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
 
     @Throws(IOException::class)
     override fun read(input: JsonReader): Schedule? {
-        val lessons: MutableList<Lesson> = ArrayList()
-        var oList: MutableList<Object_?>
+        val lessons = ArrayList<Lesson>()
         var from: String?
         var to: String?
         var type: String?
@@ -57,10 +56,8 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                 parser(input, o)
                 input.endObject()
             }
-            oList = ArrayList()
-            oList.add(o)
             input.endObject()
-            lessons.add(Lesson(from, to, type, oList))
+            lessons.add(Lesson(from, to, type, arrayListOf(o)))
         }
         input.endArray()
         return Schedule(lessons)
@@ -73,7 +70,7 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                 input.nextName()
                 if (input.peek() == JsonToken.BEGIN_ARRAY) {
                     input.beginArray()
-                    val list: MutableList<Subobject> = ArrayList()
+                    val list = ArrayList<Subobject>()
                     while (input.hasNext()) {
                         input.beginObject()
                         val s = Subobject()
@@ -97,9 +94,7 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                         ScheduleConstants.TEACHER -> s.teacher = input.nextString()
                         ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
                     }
-                    val list: MutableList<Subobject> = ArrayList()
-                    list.add(s)
-                    o.subobject = list
+                    o.subobject = arrayListOf(s)
                     input.endObject()
                 }
             }

@@ -18,7 +18,7 @@ class SQLScheduleEditor(context: Context,
 
     fun fillDataBase(jr: JsonResponse) {
 
-        val cvList: MutableList<ContentValues> = ArrayList()
+        val cvList = ArrayList<ContentValues>()
         val dayOfWeekSize = jr.schedule!!.size
 
         for (dayOfWeek in 0 until dayOfWeekSize) {
@@ -79,12 +79,14 @@ class SQLScheduleEditor(context: Context,
         sqLiteDatabase.update(
                 databaseName,
                 cv,
-                "$ID = ?", arrayOf(id.toString()))
+                "$ID = ?",
+                arrayOf(id.toString()))
     }
 
     fun remove(id: Int) {
         sqLiteDatabase.delete(
                 databaseName,
-                "$ID = ?", arrayOf(id.toString()))
+                "$ID = ?",
+                arrayOf(id.toString()))
     }
 }

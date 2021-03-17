@@ -34,18 +34,17 @@ class EditFragmentPresenter(private val efv: EditFragmentView,
                 put(SQLManager.PREFIX_OF_SUBJECT, lesson.prefixOfSubject)
 
             }
-            if (id != 0) editor.edit(cv, id)
-            else editor.insert(cv)
-            editor.close()
-
+            editor.use {
+                if (id != 0) it.edit(cv, id)
+                else it.insert(cv)
+            }
             return true
         }
 
     }
 
-    fun removeLesson(id : Int){
-        editor.remove(id)
-        editor.close()
+    fun removeLesson(id: Int) {
+        editor.use { it.remove(id) }
     }
 
 

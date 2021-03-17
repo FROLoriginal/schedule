@@ -15,4 +15,4 @@ class Lesson(
         var type: String,
         @field:Expose
         @field:SerializedName("object")
-        var `object`: MutableList<Object_?>)
+        var `object`: ArrayList<Object_?>)

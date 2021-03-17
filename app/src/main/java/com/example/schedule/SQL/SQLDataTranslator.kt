@@ -7,7 +7,7 @@ class SQLDataTranslator {
 
     companion object {
         internal fun getRawListSimpleScheduleModel(reader: SQLScheduleReader):
-                MutableList<SimpleScheduleModel> {
+                ArrayList<SimpleScheduleModel> {
 
             val columns = arrayOf(
                     SQLManager.ID,  //index 0
@@ -19,14 +19,14 @@ class SQLDataTranslator {
                     SQLManager.OPTIONALLY, // index 6
                     SQLManager.PREFIX_OF_SUBJECT // index 7
             )
-            val week: MutableList<SimpleScheduleModel> = ArrayList()
+            val week = ArrayList<SimpleScheduleModel>()
 
             for (dayOfWeek in 1..7) {
-                val c: Cursor = reader.getScheduleByDay(columns, dayOfWeek)
-                while (c.moveToNext()) {
-                    week.add(getSimpleScheduleModel(c, dayOfWeek))
+                reader.getScheduleByDay(columns, dayOfWeek).use {
+                    while (it.moveToNext()) {
+                        week.add(getSimpleScheduleModel(it, dayOfWeek))
+                    }
                 }
-                c.close()
             }
             reader.close()
             return week

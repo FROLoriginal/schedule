@@ -4,7 +4,7 @@ import java.util.*
 
 class Time(val totalMin: Int) {
 
-    class Lesson(val from: Time, val to: Time)
+    data class Lesson(val from: Time, val to: Time)
 
     init {
         if (totalMin !in 0..1440) throw IllegalArgumentException("Min $totalMin must be in 0..1440")
@@ -15,7 +15,7 @@ class Time(val totalMin: Int) {
 
     companion object {
         fun lessonStatus(from: Time, to: Time, dayOfWeek: Int): Int {
-            if (dayOfWeek !in 1..7) return LESSON_IS_NOT_EXISTS
+            if (dayOfWeek !in 1..7) return LESSON_IS_NOT_EXIST
             return run {
                 val firstTime = Calendar.getInstance()
                 val secondTime = Calendar.getInstance()
@@ -105,6 +105,6 @@ class Time(val totalMin: Int) {
         const val LESSON_IS_NOT_OVER = 1
         const val LESSON_WILL_START = 2
         const val LESSON_IS_OVER = 0
-        const val LESSON_IS_NOT_EXISTS = -1
+        const val LESSON_IS_NOT_EXIST = -1
     }
 }

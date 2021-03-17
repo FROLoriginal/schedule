@@ -15,7 +15,7 @@ import com.example.schedule.viewModel.SimpleScheduleModel
 import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesson
 import java.util.*
 
-class ScheduleRecyclerViewAdapter internal constructor(private val data: MutableList<SimpleScheduleModel>,
+class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayList<SimpleScheduleModel>,
                                                        private val move: IFragmentMovement)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ScheduleRecyclerView, OnScheduleChangedListener {
 
@@ -106,7 +106,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                                 Time(nextLes.from),
                                 Time(nextLes.to),
                                 nextLes.dayOfWeek)
-                    } else Time.LESSON_IS_NOT_EXISTS
+                    } else Time.LESSON_IS_NOT_EXIST
 
             val curLesStat = lessonStatus(
                     Time(lesson.from),
@@ -136,7 +136,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
                     colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
                     setColor(holder, colorRes1, colorFirstOpt, colorRes1, 0)
                 }
-                if (nextLesStat == Time.LESSON_IS_NOT_EXISTS) {
+                if (nextLesStat == Time.LESSON_IS_NOT_EXIST) {
                     holder.secondDivider.visibility = View.INVISIBLE
                 }
             } else {
@@ -170,7 +170,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: Mutable
         val date = calendar[Calendar.DATE]
         dayOfWeek = if (calendar[Calendar.DAY_OF_WEEK] == day) {
             resources.getString(R.string.today_ru)
-        } else dayOfWeek!!.capitalize(Locale.getDefault())
+        } else dayOfWeek!!.capitalize()
         (holder as ScheduleHeaderViewHolder).dayOfWeek.text = "$dayOfWeek, $date $month"
     }
 

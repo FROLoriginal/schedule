@@ -14,6 +14,7 @@ import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
 import com.example.schedule.Util.Time
+import com.example.schedule.Util.UIUtils.toast
 import com.example.schedule.ui.MainActivity
 import com.example.schedule.viewModel.SimpleScheduleModel
 
@@ -90,7 +91,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
     private var totalMinFrom = lesson?.from ?: -1
 
     private val timePickerListener = View.OnClickListener {
-        val time: Time = if (it.id == R.id.fromTextViewTime) {
+        val time = if (it.id == R.id.fromTextViewTime) {
             Time.displayedTimeToTime(fromTime.text.toString())
         } else Time.displayedTimeToTime(toTime.text.toString())
 
@@ -145,8 +146,6 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
     }
 
     override fun onFieldIsNull() {
-        Toast.makeText(context, "Необходимые поля не заполнены", Toast.LENGTH_SHORT).show()
+        requireContext().toast(R.string.requiredFieldIsNotFilled)
     }
-
-
 }

@@ -14,57 +14,59 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.schedule.R
+import com.example.schedule.Util.UIUtils.toast
 
 class LoginActivity : AppCompatActivity(), LoginLoadingView {
 
-    private lateinit var text: EditText
+    private lateinit var groupInput: EditText
     private lateinit var button: Button
     private lateinit var presenter: LoginActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        text = findViewById(R.id.group)
+        groupInput = findViewById(R.id.group)
         button = findViewById(R.id.getScheduleButton)
         button.isEnabled = false
-        text.addTextChangedListener(textChangedListener)
-        text.setOnEditorActionListener(inputGroup)
+        groupInput.addTextChangedListener(textChangedListener)
+        groupInput.setOnEditorActionListener(inputGroup)
         presenter = LoginActivityPresenter(this, applicationContext)
     }
 
     fun onClick(v: View?) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(text.windowToken, 0)
+        imm.hideSoftInputFromWindow(groupInput.windowToken, 0)
         showLoading()
-        val editText = text.text.toString()
+        val editText = groupInput.text.toString()
         Thread { presenter.makeRequest(editText) }.start()
     }
 
-    override fun showGroupIsNotExists() {
-        Toast.makeText(applicationContext, R.string.unknownGroup, Toast.LENGTH_LONG).show()
-        text.setText("")
+    override fun showGroupIfNotExist() {
+        toast(R.string.unknownGroup)
+        groupInput.setText("")
     }
 
     override fun showConnectionError() {
-        Toast.makeText(applicationContext, R.string.connectionError, Toast.LENGTH_LONG).show()
+        toast(R.string.connectionError)
     }
 
     override fun showInternalError() {
-        Toast.makeText(applicationContext, R.string.internalErrorOccurred, Toast.LENGTH_LONG).show()
+        toast(R.string.internalErrorOccurred)
     }
 
-    private val fragment = LoginDialogFragment { presenter.cancelRequest() }
+    private val fragment = LoginDialogFragment()
+            .also { it.actionAfterCancellation = { presenter.cancelRequest() } }
+
 
     override fun showLoading() {
         fragment.show(supportFragmentManager, null)
     }
 
-    override fun hideLoading(toFinish: Boolean) {
+    override fun hideLoading(isLoadingError: Boolean) {
         fragment.dismiss()
-        if (toFinish) finish()
+        if (!isLoadingError) finish()
 
     }
 

@@ -9,6 +9,7 @@
     <string name="connectionError">Произошла ошибка сети</string>
     <string name="getSchedule">Получить расписание</string>
     <string name="hintGetSchedule">НПИбд–01–19</string>
+    <string name="requiredFieldIsNotFilled">"Необходимые поля не заполнены"</string>
 
     <string name="today_ru">Сегодня</string>
 

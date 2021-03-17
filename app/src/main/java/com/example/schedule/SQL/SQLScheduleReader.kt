@@ -17,7 +17,7 @@ class SQLScheduleReader(context: Context,
 
         val selection = "$DAY_OF_WEEK = ? "
 
-        val selectionArgs: Array<String> = arrayOf(dayOfWeek.toString())
+        val selectionArgs = arrayOf(dayOfWeek.toString())
 
         return sqLiteDatabase.query(databaseName, columns,
                 selection, selectionArgs,

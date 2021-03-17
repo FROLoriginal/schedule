@@ -6,7 +6,7 @@ import com.example.schedule.viewModel.SimpleScheduleModel.Companion.isOneDayLess
 
 class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
-    fun addLessonToSchedule(list: MutableList<SimpleScheduleModel>,
+    fun addLessonToSchedule(list: ArrayList<SimpleScheduleModel>,
                             lesson: SimpleScheduleModel) {
 
         list.add(lesson)
@@ -14,7 +14,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         sv?.onItemAdded()
     }
 
-    fun changeLesson(list: MutableList<SimpleScheduleModel>,
+    fun changeLesson(list: ArrayList<SimpleScheduleModel>,
                      pos: Int,
                      newLesson: SimpleScheduleModel) {
         if (pos < -1 || pos >= list.size) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
@@ -24,7 +24,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
     }
 
     //Remove lesson from prepared list to show list
-    fun removeLesson(pos: Int, list: MutableList<SimpleScheduleModel>) {
+    fun removeLesson(pos: Int, list: ArrayList<SimpleScheduleModel>) {
 
         fun removeAndNotify(pos: Int) {
             list.removeAt(pos) // remove the header
@@ -47,7 +47,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
     }
 
-    fun prepareData(list: MutableList<SimpleScheduleModel>) {
+    fun prepareData(list: ArrayList<SimpleScheduleModel>) {
         removeHeaders(list)
         list.sort()
         setCounters(list)
@@ -58,7 +58,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
         sortWith(compareBy({ it.dayOfWeek }, { it.from }, { it.to }))
     }
 
-    private fun setCounters(list: MutableList<SimpleScheduleModel>) {
+    private fun setCounters(list: ArrayList<SimpleScheduleModel>) {
 
         var counter = 0
         for (i in 0 until list.size - 1) {
@@ -87,7 +87,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
     }
 
-    private fun removeHeaders(list: MutableList<SimpleScheduleModel>) {
+    private fun removeHeaders(list: ArrayList<SimpleScheduleModel>) {
 
         var i = 0
         while (i < list.size) {
@@ -97,7 +97,7 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
     }
 
-    private fun addHeaders(list: MutableList<SimpleScheduleModel>) {
+    private fun addHeaders(list: ArrayList<SimpleScheduleModel>) {
 
         val model = SimpleScheduleModel()
         model.isHeader = true

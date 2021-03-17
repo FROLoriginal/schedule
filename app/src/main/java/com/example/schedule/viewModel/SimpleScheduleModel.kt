@@ -36,7 +36,6 @@ class SimpleScheduleModel {
 
     fun isOptionally() = optionally == 1
 
-
     fun setOptionally(optionally: Boolean) {
         this.optionally = if (optionally) 1 else 0
     }

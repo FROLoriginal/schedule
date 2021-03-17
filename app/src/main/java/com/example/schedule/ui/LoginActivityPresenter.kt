@@ -3,7 +3,6 @@ package com.example.schedule.ui
 import android.content.Context
 import com.example.schedule.API.ApiHolder
 import com.example.schedule.API.NetworkService
-import com.example.schedule.POJO.JsonResponse
 import com.example.schedule.POJO.Response
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
@@ -24,32 +23,34 @@ class LoginActivityPresenter(private val llv: LoginLoadingView,
         responseCall!!.enqueue(object : Callback<Response?> {
             override fun onResponse(call: Call<Response?>,
                                     response: retrofit2.Response<Response?>) {
-                val r : Response? = response.body()
-                val jr: JsonResponse? = r!!.jsonResponse
+                val r: Response? = response.body()
+                val jr = r!!.jsonResponse
 
                 if (r.error != null) {
                     if (r.error!!.errorCode == ApiHolder.UNKNOWN_GROUP)
-                        llv.showGroupIsNotExists()
+                        llv.showGroupIfNotExist()
                     else llv.showInternalError()
 
                 } else if (jr != null) {
-                    val tableName = group.replace("-", "")
-                    val editor = SQLScheduleEditor(context, tableName, SQLManager.VERSION)
-                    editor.fillDataBase(jr)
-                    editor.close()
+                    SQLScheduleEditor(context,
+                            group.formatToTableName(),
+                            SQLManager.VERSION)
+                            .use { it.fillDataBase(jr) }
                     llv.startMainActivity()
-                    llv.hideLoading(true)
+                    llv.hideLoading(false)
                 }
-                llv.hideLoading(false)
+                llv.hideLoading(true)
             }
 
             override fun onFailure(call: Call<Response?>,
                                    t: Throwable) {
                 if (!call.isCanceled) llv.showConnectionError()
-                llv.hideLoading(false)
+                llv.hideLoading(true)
             }
         })
     }
+
+    private fun String.formatToTableName() = this.replace("-", "")
 
     fun cancelRequest() {
         responseCall!!.cancel()

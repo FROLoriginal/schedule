@@ -7,8 +7,9 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.schedule.R
 
-class LoginDialogFragment internal constructor(private val operation: DialogInterface.OnCancelListener)
-    : DialogFragment() {
+class LoginDialogFragment internal constructor() : DialogFragment() {
+
+    var actionAfterCancellation: () -> Unit = {}
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
@@ -18,8 +19,7 @@ class LoginDialogFragment internal constructor(private val operation: DialogInte
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        operation.onCancel(dialog)
+        actionAfterCancellation()
+        super.onCancel(dialog)
     }
-
-
 }

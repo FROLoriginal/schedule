@@ -19,12 +19,13 @@ import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
 import com.example.schedule.viewModel.SimpleScheduleModel
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, OnScheduleChangedListener {
 
     private lateinit var adapter: ScheduleRecyclerViewAdapter
     private val presenter = ScheduleFragmentPresenter(this)
-    private lateinit var data: MutableList<SimpleScheduleModel>
+    private lateinit var data: ArrayList<SimpleScheduleModel>
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -70,16 +71,16 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
         //This fun is already implemented in ScheduleFragment
     }
 
-    override fun onMove(fragment: Fragment, intention: String) {
+    override fun onMove(to: Fragment, intention: String) {
         val data = Bundle()
         data.putString("key", intention)
-        fragment.arguments = data
+        to.arguments = data
         this.parentFragmentManager
                 .beginTransaction()
                 .hide(this)
                 .addToBackStack("editFragment")
-                .add(this.id, fragment)
-                .show(fragment)
+                .add(this.id, to)
+                .show(to)
                 .commit()
     }
 
@@ -126,7 +127,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
                 val displayedDate: String
                 dayOfWeek = if (Calendar.getInstance()[Calendar.DAY_OF_WEEK] == calendar[Calendar.DAY_OF_WEEK]) {
                     getString(R.string.today_ru)
-                } else dayOfWeek!!.capitalize(Locale.getDefault())
+                } else dayOfWeek!!.capitalize()
                 displayedDate = "$dayOfWeek, $date $month"
                 header.findViewById<TextView>(R.id.day_of_week_header).text = displayedDate
             }
