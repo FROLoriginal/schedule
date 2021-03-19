@@ -3,6 +3,7 @@ package com.example.schedule.ui
 import android.content.Context
 import com.example.schedule.API.ApiHolder
 import com.example.schedule.API.NetworkService
+import com.example.schedule.POJO.JsonResponse
 import com.example.schedule.POJO.Response
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
@@ -12,34 +13,31 @@ import retrofit2.Callback
 class LoginActivityPresenter(private val llv: LoginLoadingView,
                              private val context: Context) {
 
-    private var responseCall: Call<Response?>? = null
+    private lateinit var responseCall: Call<Response>
 
     fun makeRequest(group: String) {
 
-        responseCall = NetworkService.getInstance()
+        responseCall = NetworkService
+                .getInstance()
                 .getJSONApi()
                 .getSchedule(VERSION, ACCESS_TOKEN, group)
 
-        responseCall!!.enqueue(object : Callback<Response?> {
-            override fun onResponse(call: Call<Response?>,
-                                    response: retrofit2.Response<Response?>) {
-                val r: Response? = response.body()
-                val jr = r!!.jsonResponse
+        responseCall.enqueue(object : Callback<Response> {
+            override fun onResponse(call: Call<Response>,
+                                    response: retrofit2.Response<Response>) {
+                val r: Response = response.body()!!
 
-                if (r.error != null) {
-                    if (r.error!!.errorCode == ApiHolder.UNKNOWN_GROUP)
-                        llv.showGroupIfNotExist()
-                    else llv.showInternalError()
-
-                } else if (jr != null) {
-                    SQLScheduleEditor(context,
-                            group.formatToTableName(),
-                            SQLManager.VERSION)
-                            .use { it.fillDataBase(jr) }
+                r.jsonResponse?.let {
+                    createTable(group, it)
                     llv.startMainActivity()
                     llv.hideLoading(false)
+                    return
                 }
-                llv.hideLoading(true)
+                r.error?.run {
+                    if (errorCode == ApiHolder.UNKNOWN_GROUP) llv.showGroupIfNotExist()
+                    else llv.showInternalError()
+                    llv.hideLoading(true)
+                }
             }
 
             override fun onFailure(call: Call<Response?>,
@@ -50,10 +48,19 @@ class LoginActivityPresenter(private val llv: LoginLoadingView,
         })
     }
 
+    private fun createTable(group: String, jr: JsonResponse) {
+        SQLScheduleEditor(context,
+                group.formatToTableName(),
+                SQLManager.VERSION)
+                .use { it.fillDataBase(jr) }
+    }
+
     private fun String.formatToTableName() = this.replace("-", "")
 
     fun cancelRequest() {
-        responseCall!!.cancel()
+        if(::responseCall.isInitialized) {
+            responseCall.cancel()
+        }else throw NullPointerException("Unable to cancel a request that has not been sent")
     }
 
     companion object {

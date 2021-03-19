@@ -92,9 +92,4 @@ class LoginActivity : AppCompatActivity(), LoginLoadingView {
             true
         } else false
     }
-
-    companion object {
-        private const val VERSION = 1
-        private const val ACCESS_TOKEN = "23a07a867ead26ba489f0b8dc7ab1c330f44a93dc72255e6bed322d5c5577fc2f0517665b03fcbfa794f795833"
-    }
 }

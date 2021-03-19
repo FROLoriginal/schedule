@@ -9,7 +9,7 @@ interface ApiHolder {
     @GET(API_GET_SCHEDULE_METHOD)
     fun getSchedule(@Query(VERSION) v: Int,
                     @Query(ACCESS_TOKEN) accessToken: String?,
-                    @Query(TEAM) team: String?): Call<Response?>?
+                    @Query(TEAM) team: String?): Call<Response>
 
     companion object {
         const val API_GET_SCHEDULE_METHOD = "teams.get"

@@ -105,7 +105,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
                 totalMinTo = totalMin
                 toTime.text = Time.minutesToDisplayedTime(totalMin)
             }
-        }, time.hour, time.minutes, true).show()
+        }, time.hour, time.minute, true).show()
     }
 
     private val fabListener = View.OnClickListener {

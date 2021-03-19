@@ -4,14 +4,14 @@ import java.util.*
 
 class Time(val totalMin: Int) {
 
-    data class Lesson(val from: Time, val to: Time)
+    data class LessonTiming(val from: Time, val to: Time)
 
     init {
         if (totalMin !in 0..1440) throw IllegalArgumentException("Min $totalMin must be in 0..1440")
     }
 
     val hour = totalMin / 60
-    val minutes = totalMin % 60
+    val minute = totalMin % 60
 
     companion object {
         fun lessonStatus(from: Time, to: Time, dayOfWeek: Int): Int {
@@ -21,10 +21,10 @@ class Time(val totalMin: Int) {
                 val secondTime = Calendar.getInstance()
                 firstTime[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(dayOfWeek + 1) - 1
                 firstTime[Calendar.HOUR_OF_DAY] = from.hour
-                firstTime[Calendar.MINUTE] = from.minutes
+                firstTime[Calendar.MINUTE] = from.minute
                 secondTime[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(dayOfWeek + 1) - 1
                 secondTime[Calendar.HOUR_OF_DAY] = to.hour
-                secondTime[Calendar.MINUTE] = to.minutes
+                secondTime[Calendar.MINUTE] = to.minute
                 val current = Calendar.getInstance().timeInMillis
                 val second = secondTime.timeInMillis
                 if (current >= firstTime.timeInMillis && current <= second) {
@@ -49,30 +49,30 @@ class Time(val totalMin: Int) {
             //24 * 60 = 1440
             if (min !in 0..1440) throw NumberFormatException("Minutes $min must be in 0..1440")
             val time = Time(min)
-            return String.format("%02d:%02d", time.hour, time.minutes)
+            return String.format("%02d:%02d", time.hour, time.minute)
         }
 
         fun displayedTimeToTime(time: String): Time {
 
-            if (isDisplayedTimeCorrect(time))
+            if (!isDisplayedTimeCorrect(time))
                 throw IllegalArgumentException("Time $time must meet time pattern like tt:mm")
             else {
-                val timeArr = time.split(':').map { it.toInt() }
-                return Time(timeArr[0]*60 + timeArr[1])
+                val timeArr = time.toIntArray(':')
+                return Time(timeArr[0] * 60 + timeArr[1])
             }
 
         }
 
-        private fun isDisplayedTimeCorrect(time: String): Boolean {
-            val pattern = ':'
-            val timeArr = time.split(pattern).map { it.toInt() }
-            return if (time.length !in 4..5) false
-            else if (time[2] != pattern || time[1] != pattern) false
-            else if (time.length > 1) false
-            else if (timeArr[0] !in 0..24 && timeArr[1] !in 0..60)
-                false
-            else return true
+        private fun isDisplayedTimeCorrect(time: String): Boolean = try {
+            val timeArr = time.toIntArray(':')
+            if (timeArr.size != 2) false
+            else timeArr[0] in 0..24 && timeArr[1] in 0..60
+        } catch (e: NumberFormatException) {
+            false
         }
+
+        private fun String.toIntArray(splitter: Char) = this.split(splitter).map { it.toInt() }
+
 
         fun strDayOfWeekToEUNum(dayOfWeek: String): Int {
 
@@ -85,7 +85,6 @@ class Time(val totalMin: Int) {
                 "Суббота" -> 6
                 "Воскресенье" -> 7
                 else -> throw IllegalArgumentException("DayOFWeek $dayOfWeek must be in 1..7")
-
             }
         }
 
@@ -94,7 +93,7 @@ class Time(val totalMin: Int) {
         (12:00)x1 - - - - -  - (13:20)x2
                     (12:30)y1 - - - - - - (14:00)y2
          */
-        fun isTimeIntersect(l1: Lesson, l2: Lesson): Boolean {
+        fun isIntersected(l1: LessonTiming, l2: LessonTiming): Boolean {
             val x1 = l1.from.totalMin
             val x2 = l1.to.totalMin
             val y1 = l2.from.totalMin

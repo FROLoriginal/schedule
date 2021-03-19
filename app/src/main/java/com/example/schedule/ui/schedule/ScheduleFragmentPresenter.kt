@@ -69,9 +69,9 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
 
             if (!l1.isOneDayLessons(l2))
                 counter = 0
-            else if (Time.isTimeIntersect(
-                            Time.Lesson(Time(l1.from), Time(l1.to)),
-                            Time.Lesson(Time(l2.from), Time(l2.to)))) {
+            else if (Time.isIntersected(
+                            Time.LessonTiming(Time(l1.from), Time(l1.to)),
+                            Time.LessonTiming(Time(l2.from), Time(l2.to)))) {
                 l1.setOptionally(true)
                 l2.setOptionally(true)
                 l2.counter = counter
