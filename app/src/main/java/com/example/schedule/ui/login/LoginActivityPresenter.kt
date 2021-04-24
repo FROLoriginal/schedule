@@ -1,4 +1,4 @@
-package com.example.schedule.ui
+package com.example.schedule.ui.login
 
 import android.content.Context
 import com.example.schedule.API.ApiHolder

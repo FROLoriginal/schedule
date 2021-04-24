@@ -4,7 +4,6 @@ import com.example.schedule.POJO.Lesson
 import com.example.schedule.POJO.Object_
 import com.example.schedule.POJO.Schedule
 import com.example.schedule.POJO.Subobject
-import com.example.schedule.Util.ScheduleConstants
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
@@ -75,11 +74,11 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                         input.beginObject()
                         val s = Subobject()
                         while (input.hasNext()) when (input.nextName()) {
-                            ScheduleConstants.LABEL -> input.nextString()
-                            ScheduleConstants.SUBJECT -> s.subject = input.nextString()
-                            ScheduleConstants.TEACHER -> s.teacher = input.nextString()
-                            ScheduleConstants.PREFIX -> s.subjectPrefix = input.nextString()
-                            ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
+                            LABEL -> input.nextString()
+                            SUBJECT -> s.subject = input.nextString()
+                            TEACHER -> s.teacher = input.nextString()
+                            PREFIX -> s.subjectPrefix = input.nextString()
+                            AUDITORY -> s.auditory = input.nextString()
                         }
                         input.endObject()
                         list.add(s)
@@ -90,14 +89,20 @@ class ScheduleTypeAdapter : TypeAdapter<Schedule?>() {
                     input.beginObject()
                     val s = Subobject()
                     while (input.hasNext()) when (input.nextName()) {
-                        ScheduleConstants.SUBJECT -> s.subject = input.nextString()
-                        ScheduleConstants.TEACHER -> s.teacher = input.nextString()
-                        ScheduleConstants.AUDITORY -> s.auditory = input.nextString()
+                        SUBJECT -> s.subject = input.nextString()
+                        TEACHER -> s.teacher = input.nextString()
+                        AUDITORY -> s.auditory = input.nextString()
                     }
                     o.subobject = arrayListOf(s)
                     input.endObject()
                 }
             }
         }
+       private const val TEACHER = "teacher"
+       private const val AUDITORY = "class"
+       private const val SUBJECT = "subject"
+       private const val PREFIX = "prefix"
+       private const val LABEL = "label"
     }
+
 }

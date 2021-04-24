@@ -1,9 +1,9 @@
-package com.example.schedule.ui.schedule
+package com.example.schedule.ui.schedule.editDialog
 
 import android.content.ContentValues
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
-import com.example.schedule.viewModel.SimpleScheduleModel
+import com.example.schedule.ui.schedule.LessonItem
 
 class EditFragmentPresenter(private val efv: EditFragmentView,
                             private val editor: SQLScheduleEditor) {
@@ -11,7 +11,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView,
     /**
      * @return {@code true} if the value changes was applied, {@code false} otherwise
      */
-    fun applyChanges(lesson: SimpleScheduleModel): Boolean {
+    fun applyChanges(lesson: LessonItem): Boolean {
 
         val from = lesson.from
         val to = lesson.to
@@ -31,7 +31,7 @@ class EditFragmentPresenter(private val efv: EditFragmentView,
                 put(SQLManager.DAY_OF_WEEK, dayOfWeek)
                 put(SQLManager.TEACHER, lesson.teacher)
                 put(SQLManager.AUDITORY, lesson.auditory)
-                put(SQLManager.PREFIX_OF_SUBJECT, lesson.prefixOfSubject)
+                put(SQLManager.TYPE_OF_SUBJECT, lesson.typeOfSubject)
 
             }
             editor.use {

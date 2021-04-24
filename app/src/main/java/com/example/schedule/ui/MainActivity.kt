@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.Menu
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.schedule.R
+import com.example.schedule.ui.schedule.editDialog.IFragmentMovement
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IFragmentMovement {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,5 +32,14 @@ class MainActivity : AppCompatActivity() {
                 if (fm.backStackEntryCount > 0) fm.popBackStack() else finish()
             }
         })
+    }
+
+    override fun onMove(from: Fragment, to: Fragment, intention: String, name: String) {
+        from.parentFragmentManager
+                .beginTransaction()
+                .addToBackStack(name)
+                .hide(from)
+                .replace(R.id.nav_host_fragment, to)
+                .commit()
     }
 }

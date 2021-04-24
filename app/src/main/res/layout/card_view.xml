@@ -18,14 +18,14 @@
             android:id="@+id/full_side_divider"
             android:layout_width="@dimen/timeline_divider_width"
             android:layout_height="match_parent"
-            android:background="@color/end_of_lesson_timeline"
+            android:background="@color/green"
             android:visibility="gone" />
 
         <View
             android:id="@+id/firstTimelineDivider"
             android:layout_width="@dimen/timeline_divider_width"
             android:layout_height="40dp"
-            android:background="@color/end_of_lesson_timeline"
+            android:background="@color/green"
             android:visibility="visible" />
 
         <com.google.android.material.card.MaterialCardView
@@ -47,7 +47,7 @@
             android:id="@+id/secondTimelineDivider"
             android:layout_width="@dimen/timeline_divider_width"
             android:layout_height="match_parent"
-            android:background="@color/end_of_lesson_timeline" />
+            android:background="@color/green" />
     </LinearLayout>
 
     <include layout="@layout/card_view_inf" />

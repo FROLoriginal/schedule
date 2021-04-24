@@ -14,78 +14,66 @@ import com.example.schedule.R
 import com.example.schedule.SQL.SQLDataTranslator
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleReader
-import com.example.schedule.Util.Time
+import com.example.schedule.Util.TimeUtil
 import com.example.schedule.adapters.ScheduleRecyclerViewAdapter
 import com.example.schedule.ui.schedule.ScheduleHeaderItemDecorator.StickyHeaderInterface
-import com.example.schedule.viewModel.SimpleScheduleModel
+import com.example.schedule.ui.schedule.editDialog.IFragmentMovement
+import com.example.schedule.ui.schedule.editDialog.ScheduleEditFragment
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, OnScheduleChangedListener {
+class ScheduleFragment : Fragment(), ScheduleEditFragment.OnScheduleChangedListener,
+        ScheduleRecyclerViewAdapter.AdapterMovement {
 
     private lateinit var adapter: ScheduleRecyclerViewAdapter
-    private val presenter = ScheduleFragmentPresenter(this)
-    private lateinit var data: ArrayList<SimpleScheduleModel>
+    private val presenter = ScheduleFragmentPresenter()
+    private lateinit var data: ArrayList<RecyclerViewItem>
+    private lateinit var onMove: IFragmentMovement
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        onMove = requireActivity() as IFragmentMovement
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
 
         val recyclerView: RecyclerView = root.findViewById(R.id.recyclerView)
         val pref = requireActivity().getSharedPreferences(SQLManager.SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
         val table = pref.getString(SQLManager.SHARED_PREF_TABLE_NAME_KEY, "")
         val context = requireContext()
-        data = SQLDataTranslator.getRawListSimpleScheduleModel(
+        val temp = SQLDataTranslator.getRawListLessonModel(
                 SQLScheduleReader(context, table!!, SQLManager.VERSION)
         )
+        data = ArrayList(temp.map { it as RecyclerViewItem })
+        presenter.prepare(data)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(getDecorator(recyclerView, data))
         adapter = ScheduleRecyclerViewAdapter(data, this)
         recyclerView.adapter = adapter
-
-        val dayOfWeek = Time.USDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
+        val dayOfWeek = TimeUtil.USDayOfWeekToEU(Calendar.getInstance()[Calendar.DAY_OF_WEEK]) - 1
         recyclerView.scrollToPosition(getActualPosition(data, dayOfWeek))
-        presenter.prepareData(data)
-
         root.findViewById<ImageButton>(R.id.addLesson).setOnClickListener {
-            onMove(ScheduleEditFragment(this, null, -1), IFragmentMovement.CREATE_INTENTION)
+            onMove.onMove(this, ScheduleEditFragment.newInstance(-1, null)
+                    , IFragmentMovement.CREATE_INTENTION, "scheduleFragment")
         }
         return root
     }
 
-    override fun onScheduleIsChanged(pos: Int, intention: String, lesson: SimpleScheduleModel?) {
-        presenter.addLessonToSchedule(data, lesson!!)
+
+    override fun moveFromAdapter(to: Fragment, intention: String) {
+        onMove.onMove(this, to, intention, "scheduleFragment")
     }
 
-    override fun onItemAdded() {
-        adapter.notifyDataSetChanged()
+    override fun onScheduleChanged(pos: Int, intention: String, model: LessonItem?) {
+        presenter.addLessonToSchedule(data, model!!)
     }
 
-    override fun onItemChanged() {
-        //This fun is already implemented in ScheduleRecyclerViewAdapter
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (this::adapter.isInitialized) adapter.notifyDataSetChanged()
     }
 
-    override fun onItemRemoved(pos: Int) {
-        //This fun is already implemented in ScheduleFragment
-    }
-
-    override fun onMove(to: Fragment, intention: String) {
-        val data = Bundle()
-        data.putString("key", intention)
-        to.arguments = data
-        this.parentFragmentManager
-                .beginTransaction()
-                .hide(this)
-                .addToBackStack("editFragment")
-                .add(this.id, to)
-                .show(to)
-                .commit()
-    }
-
-
-    private fun getActualPosition(data: List<SimpleScheduleModel>,
+    private fun getActualPosition(data: List<RecyclerViewItem>,
                                   dayOfWeek: Int): Int {
         var pos = 0
         val dataDayOfWeek = data[data.size - 1].dayOfWeek - 1
@@ -99,7 +87,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
     }
 
     private fun getDecorator(recyclerView: RecyclerView,
-                             data: List<SimpleScheduleModel>): ScheduleHeaderItemDecorator {
+                             data: List<RecyclerViewItem>): ScheduleHeaderItemDecorator {
         return ScheduleHeaderItemDecorator(recyclerView, object : StickyHeaderInterface {
             override fun getHeaderPositionForItem(itemPosition: Int): Int {
                 var itemPosition = itemPosition
@@ -120,7 +108,7 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
 
             override fun bindHeaderData(header: View, headerPosition: Int) {
                 val calendar = Calendar.getInstance()
-                calendar[Calendar.DAY_OF_WEEK] = Time.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
+                calendar[Calendar.DAY_OF_WEEK] = TimeUtil.EUDayOfWeekToUS(data[headerPosition].dayOfWeek)
                 var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
                 val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 val date = calendar[Calendar.DATE]
@@ -137,5 +125,6 @@ class ScheduleFragment : Fragment(), IFragmentMovement, ScheduleRecyclerView, On
             }
         })
     }
+
 
 }

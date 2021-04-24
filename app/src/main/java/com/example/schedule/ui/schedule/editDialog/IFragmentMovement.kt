@@ -1,4 +1,4 @@
-package com.example.schedule.ui.schedule
+package com.example.schedule.ui.schedule.editDialog
 
 import androidx.fragment.app.Fragment
 
@@ -9,7 +9,7 @@ interface IFragmentMovement{
      * @param intention the reason of moving
      **/
 
-    fun onMove(to : Fragment, intention : String)
+    fun onMove(from: Fragment,to: Fragment, intention: String, name: String)
 
     companion object {
         val EDIT_INTENTION: String

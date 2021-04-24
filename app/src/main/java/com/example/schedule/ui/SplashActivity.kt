@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.schedule.SQL.SQLManager
+import com.example.schedule.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {

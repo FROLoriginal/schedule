@@ -1,4 +1,4 @@
-package com.example.schedule.ui
+package com.example.schedule.ui.login
 
 import android.app.AlertDialog
 import android.app.Dialog

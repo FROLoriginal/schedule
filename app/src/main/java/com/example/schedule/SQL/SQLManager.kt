@@ -18,11 +18,9 @@ open class SQLManager(private val context: Context,
                 TO + " INTEGER NOT NULL," +
                 AUDITORY + " TEXT," +
                 TEACHER + " TEXT," +
-                OPTIONALLY + " INTEGER," +
-                PREFIX_OF_SUBJECT + " TEXT" +
+                TYPE_OF_SUBJECT + " TEXT" +
                 ")")
-        context
-                .getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(SHARED_PREF_DB_TABLE_NAME, Context.MODE_PRIVATE)
                 .edit()
                 .putString(SHARED_PREF_TABLE_NAME_KEY, name)
                 .apply()
@@ -40,10 +38,12 @@ open class SQLManager(private val context: Context,
         const val TO = "to_"
         const val AUDITORY = "auditory"
         const val TEACHER = "teacher"
-        const val OPTIONALLY = "optionally"
+        const val TYPE_OF_SUBJECT = "STYLE_OF_SUBJECT"
+
         const val SHARED_PREF_DB_TABLE_NAME = "tables"
         const val SHARED_PREF_TABLE_NAME_KEY = "table"
-        const val PREFIX_OF_SUBJECT = "STYLE_OF_SUBJECT"
+
+        //For example, lecture, seminar and others
         const val VERSION = 1
     }
 

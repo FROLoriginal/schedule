@@ -1,34 +1,31 @@
 package com.example.schedule.ui.schedule
 
+import com.example.schedule.Util.LessonItemUtils
 import com.example.schedule.Util.Time
-import com.example.schedule.viewModel.SimpleScheduleModel
-import com.example.schedule.viewModel.SimpleScheduleModel.Companion.isOneDayLessons
+import com.example.schedule.Util.TimeUtil
 
-class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
+class ScheduleFragmentPresenter {
 
-    fun addLessonToSchedule(list: ArrayList<SimpleScheduleModel>,
-                            lesson: SimpleScheduleModel) {
+    fun addLessonToSchedule(list: ArrayList<RecyclerViewItem>,
+                            lesson: LessonItem) {
 
         list.add(lesson)
-        prepareData(list)
-        sv?.onItemAdded()
+        prepare(list)
     }
 
-    fun changeLesson(list: ArrayList<SimpleScheduleModel>,
+    fun changeLesson(list: ArrayList<RecyclerViewItem>,
                      pos: Int,
-                     newLesson: SimpleScheduleModel) {
+                     newLesson: LessonItem) {
         if (pos < -1 || pos >= list.size) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
         list[pos] = newLesson
-        prepareData(list)
-        sv?.onItemChanged()
+        prepare(list)
     }
 
     //Remove lesson from prepared list to show list
-    fun removeLesson(pos: Int, list: ArrayList<SimpleScheduleModel>) {
+    fun removeItem(pos: Int, list: ArrayList<RecyclerViewItem>) {
 
         fun removeAndNotify(pos: Int) {
             list.removeAt(pos) // remove the header
-            sv?.onItemRemoved(pos)
         }
         if (pos < -1 || pos >= list.size) throw IndexOutOfBoundsException("Position $pos must be less then list.size and >= 0")
 
@@ -42,78 +39,58 @@ class ScheduleFragmentPresenter(private val sv: ScheduleRecyclerView?) {
                 removeAndNotify(pos - 1)
             }
         }
-        if (list.isNotEmpty()) prepareData(list)
-        sv?.onItemRemoved(pos)
+        if (list.isNotEmpty()) prepare(list)
 
     }
 
-    fun prepareData(list: ArrayList<SimpleScheduleModel>) {
+    fun prepare(list: ArrayList<RecyclerViewItem>) {
         removeHeaders(list)
-        list.sort()
+        (list as ArrayList<LessonItem>).sort()
         setCounters(list)
         addHeaders(list)
     }
 
-    private fun MutableList<SimpleScheduleModel>.sort() {
+    private fun ArrayList<LessonItem>.sort() {
         sortWith(compareBy({ it.dayOfWeek }, { it.from }, { it.to }))
     }
 
-    private fun setCounters(list: ArrayList<SimpleScheduleModel>) {
+
+    private fun setCounters(list: ArrayList<LessonItem>) {
 
         var counter = 0
         for (i in 0 until list.size - 1) {
-            val l1: SimpleScheduleModel = list[i]
-            val l2: SimpleScheduleModel = list[i + 1]
+            val l1: LessonItem = list[i]
+            val l2: LessonItem = list[i + 1]
 
             l1.counter = counter
 
-            if (!l1.isOneDayLessons(l2))
-                counter = 0
-            else if (Time.isIntersected(
-                            Time.LessonTiming(Time(l1.from), Time(l1.to)),
-                            Time.LessonTiming(Time(l2.from), Time(l2.to)))) {
-                l1.setOptionally(true)
-                l2.setOptionally(true)
-                l2.counter = counter
-            } else {
-                if (i == list.size - 2) {
-                    l2.setOptionally(false)
-                    l2.counter = counter
-                } else counter++
+            when {
+                l1.dayOfWeek != l2.dayOfWeek -> counter = 0
+                l1.from != l2.from && l1.to != l2.to -> counter++
             }
-
         }
-
-
+        list.last().counter = counter
     }
 
-    private fun removeHeaders(list: ArrayList<SimpleScheduleModel>) {
+    private fun removeHeaders(list: ArrayList<RecyclerViewItem>) {
 
         var i = 0
         while (i < list.size) {
             if (list[i].isHeader) list.removeAt(i)
             i++
         }
-
     }
 
-    private fun addHeaders(list: ArrayList<SimpleScheduleModel>) {
+    private fun addHeaders(list: ArrayList<RecyclerViewItem>) {
 
-        val model = SimpleScheduleModel()
-        model.isHeader = true
-        model.dayOfWeek = list[0].dayOfWeek
-        list.add(0, SimpleScheduleModel(model))
+        list.add(0, HeaderItem(list[0].dayOfWeek))
 
         var i = 1
         while (i < list.size - 1) {
-
-            if (!list[i].isOneDayLessons(list[i + 1])) {
-
-                model.dayOfWeek = list[i + 1].dayOfWeek
-                list.add(i + 1, SimpleScheduleModel(model))
+            if (list[i].dayOfWeek != list[i + 1].dayOfWeek) {
+                list.add(i + 1, HeaderItem(list[i + 1].dayOfWeek))
             }
             i++
         }
-
     }
 }

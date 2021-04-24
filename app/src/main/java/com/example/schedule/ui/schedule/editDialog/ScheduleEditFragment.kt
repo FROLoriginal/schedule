@@ -1,4 +1,4 @@
-package com.example.schedule.ui.schedule
+package com.example.schedule.ui.schedule.editDialog
 
 import android.app.TimePickerDialog
 import android.content.Context
@@ -9,19 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.schedule.R
 import com.example.schedule.SQL.SQLManager
 import com.example.schedule.SQL.SQLScheduleEditor
-import com.example.schedule.Util.Time
-import com.example.schedule.Util.UIUtils.toast
+import com.example.schedule.Util.TimeUtil
+import com.example.schedule.Util.toast
 import com.example.schedule.ui.MainActivity
-import com.example.schedule.viewModel.SimpleScheduleModel
+import com.example.schedule.ui.schedule.LessonItem
 
-class ScheduleEditFragment internal constructor(private val listener: OnScheduleChangedListener?,
-                                                private val lesson: SimpleScheduleModel?,
-                                                private val pos: Int)
-    : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener {
+class ScheduleEditFragment : Fragment(), EditFragmentView, Toolbar.OnMenuItemClickListener {
 
     private lateinit var teacherEditText: EditText
     private lateinit var auditoryEditText: EditText
@@ -36,10 +34,16 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
 
     private lateinit var intention: String
 
+    private var pos: Int = -1
+    private var lesson: LessonItem? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         val root = inflater.inflate(R.layout.fragment_schedule_edit, container, false)
+
+        lesson = requireArguments().get(LESSON_BUNDLE) as LessonItem?
+        pos = requireArguments().getInt(POS_BUNDLE)
 
         teacherEditText = root.findViewById(R.id.editTeacher)
         auditoryEditText = root.findViewById(R.id.editAuditory)
@@ -60,11 +64,11 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         auditoryEditText.setText(lesson?.auditory)
         subjectEditText.setText(lesson?.subject)
         toTime.text = if (lesson == null) null
-        else Time.minutesToDisplayedTime(lesson.to)
+        else TimeUtil.minutesToDisplayedTime(lesson!!.to)
         fromTime.text = if (lesson == null) null
-        else Time.minutesToDisplayedTime(lesson.from)
-        styleOfSubjectMACTV.setText(lesson?.prefixOfSubject)
-        dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson.dayOfWeek - 1)
+        else TimeUtil.minutesToDisplayedTime(lesson!!.from)
+        styleOfSubjectMACTV.setText(lesson?.typeOfSubject)
+        dayOfWeekSpinner.setSelection(if (lesson?.dayOfWeek == null) 0 else lesson!!.dayOfWeek - 1)
 
         activity = requireActivity() as MainActivity
 
@@ -86,24 +90,23 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         return root
     }
 
-
     private var totalMinTo = lesson?.to ?: -1
     private var totalMinFrom = lesson?.from ?: -1
 
     private val timePickerListener = View.OnClickListener {
         val time = if (it.id == R.id.fromTextViewTime) {
-            Time.displayedTimeToTime(fromTime.text.toString())
-        } else Time.displayedTimeToTime(toTime.text.toString())
+            TimeUtil.displayedTimeToTime(fromTime.text.toString())
+        } else TimeUtil.displayedTimeToTime(toTime.text.toString())
 
         TimePickerDialog(context, { _, hourOfDay, minute ->
             val totalMin = hourOfDay * 60 + minute
             if (it.id == R.id.fromTextViewTime) {
                 totalMinFrom = totalMin
-                fromTime.text = Time.minutesToDisplayedTime(totalMin)
+                fromTime.text = TimeUtil.minutesToDisplayedTime(totalMin)
             }
             if (it.id == R.id.toTextViewTime) {
                 totalMinTo = totalMin
-                toTime.text = Time.minutesToDisplayedTime(totalMin)
+                toTime.text = TimeUtil.minutesToDisplayedTime(totalMin)
             }
         }, time.hour, time.minute, true).show()
     }
@@ -116,18 +119,17 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         val subject = subjectEditText.text.toString()
         val dayOfWeek = dayOfWeekSpinner.selectedItem.toString()
 
-        val model = SimpleScheduleModel().apply {
-            this.subject = subject
-            this.teacher = teacher
-            this.auditory = auditory
-            this.dayOfWeek = Time.strDayOfWeekToEUNum(dayOfWeek)
-            this.prefixOfSubject = styleOfSubject
-            this.from = totalMinFrom
-            this.to = totalMinTo
-            this.id = lesson?.id ?: 0
-        }
+        val model = LessonItem(TimeUtil.strDayOfWeekToEUNum(dayOfWeek),
+                totalMinFrom,
+                totalMinTo,
+                teacher ?: "",
+                auditory ?: "",
+                subject, styleOfSubject,
+                -1,
+                id = lesson?.id ?: 0)
+
+
         if (presenter.applyChanges(model)) {
-            listener?.onScheduleIsChanged(pos, intention, model)
             parentFragmentManager.popBackStack()
         }
     }
@@ -136,8 +138,7 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
 
         if (item!!.itemId == R.id.action_remove) {
             if (lesson != null) {
-                presenter.removeLesson(lesson.id)
-                listener?.onScheduleIsChanged(pos, IFragmentMovement.REMOVE_INTENTION)
+                presenter.removeLesson(lesson!!.id)
             }
             parentFragmentManager.popBackStack()
 
@@ -145,7 +146,25 @@ class ScheduleEditFragment internal constructor(private val listener: OnSchedule
         return false
     }
 
+    interface OnScheduleChangedListener {
+        fun onScheduleChanged(pos: Int, intention: String, model: LessonItem? = null )
+    }
+
     override fun onFieldIsNull() {
         requireContext().toast(R.string.requiredFieldIsNotFilled)
+    }
+
+    companion object {
+        fun newInstance(pos: Int, item: LessonItem?): ScheduleEditFragment {
+            return ScheduleEditFragment().apply {
+                arguments = bundleOf(
+                        Pair(POS_BUNDLE, pos)
+                        , Pair(LESSON_BUNDLE, item)
+                )
+            }
+        }
+
+        private const val LESSON_BUNDLE = "LESSON_BUNDLE"
+        private const val POS_BUNDLE = "POS_BUNDLE"
     }
 }

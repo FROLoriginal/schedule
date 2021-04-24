@@ -1,30 +1,31 @@
 package com.example.schedule.adapters
 
+import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.R
-import com.example.schedule.Util.Time
-import com.example.schedule.Util.Time.Companion.EUDayOfWeekToUS
-import com.example.schedule.Util.Time.Companion.lessonStatus
+import com.example.schedule.Util.LessonItemUtils
+import com.example.schedule.Util.LessonStatus
+import com.example.schedule.Util.TimeUtil
 import com.example.schedule.ui.schedule.*
-import com.example.schedule.viewModel.SimpleScheduleModel
-import com.example.schedule.viewModel.SimpleScheduleModel.Companion.getNextLesson
+import com.example.schedule.ui.schedule.editDialog.IFragmentMovement
+import com.example.schedule.ui.schedule.editDialog.ScheduleEditFragment
 import java.util.*
 
-class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayList<SimpleScheduleModel>,
-                                                       private val move: IFragmentMovement)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ScheduleRecyclerView, OnScheduleChangedListener {
+class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayList<RecyclerViewItem>,
+                                                       private val move: AdapterMovement)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ScheduleRecyclerView, ScheduleEditFragment.OnScheduleChangedListener {
 
-    private val presenter = ScheduleFragmentPresenter(this)
-
+    private val presenter = ScheduleFragmentPresenter()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val li = LayoutInflater.from(parent.context)
-        return if (viewType == INFORMATION) {
+        return if (viewType == LESSON) {
             val view = li.inflate(R.layout.card_view, parent, false)
             val scheduleViewHolder = object : ScheduleViewHolder(view) {}
             view.setOnClickListener(getOnClickListenerForItems(scheduleViewHolder))
@@ -38,19 +39,19 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayLi
     private fun getOnClickListenerForItems(scheduleViewHolder: ScheduleViewHolder): View.OnClickListener? {
         return View.OnClickListener {
             val pos = scheduleViewHolder.adapterPosition
-            val fr = ScheduleEditFragment(this, data[pos], pos)
-            move.onMove(fr, IFragmentMovement.EDIT_INTENTION)
+            val fr = ScheduleEditFragment.newInstance(pos, data[pos] as LessonItem)
+            move.moveFromAdapter(fr,IFragmentMovement.EDIT_INTENTION)
         }
     }
 
-    override fun onScheduleIsChanged(pos: Int, intention: String, lesson: SimpleScheduleModel?) {
+    override fun onScheduleChanged(pos: Int, intention: String, model: LessonItem?) {
         if (pos != RecyclerView.NO_POSITION) {
             when (intention) {
                 IFragmentMovement.EDIT_INTENTION -> {
-                    presenter.changeLesson(data, pos, lesson!!)
+                    presenter.changeLesson(data, pos, model!!)
                 }
                 IFragmentMovement.REMOVE_INTENTION -> {
-                    presenter.removeLesson(pos, data)
+                    presenter.removeItem(pos, data)
                 }
             }
         }
@@ -72,8 +73,10 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayLi
         val lesson = data[position]
         val context = holder.itemView.context
         if (holder.itemViewType == HEADER) {
+            lesson as HeaderItem
             bindHeader(holder, lesson, context.resources)
         } else {
+            lesson as LessonItem
             holder as ScheduleViewHolder
 
             if (lesson.teacher.isNullOrEmpty()) {
@@ -86,7 +89,7 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayLi
             }
             holder.subject.text = lesson.subject
             holder.auditoryWithStyleOfSubject.visibility = View.VISIBLE
-            holder.auditoryWithStyleOfSubject.text = lesson.auditoryWithStyleOfSubject
+            holder.auditoryWithStyleOfSubject.text = lesson.auditoryWithTypeOfSubject
 
             holder.time.text = lesson.formattedTime
             holder.secondDivider.visibility = View.VISIBLE
@@ -94,77 +97,99 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayLi
             holder.fullSideDivider.visibility = View.GONE
             (holder.statusCircle.parent as View).visibility = View.VISIBLE
 
-            if (data[position - 1].isHeader) holder.firstDivider.visibility = View.INVISIBLE
-            if (position + 1 < itemCount) {
-                if (data[position + 1].isHeader) holder.secondDivider.visibility = View.INVISIBLE
-            } else holder.secondDivider.visibility = View.INVISIBLE
+            val currentLessonStatus = LessonStatus.getInstance(lesson)
+            val currentLessonNum = lesson.counter + 1
 
-            val nextLesStat: Int =
-                    if (SimpleScheduleModel.isNextLessonExists(data, position)) {
-                        val nextLes = getNextLesson(data, position)
-                        lessonStatus(
-                                Time(nextLes.from),
-                                Time(nextLes.to),
-                                nextLes.dayOfWeek)
-                    } else Time.LESSON_IS_NOT_EXIST
+            var isCurrentItemUnderHeader = false
+            // We choose the first lesson of a week
+            if (data[position - 1].isHeader) {
+                holder.firstDivider.visibility = View.INVISIBLE
 
-            val curLesStat = lessonStatus(
-                    Time(lesson.from),
-                    Time(lesson.to),
-                    lesson.dayOfWeek)
-            val currentLesson = lesson.counter + 1
+                var counter = currentLessonNum
+                val isSecondDivGreen = currentLessonStatus.isOver().also { if (it) counter = 0 }
 
-            if (isOptLesHeader(position) || !lesson.isOptionally() || position == itemCount - 1) {
-                val colorFirstOpt: Int
-                //Сверху и снизу идентификаторы синие. Урок не начат
-                if (curLesStat == Time.LESSON_WILL_START) {
-                    colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(holder, colorFirstOpt, colorFirstOpt, colorFirstOpt, currentLesson)
-                    //Сверху и снизу идентификаторы зеленые. Урок закончен
-                } else if (curLesStat == Time.LESSON_IS_OVER &&
-                        nextLesStat != Time.LESSON_WILL_START) {
-                    colorFirstOpt = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    setColor(holder, colorFirstOpt, colorFirstOpt, colorFirstOpt, 0)
-                    //Сверху зеленое, урон не начат, снизу синее
-                } else if (curLesStat == Time.LESSON_IS_NOT_OVER) {
-                    val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(holder, colorRes1, colorFirstOpt, colorFirstOpt, currentLesson)
-                } else {
-                    //Сверху зеленое, урок закончен, снизу синее
-                    val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    setColor(holder, colorRes1, colorFirstOpt, colorRes1, 0)
+                //First divider color doesn't matter
+                setColor(holder, false, isSecondDivGreen, counter, context)
+                isCurrentItemUnderHeader = true
+            }
+            //If the lesson is the last in a day of week
+            if (!LessonItemUtils.isNextLessonExist(data, position)) {
+                holder.secondDivider.visibility = View.INVISIBLE
+                val isFirstDividerGreen: Boolean
+                var counter = currentLessonNum
+
+                val prevLessonStatus = LessonItemUtils.getPrevLesson(data, position)?.status()
+                //It means that lesson is the only one in the day of week
+                if (prevLessonStatus == null) {
+                    if (currentLessonStatus.isOver()) counter = 0
+                    isFirstDividerGreen = false //stub
+
+                } else isFirstDividerGreen = when {
+                    currentLessonStatus.willStart() -> prevLessonStatus.isOver()
+                    currentLessonStatus.inProgress() -> true
+                    else -> {
+                        counter = 0; true
+                    } //It means inOver() = true
+
                 }
-                if (nextLesStat == Time.LESSON_IS_NOT_EXIST) {
-                    holder.secondDivider.visibility = View.INVISIBLE
-                }
-            } else {
-                (holder.statusCircle.parent as View).visibility = View.GONE
-                holder.firstDivider.visibility = View.GONE
-                holder.secondDivider.visibility = View.GONE
-                holder.fullSideDivider.visibility = View.VISIBLE
-                if (nextLesStat == Time.LESSON_IS_OVER || nextLesStat == Time.LESSON_IS_NOT_OVER) {
-                    val colorRes1 = ContextCompat.getColor(context, R.color.end_of_lesson_timeline)
-                    holder.fullSideDivider.setBackgroundColor(colorRes1)
+                //Second divider color doesn't matter
+                setColor(holder, isFirstDividerGreen, false, counter, context)
+
+                //We cannot do the code below if the current element is the last or the first in the day
+            } else if (!isCurrentItemUnderHeader) {
+                if ((data[position] == data[position - 1]) && (data[position] == data[position + 1])) {
+
+                    setOptionalLessonHolder(holder)
+
+                    val isFullSideDividerGreen = !currentLessonStatus.willStart()
+                    holder.fullSideDivider.setBackgroundColor(
+                            if (isFullSideDividerGreen) getGreen(context) else getBlue(context))
+
                 } else {
-                    val colorFirstOpt = ContextCompat.getColor(context, R.color.lesson_is_not_started)
-                    holder.fullSideDivider.setBackgroundColor(colorFirstOpt)
+
+                    var counter = currentLessonNum
+                    val isFirstDividerGreen: Boolean
+                    val isSecondDividerGreen: Boolean
+                    val prevLessonStatus = LessonItemUtils.getPrevLesson(data, position)!!.status()
+
+                    when {
+                        currentLessonStatus.willStart() -> {
+                            isFirstDividerGreen = prevLessonStatus.isOver()
+                            isSecondDividerGreen = false
+                        }
+                        currentLessonStatus.inProgress() -> {
+                            isFirstDividerGreen = true
+                            isSecondDividerGreen = false
+                        }
+                        //isOver() = true
+                        else -> {
+                            isFirstDividerGreen = true
+                            isSecondDividerGreen = true
+                            counter = 0
+                        }
+
+                    }
+                    setColor(holder, isFirstDividerGreen, isSecondDividerGreen, counter, context)
+
                 }
             }
         }
     }
 
-    private fun isOptLesHeader(position: Int) = if (position > 0) {
-        data[position - 1] != data[position]
-    } else false
+
+    private fun setOptionalLessonHolder(holder: ScheduleViewHolder) {
+        (holder.statusCircle.parent as View).visibility = View.GONE
+        holder.firstDivider.visibility = View.GONE
+        holder.secondDivider.visibility = View.GONE
+        holder.fullSideDivider.visibility = View.VISIBLE
+    }
 
 
     private fun bindHeader(holder: RecyclerView.ViewHolder,
-                           lesson: SimpleScheduleModel,
+                           lesson: HeaderItem,
                            resources: Resources) {
         val calendar = Calendar.getInstance()
-        calendar[Calendar.DAY_OF_WEEK] = EUDayOfWeekToUS(lesson.dayOfWeek)
+        calendar[Calendar.DAY_OF_WEEK] = TimeUtil.EUDayOfWeekToUS(lesson.dayOfWeek)
         var dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())
         val month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
         val date = calendar[Calendar.DATE]
@@ -175,26 +200,40 @@ class ScheduleRecyclerViewAdapter internal constructor(private val data: ArrayLi
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (data[position].isHeader) HEADER else INFORMATION
+        return if (data[position].isHeader) HEADER else LESSON
     }
 
     override fun getItemCount(): Int {
         return data.size
     }
 
-    private fun setColor(holder: ScheduleViewHolder, firstDividerRes: Int, secondDividerRes: Int, circleRes: Int, num: Int) {
-        if (num == 0) holder.statusCircle.setBackgroundColor(circleRes)
+    //The default values means that field doesn't matter
+    private fun setColor(holder: ScheduleViewHolder,
+                         isFirstDividerGreen: Boolean,
+                         isSecondDividerGreen: Boolean,
+                         num: Int, context: Context) {
+
+
+        if (num == 0) holder.statusCircle.setBackgroundColor(getGreen(context))
         val DRAWABLES_RES = intArrayOf(R.drawable.check_ic,
                 R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three,
                 R.drawable.ic_four, R.drawable.ic_five, R.drawable.ic_six,
                 R.drawable.ic_seven, R.drawable.ic_eight, R.drawable.ic_nine)
         holder.statusCircle.setImageResource(DRAWABLES_RES[num])
-        holder.firstDivider.setBackgroundColor(firstDividerRes)
-        holder.secondDivider.setBackgroundColor(secondDividerRes)
+        holder.firstDivider.setBackgroundColor(if (isFirstDividerGreen) getGreen(context) else getBlue(context))
+        holder.secondDivider.setBackgroundColor(if (isSecondDividerGreen) getGreen(context) else getBlue(context))
+
+    }
+
+    interface AdapterMovement{
+        fun moveFromAdapter(to: Fragment, intention: String)
     }
 
     companion object {
-        private const val INFORMATION = 1
+        private fun getGreen(context: Context) = ContextCompat.getColor(context, R.color.green)
+        private fun getBlue(context: Context) = ContextCompat.getColor(context, R.color.blue)
+
+        private const val LESSON = 1
         private const val HEADER = 2
         private val day = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
     }
